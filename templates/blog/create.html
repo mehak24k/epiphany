@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form method="POST">
+  <div class="field">
+    <label class="label" for="title">Title</label>
+    <div class="control">
+      <input class="input" name="title" type="text" placeholder="Insert title">
+    </div>
+  </div>
+  <div class="field">
+    <label class="label" for="body">Body</label>
+    <div class="control">
+      <textarea class="textarea" name="body" placeholder="Insert content"></textarea>
+    </div>
+  </div>
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div class="notification is-danger">
+          {{ messages[0] }}
+      </div>
+    {% endif %}
+  {% endwith %}
+  <div class="field is-grouped">
+    <div class="control">
+      <button class="button is-link">Submit</button>
+    </div>
+  </div>
+</form>
+
+{% endblock %}

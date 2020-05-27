@@ -1,10 +1,27 @@
 {% extends "base.html" %}
 
 {% block content %}
+
 <h1 class="title">
   Welcome to Epiphany!
 </h1>
 <h2 class="subtitle">
   A space for collaborative learning
 </h2>
+{% for post in posts %}
+  <div class="container is-fluid">
+    <div class="notification">
+      <h2 class="title" style="color:black;">
+        {{ post.title }}
+      </h2>
+      <h3 class="subtitle" style="color:black;">
+        {{ post.body }}
+      </h3>
+    </div>
+  </div> 
+  {% if not loop.last %}
+      <hr>
+  {% endif %}
+{% endfor %}
+
 {% endblock %}

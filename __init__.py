@@ -32,4 +32,9 @@ def create_app():
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
 
+    # blueprint for posting 
+    from .blog import bp as blog_blueprint
+    app.register_blueprint(blog_blueprint)
+    # app.add_url_rule('/', endpoint='index')
+
     return app
