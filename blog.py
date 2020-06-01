@@ -23,9 +23,9 @@ def create():
 
         if t_error or b_error is not None:
             if t_error is not None:
-                flash(terror)
+                flash(t_error)
             if b_error is not None:
-                flash(berror)
+                flash(b_error)
 
         else:
             new_post = Post(title=title, body=body, user_id=current_user.id)
