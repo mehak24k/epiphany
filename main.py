@@ -7,7 +7,7 @@ main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
-    posts = Post.query.order_by(Post.timestamp.desc()).all()
+    posts = Post.query.join(User).order_by(Post.timestamp.desc()).all()
     return render_template('index.html', posts=posts)
 
 @main.route('/profile')
