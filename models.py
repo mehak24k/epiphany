@@ -10,6 +10,7 @@ class User(UserMixin, db.Model):
     name = db.Column(db.String(1000))
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
+    posts = db.relationship("Post", backref="user", lazy=True)
 
 class Post(db.Model):
     __tablename__="posts" 
