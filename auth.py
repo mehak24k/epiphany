@@ -84,9 +84,12 @@ def email_sent():
 
 @auth.route('/email_confirmed')
 def email_confirmed():
+    # gets the user who is confirming their email
     user = db.session.query(User).filter_by(email=request.args.get('email')).first()
+    # updates the email confirmed status
     user.email_confirmed_on = datetime.now()
     user.email_confirmed = True
+    # commits the changes to the database
     db.session.commit()
     return render_template('email_confirmed.html', email=request.args.get('email'))
 
