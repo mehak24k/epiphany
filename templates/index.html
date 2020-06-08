@@ -26,7 +26,11 @@
         {{ post.title }}
       </h2>
       <h3 class="subtitle" style="color:black;">
-        {{ post.body }}
+        {% set text_full = post.body %}
+        {% set text = text_full.split('\n') %}
+        {% for para in text %}
+            <p>{{para}}</p>
+        {% endfor %}
       </h3>
     </div>
   </div>
