@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container is-fluid">
+    <div class="notification">
+      <h2 class="title" style="color:black;">
+        {{ post.title }}
+      </h2>
+      <h5 class="subtitle" style="color:lightslategray; font-size: smaller;">posted by: {{ post.user.name }} at {{ post.timestamp.strftime('%x %H:%M') }}</h5>
+      <h3 class="body" style="color:black;">
+        {{ post.body }}
+      </h3>
+    </div>
+</div> 
+
+{% endblock %}

@@ -34,3 +34,13 @@ def create():
             return redirect(url_for('main.index'))
     return render_template('blog/create.html')
 
+@bp.route('/posts/<int:post_id>')
+def get_post(post_id, check_author=True): 
+    # Make sure post exists.
+    post = Post.query.get(post_id)
+        
+    if post is None:
+        flash('Post does not exist. Please try again.')
+        return redirect(url_for('main.index'))
+
+    return render_template("blog/post.html", post=post)
