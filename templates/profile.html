@@ -4,4 +4,17 @@
 <h1 class="title">
   Welcome, {{ name }}!
 </h1>
+<h2>
+  Current points: {{ points }}
+</h2>
+<div>
+  <p>Badges:<br/>
+  {% if points >= 0 %}
+    <img src="{{url_for('static', filename='joined_badge.png')}}" width="500"/>
+  </p>
+  {% endif %}
+  {% if points >= 100 %}
+
+  {% endif %}
+</div>
 {% endblock %}

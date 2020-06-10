@@ -17,15 +17,15 @@ def create():
 
         if not title:
             t_error = 'Title is required.'
-        
-        if not body: 
+
+        if not body:
             b_error = 'Body is required.'
-        
+
         if t_error or b_error is not None:
             if t_error is not None:
-                flash(terror)
+                flash(t_error)
             if b_error is not None:
-                flash(berror)
+                flash(b_error)
 
         else:
             new_post = Post(title=title, body=body, user_id=current_user.id)
@@ -33,4 +33,3 @@ def create():
             db.session.commit()
             return redirect(url_for('main.index'))
     return render_template('blog/create.html')
-

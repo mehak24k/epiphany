@@ -8,6 +8,17 @@
 <h2 class="subtitle">
   A space for collaborative learning
 </h2>
+<div class="field">
+  <div class="control">
+    <h4>Search Bar</h4>
+      <form class="form-inline" method="GET" action="search">
+        <div class="form-group">
+          <input class="input" name="query" type="text" placeholder="Search posts" name="query" id="query">
+        </div>
+        <button type="submit" class="button is-link">Search</button>
+      </form>
+    </div>
+  </div>
 {% for post in posts %}
   <div class="container is-fluid">
     <div class="notification">
@@ -15,14 +26,10 @@
         {{ post.title }}
       </h2>
       <h5 class="subtitle" style="color:lightslategray; font-size: smaller;">posted by: {{ post.user.name }} at {{ post.timestamp.strftime('%x %H:%M') }}</h5>
-      <h3 class="body" style="color:black;">
-        {{ post.body }}
-      </h3>
     </div>
-  </div> 
+  </div>
   {% if not loop.last %}
       <hr>
   {% endif %}
 {% endfor %}
-
 {% endblock %}
