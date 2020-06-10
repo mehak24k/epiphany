@@ -8,7 +8,7 @@ main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
-    posts = db.session.query(Post).join(User).filter(User.id == Post.user_id).all()
+    posts = db.session.query(Post).join(User).filter(User.id == Post.user_id).order_by(Post.timestamp.desc()).all()
     return render_template('index.html', posts=posts)
 
 @main.route('/search')

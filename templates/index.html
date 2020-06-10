@@ -2,6 +2,15 @@
 
 {% block content %}
 
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+  <div class="notification is-danger">
+    <button class="delete"></button>
+    {{ messages[0] }}
+  </div>
+{% endif %}
+{% endwith %}
+
 <h1 class="title">
   Welcome to Epiphany!
 </h1>
@@ -17,13 +26,15 @@
         </div>
         <button type="submit" class="button is-link">Search</button>
       </form>
-    </div>
   </div>
+</div>
 {% for post in posts %}
   <div class="container is-fluid">
     <div class="notification">
       <h2 class="title" style="color:black;">
-        {{ post.title }}
+        <a href="{{ url_for('blog.indiv_post', post_id=post.id) }}" >
+          {{ post.title }}
+        </a>
       </h2>
       <h5 class="subtitle" style="color:lightslategray; font-size: smaller;">posted by: {{ post.user.name }} at {{ post.timestamp.strftime('%x %H:%M') }}</h5>
     </div>
