@@ -27,7 +27,15 @@
   {% endwith %}
   <div class="field is-grouped">
     <div class="control">
-      <button class="button is-link">Submit</button>
+      <button class="button is-link">Save</button>
+    </div>
+  </div>
+</form>
+
+<form action="{{ url_for('blog.delete', post_id=post.id) }}"method="POST">
+  <div class="field is-grouped">
+    <div class="control">
+      <button class="button is-link">Delete</button>
     </div>
   </div>
 </form>
