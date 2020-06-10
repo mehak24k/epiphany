@@ -59,6 +59,7 @@ def indiv_post(post_id):
     return render_template('blog/post.html', post=post[0])
 
 @bp.route('/posts/<int:post_id>/update', methods=['GET', 'POST'])
+@login_required
 def update(post_id):
     result = get_post(post_id)
 
@@ -94,3 +95,14 @@ def update(post_id):
             return redirect(url_for('main.index'))
 
     return render_template('blog/update.html', post=result[0])
+
+@bp.route('/posts/<int:post_id>/delete', methods=['POST'])
+@login_required
+def delete(post_id):
+    post = Post.query.get(post_id)
+    
+    db.session.delete(post)
+    db.session.commit()
+
+    flash("Your post has been deleted.")
+    return redirect(url_for('main.index'))
