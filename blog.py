@@ -34,16 +34,16 @@ def create():
             return redirect(url_for('main.index'))
     return render_template('blog/create.html')
 
-def get_post(post_id, check_author=True): 
+def get_post(post_id, check_author=True):
     post = Post.query.get(post_id)
     string = None
-        
+
     # Make sure post exists.
     if post is None:
         string = "Post does not exist. Please try again."
 
-    # Checking if post user and current user is the same 
-    if check_author and post.user_id != current_user.id: 
+    # Checking if post user and current user is the same
+    if check_author and post.user_id != current_user.id:
         string = "You are not allowed to edit this post."
 
     return post,string
@@ -55,7 +55,7 @@ def indiv_post(post_id):
     if post[1] != None:
         flash(post[1])
         return redirect(url_for('main.index'))
-    
+
     return render_template('blog/post.html', post=post[0])
 
 @bp.route('/posts/<int:post_id>/update', methods=['GET', 'POST'])
@@ -75,10 +75,10 @@ def update(post_id):
 
         if not title:
             t_error = 'Title is required.'
-        
-        if not body: 
+
+        if not body:
             b_error = 'Body is required.'
-        
+
         if t_error or b_error is not None:
             if t_error is not None:
                 flash(t_error)
@@ -86,7 +86,7 @@ def update(post_id):
                 flash(b_error)
 
         else:
-            
+
             new_post = Post.query.get(post_id)
             new_post.title = title
             new_post.body = body
@@ -100,7 +100,6 @@ def update(post_id):
 @login_required
 def delete(post_id):
     post = Post.query.get(post_id)
-    
     db.session.delete(post)
     db.session.commit()
 
