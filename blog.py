@@ -87,7 +87,7 @@ def update(post_id):
 
         else:
 
-            new_post = Post.query.get(post_id)
+            new_post = db.session.query(Post).get(post_id)
             new_post.title = title
             new_post.body = body
             db.session.commit()
@@ -99,7 +99,7 @@ def update(post_id):
 @bp.route('/posts/<int:post_id>/delete', methods=['POST'])
 @login_required
 def delete(post_id):
-    post = Post.query.get(post_id)
+    post = db.session.query(Post).get(post_id)
     db.session.delete(post)
     db.session.commit()
 
