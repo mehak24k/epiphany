@@ -5,9 +5,11 @@ from flask_login import LoginManager
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 from sassutils.wsgi import SassMiddleware
+from flask_cors import CORS
 
 # Configure app
 app = Flask(__name__)
+CORS(app)
 
 app.wsgi_app = SassMiddleware(app.wsgi_app, {
     'epiphany': ('static/sass', 'static/css', '/static/css')
@@ -46,5 +48,3 @@ app.register_blueprint(main_blueprint)
 # blueprint for posting
 from .blog import bp as blog_blueprint
 app.register_blueprint(blog_blueprint)
-
-app.run(debug=True)

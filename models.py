@@ -23,3 +23,13 @@ class Post(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow())
     title = db.Column(db.String, nullable=False)
     body = db.Column(db.String, nullable=False)
+    module_id = db.Column(db.Integer(), db.ForeignKey('modules.id'))
+
+class Module(db.Model):
+    __tablename__="modules"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, unique=True, nullable=False)
+    code = db.Column(db.String, unique=True, nullable=False)
+    # we can access a post's module using this e.g.
+    # my_post.module.name or my_post.module.code
+    posts = db.relationship('Post', backref='module')
