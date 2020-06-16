@@ -20,6 +20,7 @@ class Post extends Component {
   render() {
     const {post} = this.state;
     if (post === null) return <p>Loading ...</p>;
+    var text = post.body
     return (
       <div className="container">
         <div className="row">
@@ -28,7 +29,11 @@ class Post extends Component {
             <p className="lead">{post.title}</p>
             <hr className="my-4" />
             <p>Content:</p>
-              <p className="lead">{post.body}</p>
+              <p className="lead">
+                  {text.split("\n").map((i,key) => {
+                      return <div key={key}>{i}</div>;
+                  })}
+              </p>
           </div>
         </div>
       </div>

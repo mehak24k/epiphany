@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import axios from 'axios';
+import Truncate from 'react-truncate';
 
 class Posts extends Component {
 
@@ -42,10 +43,14 @@ class Posts extends Component {
               <div key={post.id} className="col-sm-12 col-md-4 col-lg-3">
                 <Link to={`/post/${post.id}`}>
                   <div className="card mb-3" style={{backgroundColor: this.getColor(), color: "#161717"}}>
-                    <div className="card-header">Title: {post.title}</div>
-                    <div className="card-body">
-                      <h4 className="card-title">{post.title}</h4>
-                    </div>
+                  <div className="card-body">
+                    <h4 className="card-title">{post.title}</h4>
+                    <p className="card-text" style={{maxLength: "100"}}>
+                    <Truncate lines={3}>
+                        {post.body}
+                    </Truncate>
+                    </p>
+                  </div>
                   </div>
                 </Link>
               </div>
