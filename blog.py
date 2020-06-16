@@ -92,6 +92,7 @@ def update(post_id):
             new_post.body = body
             db.session.commit()
 
+            flash("Your post has been updated.")
             return redirect(url_for('main.index'))
 
     return render_template('blog/update.html', post=result[0])
