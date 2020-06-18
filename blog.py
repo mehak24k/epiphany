@@ -1,7 +1,7 @@
-from flask import Blueprint, flash, g, redirect, render_template, request, url_for
+from flask import Blueprint, flash, g, redirect, render_template, request, url_for, jsonify
 from flask_login import login_required, current_user
 from werkzeug.exceptions import abort
-from .models import User, Post
+from .models import User, Post, Module
 from . import db
 
 bp = Blueprint('blog', __name__)
@@ -56,7 +56,9 @@ def indiv_post(post_id):
         flash(post[1])
         return redirect(url_for('main.index'))
 
-    return render_template('blog/post.html', post=post[0])
+    #return render_template('blog/post.html', post=post[0])
+    json_post = {'id': post[0].id, 'title': post[0].title, 'body': post[0].body}
+    return jsonify({'json_post': json_post})
 
 @bp.route('/posts/<int:post_id>/update', methods=['GET', 'POST'])
 @login_required
@@ -106,3 +108,34 @@ def delete(post_id):
 
     flash("Your post has been deleted.")
     return redirect(url_for('main.index'))
+
+@bp.route('/posts/<int:post_id>/category/<module>', methods=['GET'])
+@login_required
+def category(module, post_id):
+    post = db.session.query(Post).get(post_id)
+    post.module = db.session.query(Module).filter_by(code=module).first()
+    db.session.commit()
+
+    flash("Your post is now under module " + module)
+    return redirect(url_for('main.index'))
+
+@bp.route('/add_module', methods=['POST'])
+def add_module():
+    module_data = request.get_json()
+
+    new_module = Module(name=module_data['name'], code=module_data['code'])
+
+    db.session.add(new_module)
+    db.session.commit()
+
+    return 'Done', 201
+
+@bp.route('/modules')
+def modules():
+    modules_list = Module.query.all()
+    modules = []
+
+    for module in modules_list:
+        modules.append({'name': module.name, 'code': module.code})
+
+    return jsonify({'modules' : modules})
