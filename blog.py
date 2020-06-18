@@ -117,24 +117,3 @@ def category(module, post_id):
 
     flash("Your post is now under module " + module)
     return redirect(url_for('main.index'))
-
-@bp.route('/add_module', methods=['POST'])
-def add_module():
-    module_data = request.get_json()
-
-    new_module = Module(name=module_data['name'], code=module_data['code'])
-
-    db.session.add(new_module)
-    db.session.commit()
-
-    return 'Done', 201
-
-@bp.route('/modules')
-def modules():
-    modules_list = Module.query.all()
-    modules = []
-
-    for module in modules_list:
-        modules.append({'name': module.name, 'code': module.code})
-
-    return jsonify({'modules' : modules})
