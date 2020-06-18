@@ -56,9 +56,7 @@ def indiv_post(post_id):
         flash(post[1])
         return redirect(url_for('main.index'))
 
-    #return render_template('blog/post.html', post=post[0])
-    json_post = {'id': post[0].id, 'title': post[0].title, 'body': post[0].body}
-    return jsonify({'json_post': json_post})
+    return render_template('blog/post.html', post=post[0])
 
 @bp.route('/posts/<int:post_id>/update', methods=['GET', 'POST'])
 @login_required
