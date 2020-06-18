@@ -15,10 +15,21 @@
               <p>{{para}}</p>
           {% endfor %}  
       </h3>
-      {% if current_user.id == post.user.id %}
-        <a href="{{ url_for('blog.update', post_id=post.id) }}">update</a>
-      {% endif %}
     </div>
+    {% if current_user.id == post.user.id %}
+    <div class="field is-grouped is-grouped-right">
+      <p class="control">
+        <form action="{{ post.id }}/update" method="get">
+          <button class="button is-link is-small">Update</button>
+        </form>
+      </p>
+      <p class="control">
+        <form action="{{ post.id }}/delete" method="post">
+          <button class="button is-danger is-small">Delete</button>
+        </form>
+      </p>
+    </div>
+    {% endif %}
 </div> 
 
 {% endblock %}
