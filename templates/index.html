@@ -37,6 +37,9 @@
         </a>
       </h2>
       <h5 class="subtitle" style="color:lightslategray; font-size: smaller;">posted by: {{ post.user.name }} at {{ post.timestamp.strftime('%x %H:%M') }}</h5>
+      {% for tag in post.tags %}
+        <span class="tag is-info"> {{ tag.name }} </span>
+      {% endfor %}
     </div>
   </div>
   {% if not loop.last %}

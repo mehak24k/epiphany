@@ -1,7 +1,7 @@
-from flask import Blueprint, flash, g, redirect, render_template, request, url_for, jsonify
+from flask import Blueprint, flash, g, redirect, render_template, request, url_for, jsonify, json
 from flask_login import login_required, current_user
 from werkzeug.exceptions import abort
-from .models import User, Post, Module
+from .models import User, Post, Category, Tag
 from . import db
 
 bp = Blueprint('blog', __name__)
@@ -9,9 +9,16 @@ bp = Blueprint('blog', __name__)
 @bp.route('/create', methods=['GET', 'POST'])
 @login_required
 def create():
+    tags_list = Tag.query.all()
+    tags = []
+
+    for tag in tags_list:
+        tags.append({'name': tag.name})
+
     if request.method == 'POST':
         title = request.form.get('title')
         body = request.form.get('body')
+        tags = request.form.getlist('tags')
         t_error = None
         b_error = None
 
@@ -29,10 +36,15 @@ def create():
 
         else:
             new_post = Post(title=title, body=body, user_id=current_user.id)
+            #new_post.module = db.session.query(Module).filter_by(code=module).first()
+            for tag in tags:
+                curr_tag = db.session.query(Tag).filter_by(name=tag).first()
+                new_post.tags.append(curr_tag);
+
             db.session.add(new_post)
             db.session.commit()
             return redirect(url_for('main.index'))
-    return render_template('blog/create.html')
+    return render_template('blog/create.html', tags=tags)
 
 def get_post(post_id, check_author=True):
     post = Post.query.get(post_id)
@@ -106,6 +118,7 @@ def delete(post_id):
     flash("Your post has been deleted.")
     return redirect(url_for('main.index'))
 
+'''
 @bp.route('/posts/<int:post_id>/category/<module>', methods=['GET'])
 @login_required
 def category(module, post_id):
@@ -115,3 +128,4 @@ def category(module, post_id):
 
     flash("Your post is now under module " + module)
     return redirect(url_for('main.index'))
+'''

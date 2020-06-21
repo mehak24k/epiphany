@@ -23,13 +23,25 @@ class Post(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow())
     title = db.Column(db.String, nullable=False)
     body = db.Column(db.String, nullable=False)
-    module_id = db.Column(db.Integer(), db.ForeignKey('modules.id'))
+    category_id = db.Column(db.Integer(), db.ForeignKey('categories.id'))
 
-class Module(db.Model):
-    __tablename__="modules"
+class Category(db.Model):
+    __tablename__="categories"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, unique=True, nullable=False)
-    code = db.Column(db.String, unique=True, nullable=False)
     # we can access a post's module using this e.g.
     # my_post.module.name or my_post.module.code
-    posts = db.relationship('Post', backref='module')
+    posts = db.relationship('Post', backref='category')
+
+post_tags = db.Table('post_tags',
+    db.Column('post_id', db.Integer, db.ForeignKey('posts.id')),
+    db.Column('tag_id', db.Integer, db.ForeignKey('tags.id'))
+)
+
+class Tag(db.Model):
+    __tablename__="tags"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, unique=True, nullable=False)
+    # we can access a post's module using this e.g.
+    # my_post.tag
+    posts = db.relationship('Post', secondary=post_tags, backref='tags')

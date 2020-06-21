@@ -6,14 +6,37 @@
   <div class="field">
     <label class="label" for="title">Title</label>
     <div class="control">
-      <input class="input" name="title" type="text" placeholder="Insert title">
+      <input class="input" name="title" type="text" placeholder="Insert title" onkeydown="return event.key != 'Enter';">
     </div>
   </div>
+  <label class="label" for="body">Tag your post!</label>
+  <div id="errors">
+  </div>
+  <div class="tags" id="tags-input">
+  </div>
+  <div class="columns">
+  <div class="column is-half">
+    <input class="input level-left" type="text" placeholder="Text input" id="filter" style="width:50%;" onkeydown="return event.key != 'Enter';">
+    <div class="field">
+    <div class="control">
+      <div class="select is-multiple is-fullwidth" style="width:50%;" id="filter2">
+        <select multiple size="8" id="filter3">
+        </select>
+      </div>
+    </div>
+  </div>
+  </div>
+  <div class="column">
+    <input class="input level-right" type="text" placeholder="Create your own tag!" id="new-tag" style="width:50%;" onkeydown="return event.key != 'Enter';">
+  </div>
+</div>
+  <div class="row">
   <div class="field">
     <label class="label" for="body">Body</label>
     <div class="control">
       <textarea class="textarea" name="body" placeholder="Insert content"></textarea>
     </div>
+  </div>
   </div>
   {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -28,5 +51,122 @@
     </div>
   </div>
 </form>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const my_tag_array = {{ tags | safe }}
+      my_tag_array.forEach(
+        my_tag => {
+          var tag = document.createElement("option");
+          var tag_name = document.createTextNode(my_tag.name);
+          tag.id = my_tag.name;
+          tag.className = "my-tag"
+          tag.appendChild(tag_name);
+          var element = document.getElementById("filter3");
+          element.appendChild(tag);
+        }
+      );
+      document.querySelector('#filter').onkeyup = function() {
+          const string = document.querySelector('#filter').value;
+          my_tag_array.forEach(
+            my_tag => {
+              if (my_tag.name.toLowerCase().includes(string.toLowerCase())) {
+                if (document.getElementById(my_tag.name) === null) {
+                  var tag = document.createElement("option");
+                  var tag_name = document.createTextNode(my_tag.name);
+                  tag.id = my_tag.name;
+                  tag.className = "my-tag"
+                  tag.appendChild(tag_name);
+                  var element = document.getElementById("filter3");
+                  element.appendChild(tag);
+                }
+              } else {
+                if (document.getElementById(my_tag.name) != null) {
+                  document.getElementById(my_tag.name).remove();
+                }
+              }
+            }
+          );
+          document.querySelectorAll('.my-tag').forEach(function(button) {
+              button.onclick = function() {
+                if (document.getElementById(button.id.concat("badge")) != null) {
+                  document.getElementById(button.id.concat("badge")).remove();
+                  document.getElementById(button.id.concat("badgeTag")).remove();
 
+                } else {
+                  var badge = document.createElement("span");
+                  badge.className = "tag is-info is-medium";
+                  badge.id = button.id.concat("badge");
+                  badge.name = "tag";
+                  var badge_name = document.createTextNode(button.id);
+                  badge.appendChild(badge_name);
+                  var parent = document.getElementById("tags-input");
+                  parent.appendChild(badge);
+
+                  var input = document.createElement("input");
+                  input.name = "tags";
+                  input.id = button.id.concat("badgeTag");
+                  input.value = button.id;
+                  input.type = "hidden";
+                  input.onkeydown="return event.key != 'Enter';"
+                  var inputParent = document.getElementById("tags-input");
+                  inputParent.appendChild(input);
+                }
+              };
+          });
+      };
+      document.querySelectorAll('.my-tag').forEach(function(button) {
+          button.onclick = function() {
+            if (document.getElementById(button.id.concat("badge")) != null) {
+              document.getElementById(button.id.concat("badge")).remove();
+              document.getElementById(button.id.concat("badgeTag")).remove();
+
+            } else {
+              var badge = document.createElement("span");
+              badge.className = "tag is-info is-medium";
+              badge.id = button.id.concat("badge");
+              badge.name = "tag";
+              var badge_name = document.createTextNode(button.id);
+              badge.appendChild(badge_name);
+              var parent = document.getElementById("tags-input");
+              parent.appendChild(badge);
+
+              var input = document.createElement("input");
+              input.name = "tags";
+              input.id = button.id.concat("badgeTag");
+              input.value = button.id;
+              input.type = "hidden";
+              input.onkeydown="return event.key != 'Enter';"
+              var inputParent = document.getElementById("tags-input");
+              inputParent.appendChild(input);
+            }
+          };
+      });
+      // Get the input field
+    var input = document.getElementById("new-tag");
+
+    // Execute a function when the user releases a key on the keyboard
+    input.addEventListener("keyup", function(event) {
+      const value = input.value;
+      // Number 13 is the "Enter" key on the keyboard
+      if (event.keyCode === 13) {
+        if (document.getElementById(value.concat("badge")) != null) {
+            document.getElementById("errors").class = "notification is-danger";
+            var error = document.createTextNode("Tag has already been added.");
+            document.getElementById("errors").appendChild(error);
+        } else {
+          var badge = document.createElement("span");
+          badge.className = "tag is-info is-medium";
+          badge.id = value.concat("badge");
+          badge.name = "tag";
+          var badge_name = document.createTextNode(value);
+          badge.appendChild(badge_name);
+          var parent = document.getElementById("tags-input");
+          parent.appendChild(badge);
+          input.value = "";
+        }
+      }
+    });
+
+    });
+</script>
 {% endblock %}
