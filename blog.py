@@ -36,10 +36,15 @@ def create():
 
         else:
             new_post = Post(title=title, body=body, user_id=current_user.id)
-            #new_post.module = db.session.query(Module).filter_by(code=module).first()
+
             for tag in tags:
                 curr_tag = db.session.query(Tag).filter_by(name=tag).first()
-                new_post.tags.append(curr_tag);
+                if curr_tag is None:
+                    new_tag = Tag(name=tag)
+                    db.session.add(new_tag)
+                    new_post.tags.append(new_tag);
+                else:
+                    new_post.tags.append(curr_tag);
 
             db.session.add(new_post)
             db.session.commit()
