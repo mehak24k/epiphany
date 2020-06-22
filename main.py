@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, jsonify, make_response, flash
 from . import db
-from .models import User, Post
+from .models import User, Post, Tag
 from flask_login import login_required, current_user
 from sqlalchemy import func, or_
 from .decorators import crossdomain
@@ -10,8 +10,14 @@ main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
+    tags_list = Tag.query.all()
+    tags = []
+
+    for tag in tags_list:
+        tags.append({'name': tag.name})
+
     posts = db.session.query(Post).join(User).filter(User.id == Post.user_id).order_by(Post.timestamp.desc()).all()
-    return render_template('index.html', posts=posts)
+    return render_template('index.html', posts=posts, tags=tags)
 
 
 @main.route('/search')
