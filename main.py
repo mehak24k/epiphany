@@ -27,6 +27,23 @@ def search():
     posts=db.session.query(Post).filter(or_(title_query, body_query))
     return render_template('index.html', posts=posts)
 
+@main.route('/tagged_search', methods=['GET','POST'])
+def tagged_search():
+    if request.method == 'POST':
+        tags = request.form.getlist('tags')
+        posts = db.session.query(Post).all()
+        final_posts = []
+        for tag in tags:
+            full_tag = db.session.query(Tag).filter_by(name=tag).first()
+            for post in posts:
+                if full_tag in post.tags:
+                    final_posts.append(post)
+                else:
+                    if post in final_posts:
+                        final_posts.remove(post)
+
+    return render_template('index.html', posts=final_posts)
+
 @main.route('/profile')
 @login_required
 def profile():

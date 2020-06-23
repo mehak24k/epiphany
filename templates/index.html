@@ -37,18 +37,17 @@
 <div class="field is-grouped is-grouped-multiline" id="tags-input">
 </div>
 </div>
-<div id="tags-data">
-</div>
+
 
 <div class="field">
   <div class="control">
     <h4>Search With Tags!</h4>
-      <form class="form-inline" method="GET" action="search">
         <div class="form-group">
           <input class="input" name="query" type="text" placeholder="Insert Tags" id="tag-query" autocomplete="off">
         </div>
 
-      </form>
+
+
       <div class="field" id="tag-options" >
       <div class="control">
         <div class="select is-multiple is-fullwidth" style="width:100%;" id="filter2" style="display: none">
@@ -56,11 +55,19 @@
           </select>
         </div>
       </div>
+      <form method="POST" action="/tagged_search">
+        <div class="form-group">
+          <div id="tags-data" name="query2">
+          </div>
+        </div>
+
+
       <div class="field>"
       <p class="control">
       <button type="submit" class="button is-link" onkeydown="return event.key != 'Enter'">Search</button>
       </p>
       </div>
+    </form>
   </div>
 </div>
 
@@ -175,6 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
               input.name = "tags";
               input.id = button.id.concat("badgeTag");
               input.value = button.id;
+              input.class="input";
               input.type = "hidden";
               input.onkeydown="return event.key != 'Enter';"
               var inputParent = document.getElementById("tags-data");
@@ -245,6 +253,7 @@ document.addEventListener('DOMContentLoaded', function() {
           input.name = "tags";
           input.id = button.id.concat("badgeTag");
           input.value = button.id;
+          input.class="input";
           input.type = "hidden";
           input.onkeydown="return event.key != 'Enter';"
           var inputParent = document.getElementById("tags-data");
@@ -309,6 +318,7 @@ document.getElementById("tag-query").addEventListener("keyup", function(event) {
 
       var input = document.createElement("input");
       input.name = "tags";
+      input.class="input";
       input.id = value.concat("badgeTag");
       input.value = value;
       input.type = "hidden";
