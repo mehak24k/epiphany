@@ -37,7 +37,8 @@ def tagged_search():
             full_tag = db.session.query(Tag).filter_by(name=tag).first()
             for post in posts:
                 if full_tag in post.tags:
-                    final_posts.append(post)
+                    if post not in final_posts:
+                        final_posts.append(post)
                 else:
                     if post in final_posts:
                         final_posts.remove(post)
