@@ -55,7 +55,7 @@
           </select>
         </div>
       </div>
-      <form method="POST" action="/tagged_search">
+      <form method="POST" action="/">
         <div class="form-group">
           <div id="tags-data" name="query2">
           </div>
@@ -100,6 +100,59 @@ document.addEventListener('DOMContentLoaded', function() {
     const parent = document.getElementById("errors");
     parent.appendChild(alert);
   }
+
+
+  const added_tags_array = {{ added_tags | safe }}
+
+  added_tags_array.forEach(
+    added_tag => {
+      var control = document.createElement("div");
+      control.className = "control";
+      control.id = added_tag.concat("control");
+      var fullGroup = document.getElementById("tags-input");
+      fullGroup.appendChild(control);
+
+      var fullTag = document.createElement("div");
+      fullTag.className = "tags has-addons";
+      fullTag.id = added_tag.concat("tag-group");
+      var allTagsGroup = document.getElementById(control.id);
+      allTagsGroup.appendChild(fullTag);
+
+      var badge = document.createElement("span");
+      badge.className = "tag is-medium is-link";
+      badge.id = added_tag.concat("badge");
+      badge.name = "tag";
+      var badge_name = document.createTextNode(added_tag);
+      badge.appendChild(badge_name);
+      var parent = document.getElementById(added_tag.concat("tag-group"));
+      parent.appendChild(badge);
+      document.getElementById("tag-query").value = "";
+
+      var deleteButton = document.createElement("a");
+      deleteButton.className = "tag is-delete is-medium";
+      deleteButton.value = added_tag;
+      parent.appendChild(deleteButton);
+
+      var input = document.createElement("input");
+      input.name = "tags";
+      input.class="input";
+      input.id = added_tag.concat("badgeTag");
+      input.value = added_tag;
+      input.type = "hidden";
+      input.onkeydown="return event.key != 'Enter';"
+      var inputParent = document.getElementById("tags-data");
+      inputParent.appendChild(input);
+
+    }
+  )
+  var deletions = document.querySelectorAll("a");
+  deletions.forEach(function(button) {
+    button.onclick = function() {
+      button.parentElement.parentElement.remove();
+      document.getElementById(button.value.concat("badgeTag")).remove();
+    }
+  });
+
   const my_tag_array = {{ tags | safe }}
   document.getElementById('filter2').style.display = "none";
   window.addEventListener('keydown',function(e){if(e.keyIdentifier=='U+000A'||e.keyIdentifier=='Enter'||e.keyCode==13){if(e.target.nodeName=='INPUT'&&e.target.type=='text'){e.preventDefault();return false;}}},true);

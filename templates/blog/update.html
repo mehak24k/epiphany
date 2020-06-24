@@ -15,7 +15,7 @@
   <div class="field">
     <label class="label" for="body">Body</label>
     <div class="control">
-      <textarea class="textarea" name="body">{{ post.body }}</textarea>
+      <textarea class="textarea" type="text" name="body" maxlength = "10000">{{ post.body }}</textarea>
     </div>
   </div>
   {% with messages = get_flashed_messages() %}
