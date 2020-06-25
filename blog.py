@@ -83,10 +83,20 @@ def update(post_id):
     if result[1] != None:
         flash(result[1])
         return redirect(url_for('main.index'))
+    else:
+        tags_list = Tag.query.all()
+        tags = []
+        for tag in tags_list:
+            tags.append({'name': tag.name})
+
+        added_tags = []
+        for tag in result[0].tags:
+            added_tags.append(tag.name)
 
     if request.method == 'POST':
         title = request.form.get('title')
         body = request.form.get('body')
+        tags = request.form.getlist('tags')
         t_error = None
         b_error = None
 
@@ -103,15 +113,23 @@ def update(post_id):
                 flash(b_error)
 
         else:
-
             new_post = db.session.query(Post).get(post_id)
             new_post.title = title
             new_post.body = body
-            db.session.commit()
+            new_post.tags = []
+            for tag in tags:
+                curr_tag = db.session.query(Tag).filter_by(name=tag).first()
+                if curr_tag is None:
+                    new_tag = Tag(name=tag)
+                    db.session.add(new_tag)
+                    new_post.tags.append(new_tag);
+                else:
+                    new_post.tags.append(curr_tag);
 
+            db.session.commit()
             return redirect(url_for('main.index'))
 
-    return render_template('blog/update.html', post=result[0])
+    return render_template('blog/update.html', post=result[0], added_tags=added_tags, tags=tags)
 
 @bp.route('/posts/<int:post_id>/delete', methods=['POST'])
 @login_required
