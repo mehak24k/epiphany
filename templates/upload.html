@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1 class="title">
+<!-- <h1 class="title">
   Welcome, {{ name }}!
 </h1>
 <div>
@@ -24,5 +24,18 @@
             <button type="submit">Submit</button>
         </div>
     </form>
-</div>
+</div> -->
+
+
+<h1>Upload new File</h1>
+<form method=post enctype=multipart/form-data>
+  <div class="field">
+    <label class="label" for="title">Title</label>
+    <div class="control">
+      <input class="input" name="title" type="text" placeholder="Insert title" onkeydown="return event.key != 'Enter';" autocomplete="off">
+    </div>
+  </div>
+  <input type=file name=file>
+  <input type=submit value=Upload>
+</form>
 {% endblock %}

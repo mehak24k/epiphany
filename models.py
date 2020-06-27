@@ -24,6 +24,7 @@ class Post(db.Model):
     title = db.Column(db.String, nullable=False)
     body = db.Column(db.String, nullable=False)
     category_id = db.Column(db.Integer(), db.ForeignKey('categories.id'))
+    is_file = db.Column(db.Boolean, nullable=True, default=False)
 
 class Category(db.Model):
     __tablename__="categories"
