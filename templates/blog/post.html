@@ -13,7 +13,7 @@
       {% endfor %}
       {% if post.is_file %}
       <video width="700" height="500" controls>
-      <source src="{{ post.body }}" type="video/mp4">
+      <source src="{{ url_for('static', filename=post.body) }}" type="video/mp4">
       </video>
       <p>{{post.body}}</p>
       {% endif %}

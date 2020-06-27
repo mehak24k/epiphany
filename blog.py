@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename
 
 bp = Blueprint('blog', __name__)
 
-UPLOAD_FOLDER = '/Users/Mehak/Desktop/epiphany/uploads'
+UPLOAD_FOLDER = '/Users/Mehak/Desktop/epiphany/static'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'mp4', 'mov'}
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -156,6 +156,7 @@ def delete(post_id):
 def upload():
     tags_list = Tag.query.all()
     tags = []
+    added_tags = []
 
     for tag in tags_list:
         tags.append({'name': tag.name})
@@ -164,20 +165,20 @@ def upload():
         # check if the post request has the file part
         if 'file' not in request.files:
             flash('No file part')
-            return redirect(request.url)
+            #return redirect(request.url)
         file = request.files['file']
         # if user does not select file, browser also
         # submit an empty part without filename
         if file.filename == '':
             flash('No selected file')
-            return redirect(request.url)
+            #return redirect(request.url)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
             title = request.form.get('title')
             # set body to path of file, so we can obtain it later to display
-            body = os.path.join("../../uploads", filename)
+            body = filename
             tags = request.form.getlist('tags')
             t_error = None
 
@@ -202,23 +203,8 @@ def upload():
                 db.session.add(new_post)
                 db.session.commit()
 
-                flash(body)
-
-            return redirect(url_for('main.index'))
-    return render_template('upload.html')
-
-@bp.route('/uploader', methods = ['GET', 'POST'])
-def upload_file():
-   if request.method == 'POST':
-      f = request.files['file']
-      #f.save(secure_filename(f.filename))
-      f.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f.filename)))
-      return 'file uploaded successfully'
-
-@bp.route('/uploads/<filename>')
-def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'],
-                               filename)
+                return redirect(url_for('main.index'))
+    return render_template('upload.html', added_tags=added_tags, tags=tags)
 
 '''
 @bp.route('/posts/<int:post_id>/category/<module>', methods=['GET'])

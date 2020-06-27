@@ -77,9 +77,8 @@
 </div>
 
 <video width="700" height="500" controls>
-<source src="../uploads/My_Movie_3.mp4" type="video/mp4">
+<source src="{{ url_for('static', filename='My_Movie_3.mp4') }}" type="video/mp4">
 </video>
-<hr>
 
 {% for post in posts %}
   <div class="container is-fluid">
