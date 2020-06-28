@@ -1,7 +1,7 @@
 from flask import Blueprint, flash, g, redirect, render_template, request, url_for, jsonify
 from flask_login import login_required, current_user
 from werkzeug.exceptions import abort
-from .models import User, Post, Module
+from .models import User, Post, Module, Comment
 from . import db
 
 bp = Blueprint('blog', __name__)
@@ -34,6 +34,7 @@ def create():
             return redirect(url_for('main.index'))
     return render_template('blog/create.html')
 
+# method that gets a particular post and any error messages
 def get_post(post_id, check_author=True):
     post = Post.query.get(post_id)
     string = None
@@ -48,15 +49,23 @@ def get_post(post_id, check_author=True):
 
     return post,string
 
+# method that gets all the comments in a post
+def get_comments(post_id):
+    comments = db.session.query(Comment).filter_by(post_id=post_id).order_by(Comment.timestamp.desc(), Comment.path.asc()).all()
+    return comments 
+
 @bp.route('/posts/<int:post_id>')
 def indiv_post(post_id):
     post = get_post(post_id, False)
 
+    # case where there is an error in accessing the post
     if post[1] != None:
         flash(post[1])
         return redirect(url_for('main.index'))
 
-    return render_template('blog/post.html', post=post[0])
+    comments = get_comments(post_id)
+
+    return render_template('blog/post.html', post=post[0], comments=comments)
 
 @bp.route('/posts/<int:post_id>/update', methods=['GET', 'POST'])
 @login_required
@@ -95,7 +104,9 @@ def update(post_id):
             flash("Your post has been updated.")
             return redirect(url_for('main.index'))
 
-    return render_template('blog/update.html', post=result[0])
+    comments = get_comments(post_id)
+
+    return render_template('blog/update.html', post=result[0], comments=comments)
 
 @bp.route('/posts/<int:post_id>/delete', methods=['POST'])
 @login_required
@@ -116,3 +127,11 @@ def category(module, post_id):
 
     flash("Your post is now under module " + module)
     return redirect(url_for('main.index'))
+
+@bp.route('/posts/<int:post_id>/comment', methods=['POST'])
+@login_required
+def comment(post_id): 
+    comment = request.form.get('comment')
+    new_comment = Comment(text=comment, user_id=current_user.id, post_id=post_id)
+    new_comment.save()
+    return redirect(url_for('blog.indiv_post', post_id=post_id))
