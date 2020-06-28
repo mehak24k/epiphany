@@ -9,13 +9,13 @@
       </h2>
       <h5 class="subtitle" style="color:lightslategray; font-size: smaller;">posted by: {{ post.user.name }} at {{ post.timestamp.strftime('%x %H:%M') }}</h5>
       {% for tag in post.tags %}
-        <h5 class="subtitle" style="color:lightslategray; font-size: smaller;">tags: {{ tag.name }} </h5>
+        <span class="tag is-info"> {{ tag.name }} </span>
       {% endfor %}
+      <hr>
       {% if post.is_file %}
       <video width="700" height="500" controls>
       <source src="{{ url_for('static', filename=post.body) }}" type="video/mp4">
       </video>
-      <p>{{post.body}}</p>
       {% endif %}
       {% if not post.is_file %}
       <h3 class="body" style="color:black;">
