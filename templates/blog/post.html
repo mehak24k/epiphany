@@ -15,7 +15,7 @@
           {% set text = text_full.split('\n') %}
           {% for para in text %}
               <p>{{para}}</p>
-          {% endfor %}  
+          {% endfor %}
       </h3>
     </div>
     {% if current_user.id == post.user.id %}
@@ -32,8 +32,8 @@
       </p>
     </div>
     {% endif %}
-</div> 
-<hr> 
+</div>
+<hr>
 
 <form action="{{ post.id }}/comment" method="POST">
   <div class="field">
@@ -64,9 +64,9 @@
               {% set text = text_full.split('\n') %}
               {% for para in text %}
                   <p>{{para}}</p>
-              {% endfor %}  
+              {% endfor %}
               <small>
-                <a onclick="refs.modalEdicion.open()">
+                <a onclick="refs.modalEdicion.open({{comment.id}})">
                   <span>Reply</span>
                 </a> · {{ comment.timestamp.strftime('%x %H:%M') }}
               </small>
@@ -87,9 +87,9 @@
               {% set text = text_full.split('\n') %}
               {% for para in text %}
                   <p>{{para}}</p>
-              {% endfor %}  
+              {% endfor %}
               <small>
-                <a onclick="refs.modalEdicion.open()">
+                <a onclick="refs.modalEdicion.open({{comment.id}})">
                   <span>Reply</span>
                 </a> · {{ comment.timestamp.strftime('%x %H:%M') }}
               </small>
@@ -110,9 +110,9 @@
               {% set text = text_full.split('\n') %}
               {% for para in text %}
                   <p>{{para}}</p>
-              {% endfor %}  
+              {% endfor %}
               <small>
-                <a onclick="refs.modalEdicion.open()">
+                <a onclick="refs.modalEdicion.open({{comment.id}})">
                   <span>Reply</span>
                 </a> · {{ comment.timestamp.strftime('%x %H:%M') }}
               </small>
@@ -127,7 +127,7 @@
 
 <!--original modal that doesn't have a script now!!-->
 {% for comment in comments %}
-  <div class="modal" id="modalEdicion">
+  <div class="modal" id="{{ comment.id }}">
     <div onclick="refs.modalEdicion.close()" class="modal-background"></div>
     <div class="modal-content">
       <div class="field">
@@ -137,42 +137,20 @@
       </div>
       <button class="button is-success is-pulled-right">Reply</button>
     </div>
-    <button class="modal-close is-large" aria-label="close" onclick="refs.modalEdicion.close()"></button>
+    <button class="modal-close is-large" aria-label="close" onclick="refs.modalEdicion.close({{comment.id}})"></button>
   </div>
 
 {% endfor %}
 
-<!-- test modal 
-<button class="button is-primary modal-button" data-target="#myModal" aria-haspopup="true">Launch example modal</button>
-
-<div class="modal" id="myModal">
-  <div class="modal-background"></div>
-  <div class="modal-content">
-    <div class="box">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean efficitur sit amet massa fringilla egestas. Nullam condimentum luctus turpis.        </div>
-  </div>
-  <button class="modal-close is-large" aria-label="close"></button>
-</div>
-
 <script>
+  var refs = {
+  modalEdicion: {
+    open: function(x) { document.getElementById(x).classList.add('is-active');
+    },
+    close:function(x) { document.getElementById(x).classList.remove('is-active');
 
-document.querySelectorAll('.modal-button').forEach(function(el) {
-  el.addEventListener('click', function() {
-    var target = document.querySelector(el.getAttribute('data-target'));
-    
-    target.classList.add('is-active');
-    
-    target.querySelector('.modal-close').addEventListener('click', function() {
-      target.classList.remove('is-active');
-     });
-
-    target.querySelector('.modal-background').addEventListener('click', function() {
-      target.classList.remove('is-active');
-    })
-  });
-});
-
-
+    }
+  }
+};
 </script>
---> 
-
 {% endblock %}
