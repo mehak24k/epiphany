@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
+
 {% block content %}
+
 
 <div class="container is-fluid">
     <div class="notification">
@@ -27,6 +29,139 @@
       </h3>
       {% endif %}
     </div>
+    {% if current_user.id == post.user.id %}
+    <div class="field is-grouped is-grouped-right">
+      <p class="control">
+        <form action="{{ post.id }}/update" method="get">
+          <button class="button is-link is-small">Update</button>
+        </form>
+      </p>
+      <p class="control">
+        <form action="{{ post.id }}/delete" method="post">
+          <button class="button is-danger is-small">Delete</button>
+        </form>
+      </p>
+    </div>
+    {% endif %}
 </div>
+<hr>
 
+<form action="{{ post.id }}/comment" method="POST">
+  <div class="field">
+    <textarea class="textarea" name="comment" placeholder="Start discussion here!" required></textarea>
+  </div>
+  <div class="field is-grouped is-grouped-right">
+    <p class="control">
+      <button class="button is-link">
+        Comment
+      </button>
+    </p>
+  </div>
+</form>
+
+<br>
+
+{% for comment in comments %}
+
+  {% if comment.level() == 1 %}
+    <div class="box">
+      <article class="media">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <strong>{{ comment.user.name }}</strong>
+              <br>
+              {% set text_full = comment.text %}
+              {% set text = text_full.split('\n') %}
+              {% for para in text %}
+                  <p>{{para}}</p>
+              {% endfor %}
+              <small>
+                <a onclick="refs.modalEdicion.open({{comment.id}})">
+                  <span>Reply</span>
+                </a> · {{ comment.timestamp.strftime('%x %H:%M') }}
+              </small>
+            </p>
+          </div>
+        </div>
+      </article>
+    </div>
+  {% elif comment.level() == 2 %}
+    <div class="box">
+      <article class="media">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <strong>{{ comment.user.name }}</strong>
+              <br>
+              {% set text_full = comment.text %}
+              {% set text = text_full.split('\n') %}
+              {% for para in text %}
+                  <p>{{para}}</p>
+              {% endfor %}
+              <small>
+                <a onclick="refs.modalEdicion.open({{comment.id}})">
+                  <span>Reply</span>
+                </a> · {{ comment.timestamp.strftime('%x %H:%M') }}
+              </small>
+            </p>
+          </div>
+        </div>
+      </article>
+    </div>
+  {% else %}
+    <div class="box">
+      <article class="media">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <strong>{{ comment.user.name }}</strong>
+              <br>
+              {% set text_full = comment.text %}
+              {% set text = text_full.split('\n') %}
+              {% for para in text %}
+                  <p>{{para}}</p>
+              {% endfor %}
+              <small>
+                <a onclick="refs.modalEdicion.open({{comment.id}})">
+                  <span>Reply</span>
+                </a> · {{ comment.timestamp.strftime('%x %H:%M') }}
+              </small>
+            </p>
+          </div>
+        </div>
+      </article>
+    </div>
+  {% endif %}
+
+{% endfor %}
+
+<!--original modal that doesn't have a script now!!-->
+{% for comment in comments %}
+  <div class="modal" id="{{ comment.id }}">
+    <div onclick="refs.modalEdicion.close()" class="modal-background"></div>
+    <div class="modal-content">
+      <div class="field">
+        <div class="control">
+          <textarea class="textarea" name="body" placeholder="Reply to comment {{ comment.id }}"></textarea>
+        </div>
+      </div>
+      <button class="button is-success is-pulled-right">Reply</button>
+    </div>
+    <button class="modal-close is-large" aria-label="close" onclick="refs.modalEdicion.close({{comment.id}})"></button>
+  </div>
+
+{% endfor %}
+
+<script>
+  var refs = {
+  modalEdicion: {
+    open: function(x) { document.getElementById(x).classList.add('is-active');
+    },
+    close:function(x) { document.getElementById(x).classList.remove('is-active');
+
+    }
+  }
+};
+</script>
 {% endblock %}

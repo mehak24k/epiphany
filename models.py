@@ -15,16 +15,18 @@ class User(UserMixin, db.Model):
     email_confirmed = db.Column(db.Boolean, nullable=True, default=False)
     email_confirmed_on = db.Column(db.DateTime, nullable=True)
     points = db.Column(db.Integer, default=0)
+    comments = db.relationship("Comment", backref="user", lazy=True)
 
 class Post(db.Model):
     __tablename__="posts"
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users2.id'), nullable=False)
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow())
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     title = db.Column(db.String, nullable=False)
     body = db.Column(db.String, nullable=False)
     category_id = db.Column(db.Integer(), db.ForeignKey('categories.id'))
     is_file = db.Column(db.Boolean, nullable=True, default=False)
+    comments = db.relationship("Comment", backref="post", lazy=True)
 
 class Category(db.Model):
     __tablename__="categories"
@@ -46,3 +48,26 @@ class Tag(db.Model):
     # we can access a post's module using this e.g.
     # my_post.tag
     posts = db.relationship('Post', secondary=post_tags, backref='tags')
+
+class Comment(db.Model):
+    _N = 6
+    __tablename__="comments"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users2.id'), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), nullable=False)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    text = db.Column(db.String, nullable=False)
+    # for threaded comments
+    path = db.Column(db.Text, index=True)
+    parent_id = db.Column(db.Integer, db.ForeignKey("comments.id"))
+    replies = db.relationship("Comment", backref="parent", remote_side=id, lazy=True)
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        prefix = self.parent.path + '.' if self.parent else ''
+        self.path = prefix + '{:0{}d}'.format(self.id, self._N)
+        db.session.commit()
+
+    def level(self):
+        return len(self.path) // (self._N - 1)
