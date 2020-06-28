@@ -40,8 +40,8 @@ class Comment(db.Model):
     _N = 6
     __tablename__="comments"
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users2.id'), nullable=False)
-    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users2.id"), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey("posts.id"), nullable=False)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     text = db.Column(db.String, nullable=False)
     # for threaded comments 

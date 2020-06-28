@@ -15,7 +15,7 @@
           {% set text = text_full.split('\n') %}
           {% for para in text %}
               <p>{{para}}</p>
-          {% endfor %}  
+          {% endfor %}
       </h3>
     </div>
     {% if current_user.id == post.user.id %}
@@ -32,8 +32,8 @@
       </p>
     </div>
     {% endif %}
-</div> 
-<hr> 
+</div>
+<hr>
 
 <form action="{{ post.id }}/comment" method="POST">
   <div class="field">
@@ -64,11 +64,11 @@
               {% set text = text_full.split('\n') %}
               {% for para in text %}
                   <p>{{para}}</p>
-              {% endfor %}  
+              {% endfor %}
               <small>
-                <a id="modal-button" data-target="#myModal{{ comment.id }}">
+                <a onclick="refs.modalEdicion.open( {{comment.id}} )">
                   <span>Reply</span>
-                </a> · {{ comment.timestamp.strftime('%x %H:%M') }}
+                </a> · {{ comment.timestamp.strftime('%x %H:%M') }} {{ comment.path }}
               </small>
             </p>
           </div>
@@ -87,11 +87,11 @@
               {% set text = text_full.split('\n') %}
               {% for para in text %}
                   <p>{{para}}</p>
-              {% endfor %}  
+              {% endfor %}
               <small>
-                <a id="modal-button" data-target="#myModal{{ comment.id }}">
+                <a onclick="refs.modalEdicion.open( {{comment.id}} )">
                   <span>Reply</span>
-                </a> · {{ comment.timestamp.strftime('%x %H:%M') }}
+                </a> · {{ comment.timestamp.strftime('%x %H:%M') }} {{ comment.path }}
               </small>
             </p>
           </div>
@@ -110,11 +110,11 @@
               {% set text = text_full.split('\n') %}
               {% for para in text %}
                   <p>{{para}}</p>
-              {% endfor %}  
+              {% endfor %}
               <small>
-                <a id="modal-button" data-target="#myModal{{ comment.id }}">
+                <a onclick="refs.modalEdicion.open( {{comment.id}} )">
                   <span>Reply</span>
-                </a> · {{ comment.timestamp.strftime('%x %H:%M') }}
+                </a> · {{ comment.timestamp.strftime('%x %H:%M') }} {{ comment.path }}
               </small>
             </p>
           </div>
@@ -127,30 +127,34 @@
 
 <!--Modal-->
 {% for comment in comments %}
-
-<div class="modal" id="{{ comment.id }}">
-  <div onclick="refs.modalEdicion.close()" class="modal-background"></div>
-  <div class="modal-content">
-    <div class="field">
+<form id="form" method="POST" action="{{ post.id }}/{{ comment.id }}/reply">
+  <div class="modal" id="{{ comment.id }}">
+    <div onclick="refs.modalEdicion.close({{ comment.id }})" class="modal-background"></div>
+      <div class="modal-content">
+        <div class="field">
+          <div class="control">
+            <textarea class="textarea" name="reply" placeholder="Reply to comment by {{ comment.user.name }}"></textarea>
+          </div>
+        </div>
+      </div>
+    <br>
+    <div class="field is-grouped is-grouped-right">
       <div class="control">
-        <textarea class="textarea" name="body" placeholder="Reply to comment {{ comment.id }}"></textarea>
+        <button class="button is-link">Submit</button>
       </div>
     </div>
-    <button class="button is-success is-pulled-right">Reply</button>
+    <button class="modal-close is-large" aria-label="close" onclick="refs.modalEdicion.close({{ comment.id }})"></button>
   </div>
-  <button class="modal-close is-large" aria-label="close" onclick="refs.modalEdicion.close({{ comment.id }})"></button>
-</div>
+</form>
 
 {% endfor %}
 
 <script>
-
-var refs = {
+  var refs = {
   modalEdicion: {
     open: function(x) { document.getElementById(x).classList.add('is-active');
     },
     close:function(x) { document.getElementById(x).classList.remove('is-active');
-
     }
   }
 };

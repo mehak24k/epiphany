@@ -135,3 +135,12 @@ def comment(post_id):
     new_comment = Comment(text=comment, user_id=current_user.id, post_id=post_id)
     new_comment.save()
     return redirect(url_for('blog.indiv_post', post_id=post_id))
+
+@bp.route('/posts/<int:post_id>/<int:comment_id>/reply', methods=['POST'])
+@login_required
+def reply(post_id, comment_id): 
+    reply = request.form.get('reply')
+    new_comment = Comment(text=reply, user_id=current_user.id, post_id=post_id)
+    new_comment.save()
+    flash("type of comment id is" + str(type(comment_id)))
+    return redirect(url_for('main.index'))
