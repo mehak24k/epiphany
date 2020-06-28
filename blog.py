@@ -1,10 +1,21 @@
-from flask import Blueprint, flash, g, redirect, render_template, request, url_for, jsonify, json
+from flask import Blueprint, flash, g, redirect, render_template, request, url_for, jsonify, json, send_from_directory
 from flask_login import login_required, current_user
 from werkzeug.exceptions import abort
 from .models import User, Post, Category, Tag
-from . import db
+from . import db, app
+import os
+from werkzeug.utils import secure_filename
 
 bp = Blueprint('blog', __name__)
+
+UPLOAD_FOLDER = '/Users/Mehak/Desktop/epiphany/static'
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'mp4', 'mov'}
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @bp.route('/create', methods=['GET', 'POST'])
 @login_required
@@ -36,10 +47,15 @@ def create():
 
         else:
             new_post = Post(title=title, body=body, user_id=current_user.id)
-            #new_post.module = db.session.query(Module).filter_by(code=module).first()
+
             for tag in tags:
                 curr_tag = db.session.query(Tag).filter_by(name=tag).first()
-                new_post.tags.append(curr_tag);
+                if curr_tag is None:
+                    new_tag = Tag(name=tag)
+                    db.session.add(new_tag)
+                    new_post.tags.append(new_tag);
+                else:
+                    new_post.tags.append(curr_tag);
 
             db.session.add(new_post)
             db.session.commit()
@@ -78,10 +94,20 @@ def update(post_id):
     if result[1] != None:
         flash(result[1])
         return redirect(url_for('main.index'))
+    else:
+        tags_list = Tag.query.all()
+        tags = []
+        for tag in tags_list:
+            tags.append({'name': tag.name})
+
+        added_tags = []
+        for tag in result[0].tags:
+            added_tags.append(tag.name)
 
     if request.method == 'POST':
         title = request.form.get('title')
         body = request.form.get('body')
+        tags = request.form.getlist('tags')
         t_error = None
         b_error = None
 
@@ -98,15 +124,23 @@ def update(post_id):
                 flash(b_error)
 
         else:
-
             new_post = db.session.query(Post).get(post_id)
             new_post.title = title
             new_post.body = body
-            db.session.commit()
+            new_post.tags = []
+            for tag in tags:
+                curr_tag = db.session.query(Tag).filter_by(name=tag).first()
+                if curr_tag is None:
+                    new_tag = Tag(name=tag)
+                    db.session.add(new_tag)
+                    new_post.tags.append(new_tag);
+                else:
+                    new_post.tags.append(curr_tag);
 
+            db.session.commit()
             return redirect(url_for('main.index'))
 
-    return render_template('blog/update.html', post=result[0])
+    return render_template('blog/update.html', post=result[0], added_tags=added_tags, tags=tags)
 
 @bp.route('/posts/<int:post_id>/delete', methods=['POST'])
 @login_required
@@ -117,6 +151,60 @@ def delete(post_id):
 
     flash("Your post has been deleted.")
     return redirect(url_for('main.index'))
+
+@bp.route('/upload', methods=['GET', 'POST'])
+def upload():
+    tags_list = Tag.query.all()
+    tags = []
+    added_tags = []
+
+    for tag in tags_list:
+        tags.append({'name': tag.name})
+
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            #return redirect(request.url)
+        file = request.files['file']
+        # if user does not select file, browser also
+        # submit an empty part without filename
+        if file.filename == '':
+            flash('No selected file')
+            #return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+            title = request.form.get('title')
+            # set body to path of file, so we can obtain it later to display
+            body = filename
+            tags = request.form.getlist('tags')
+            t_error = None
+
+            if not title:
+                t_error = 'Title is required.'
+
+            if t_error is not None:
+                flash(t_error)
+
+            else:
+                new_post = Post(title=title, body=body, user_id=current_user.id, is_file=True)
+
+                for tag in tags:
+                    curr_tag = db.session.query(Tag).filter_by(name=tag).first()
+                    if curr_tag is None:
+                        new_tag = Tag(name=tag)
+                        db.session.add(new_tag)
+                        new_post.tags.append(new_tag);
+                    else:
+                        new_post.tags.append(curr_tag);
+
+                db.session.add(new_post)
+                db.session.commit()
+
+                return redirect(url_for('main.index'))
+    return render_template('upload.html', added_tags=added_tags, tags=tags)
 
 '''
 @bp.route('/posts/<int:post_id>/category/<module>', methods=['GET'])

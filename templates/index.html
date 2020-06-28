@@ -21,13 +21,59 @@
   <div class="control">
     <h4>Search Bar</h4>
       <form class="form-inline" method="GET" action="search">
-        <div class="form-group">
-          <input class="input" name="query" type="text" placeholder="Search posts" name="query" id="query">
+        <div class="field">
+          <div class="control">
+          <input class="input" name="query" type="text" placeholder="Search posts" name="query" id="query" autocomplete="off">
         </div>
-        <button type="submit" class="button is-link">Search</button>
+        </div>
+        <div class="control">
+        <button type="submit" class="button is-link" onkeydown="return event.key != 'Enter'">Search</button>
+        </div>
+
       </form>
   </div>
 </div>
+<div id="errors">
+</div>
+<h4 class="level-left">Added Tags:</h4>
+<div class="box">
+<div class="field is-grouped is-grouped-multiline" id="tags-input">
+</div>
+</div>
+
+<div class="field">
+  <div class="control">
+    <h4>Search With Tags!</h4>
+        <div class="form-group">
+          <input class="input" name="query" type="text" placeholder="Insert Tags" id="tag-query" autocomplete="off">
+
+      <div id="tag-options" >
+        <div class="select is-multiple is-fullwidth" style="width:100%;" id="filter2" style="display: none">
+          <select multiple id="filter3" type="hidden">
+          </select>
+        </div>
+
+      <form method="POST" action="/">
+        <div class="form-group">
+          <div id="tags-data" name="query2">
+          </div>
+        </div>
+
+      <div class="field>"
+      <p class="control">
+      <button type="submit" class="button is-link" onkeydown="return event.key != 'Enter'">Search</button>
+      </p>
+      </div>
+    </form>
+  </div>
+</div>
+</div>
+</div>
+
+<video width="700" height="500" controls>
+<source src="{{ url_for('static', filename='My_Movie_3.mp4') }}" type="video/mp4">
+</video>
+
 {% for post in posts %}
   <div class="container is-fluid">
     <div class="notification">
@@ -46,4 +92,306 @@
       <hr>
   {% endif %}
 {% endfor %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  function alerts (message) {
+    var alert = document.createElement("div");
+    var alertContent = document.createTextNode(message);
+    alert.className = "notification is-danger";
+    alert.id = message;
+    alert.appendChild(alertContent);
+    const parent = document.getElementById("errors");
+    parent.appendChild(alert);
+  }
+
+
+  const added_tags_array = {{ added_tags | safe }}
+
+  added_tags_array.forEach(
+    added_tag => {
+      var control = document.createElement("div");
+      control.className = "control";
+      control.id = added_tag.concat("control");
+      var fullGroup = document.getElementById("tags-input");
+      fullGroup.appendChild(control);
+
+      var fullTag = document.createElement("div");
+      fullTag.className = "tags has-addons";
+      fullTag.id = added_tag.concat("tag-group");
+      var allTagsGroup = document.getElementById(control.id);
+      allTagsGroup.appendChild(fullTag);
+
+      var badge = document.createElement("span");
+      badge.className = "tag is-medium is-link";
+      badge.id = added_tag.concat("badge");
+      badge.name = "tag";
+      var badge_name = document.createTextNode(added_tag);
+      badge.appendChild(badge_name);
+      var parent = document.getElementById(added_tag.concat("tag-group"));
+      parent.appendChild(badge);
+      document.getElementById("tag-query").value = "";
+
+      var deleteButton = document.createElement("a");
+      deleteButton.className = "tag is-delete is-medium";
+      deleteButton.value = added_tag;
+      parent.appendChild(deleteButton);
+
+      var input = document.createElement("input");
+      input.name = "tags";
+      input.class="input";
+      input.id = added_tag.concat("badgeTag");
+      input.value = added_tag;
+      input.type = "hidden";
+      input.onkeydown="return event.key != 'Enter';"
+      var inputParent = document.getElementById("tags-data");
+      inputParent.appendChild(input);
+
+    }
+  )
+  var deletions = document.querySelectorAll("a");
+  deletions.forEach(function(button) {
+    button.onclick = function() {
+      button.parentElement.parentElement.remove();
+      document.getElementById(button.value.concat("badgeTag")).remove();
+    }
+  });
+
+  const my_tag_array = {{ tags | safe }}
+  document.getElementById('filter2').style.display = "none";
+  window.addEventListener('keydown',function(e){if(e.keyIdentifier=='U+000A'||e.keyIdentifier=='Enter'||e.keyCode==13){if(e.target.nodeName=='INPUT'&&e.target.type=='text'){e.preventDefault();return false;}}},true);
+  document.querySelector('#tag-query').onkeyup = function() {
+    document.getElementById('filter2').style.display = "inline";
+    // updating select items list
+      const string = document.querySelector('#tag-query').value;
+      my_tag_array.forEach(
+        my_tag => {
+          if (my_tag.name.toLowerCase().includes(string.toLowerCase())) {
+            if (document.getElementById(my_tag.name) === null) {
+              var tag = document.createElement("option");
+              var tag_name = document.createTextNode(my_tag.name);
+              tag.id = my_tag.name;
+              tag.className = "my-tag"
+              tag.appendChild(tag_name);
+              var element = document.getElementById("filter3");
+              element.appendChild(tag);
+            }
+          } else {
+            if (document.getElementById(my_tag.name) != null) {
+              document.getElementById(my_tag.name).remove();
+            }
+          }
+        }
+      );
+      // creating the tag
+
+      document.querySelectorAll('.my-tag').forEach(function(button) {
+          button.onclick = function() {
+            const message = "Tag has already been added."
+            const message2 = "Tag already exists. Please select the tag from the list."
+            // removing the tag if it exists
+            if (document.getElementById(button.id.concat("badge")) != null) {
+              if (document.getElementById(message2) != null) {
+                document.getElementById(message2).remove();
+              }
+              if (document.getElementById(message) === null) {
+                alerts(message);
+              }
+            } else {
+              if (document.getElementById(message) != null) {
+                //document.getElementById(message).style.display = "none";
+                document.getElementById(message).remove();
+              }
+              if (document.getElementById(message2) != null) {
+                document.getElementById(message2).remove();
+              }
+              // creating the tag
+              var value = button.id;
+
+              var control = document.createElement("div");
+              control.className = "control";
+              control.id = value.concat("control");
+              var fullGroup = document.getElementById("tags-input");
+              fullGroup.appendChild(control);
+
+              var fullTag = document.createElement("div");
+              fullTag.className = "tags has-addons";
+              fullTag.id = value.concat("tag-group");
+              var allTagsGroup = document.getElementById(control.id);
+              allTagsGroup.appendChild(fullTag);
+
+              var badge = document.createElement("span");
+              badge.className = "tag is-medium is-link";
+              badge.id = value.concat("badge");
+              badge.name = "tag";
+              var badge_name = document.createTextNode(value);
+              badge.appendChild(badge_name);
+              var parent = document.getElementById(value.concat("tag-group"));
+              parent.appendChild(badge);
+
+              var deleteButton = document.createElement("a");
+              deleteButton.className = "tag is-delete is-medium";
+              deleteButton.value = button.id;
+              parent.appendChild(deleteButton);
+
+
+              var input = document.createElement("input");
+              input.name = "tags";
+              input.id = button.id.concat("badgeTag");
+              input.value = button.id;
+              input.class="input";
+              input.type = "hidden";
+              input.onkeydown="return event.key != 'Enter';"
+              var inputParent = document.getElementById("tags-data");
+              inputParent.appendChild(input);
+
+            }
+            var deletions = document.querySelectorAll("a");
+            deletions.forEach(function(button) {
+              button.onclick = function() {
+                button.parentElement.parentElement.remove();
+                document.getElementById(button.value.concat("badgeTag")).remove();
+              }
+            });
+          };
+      });
+  };
+  // creating tag, repeated code
+  document.querySelectorAll('.my-tag').forEach(function(button) {
+      button.onclick = function() {
+        const message = "Tag has already been added."
+        const message2 = "Tag already exists. Please select the tag from the list."
+        if (document.getElementById(button.id.concat("badge")) != null) {
+          if (document.getElementById(message2) != null) {
+            document.getElementById(message2).remove();
+          }
+          const message = "Tag has already been added."
+          if (document.getElementById(message) === null) {
+            alerts(message);
+          }
+        } else {
+          if (document.getElementById(message) != null) {
+            //document.getElementById(message).style.display = "none";
+            document.getElementById(message).remove();
+          }
+          if (document.getElementById(message2) != null) {
+            document.getElementById(message2).remove();
+          }
+          var value = button.id;
+
+          var control = document.createElement("div");
+          control.className = "control";
+          control.id = value.concat("control");
+          var fullGroup = document.getElementById("tags-input");
+          fullGroup.appendChild(control);
+
+          var fullTag = document.createElement("div");
+          fullTag.className = "tags has-addons";
+          fullTag.id = value.concat("tag-group");
+          var allTagsGroup = document.getElementById(control.id);
+          allTagsGroup.appendChild(fullTag);
+
+          var badge = document.createElement("span");
+          badge.className = "tag is-medium is-link";
+          badge.id = value.concat("badge");
+          badge.name = "tag";
+          var badge_name = document.createTextNode(value);
+          badge.appendChild(badge_name);
+          var parent = document.getElementById(value.concat("tag-group"));
+          parent.appendChild(badge);
+
+          var deleteButton = document.createElement("a");
+          deleteButton.className = "tag is-delete is-medium";
+          deleteButton.value = button.id;
+          parent.appendChild(deleteButton);
+
+
+          var input = document.createElement("input");
+          input.name = "tags";
+          input.id = button.id.concat("badgeTag");
+          input.value = button.id;
+          input.class="input";
+          input.type = "hidden";
+          input.onkeydown="return event.key != 'Enter';"
+          var inputParent = document.getElementById("tags-data");
+          inputParent.appendChild(input);
+
+        }
+        var deletions = document.querySelectorAll("a");
+        deletions.forEach(function(button) {
+          button.onclick = function() {
+            button.parentElement.parentElement.remove();
+            document.getElementById(button.value.concat("badgeTag")).remove();
+          }
+        });
+      };
+  });
+
+// Execute a function when the user releases a key on the keyboard
+document.getElementById("tag-query").addEventListener("keyup", function(event) {
+  const value = document.getElementById("tag-query").value;
+  document.getElementById('filter2').style.display = "inline";
+
+  // Number 13 is the "Enter" key on the keyboard
+  if (event.keyCode === 13) {
+    const message = "Tag has already been added."
+    if (document.getElementById(value.concat("badge")) != null) {
+      if (document.getElementById(message) === null) {
+        alerts(message);
+        document.getElementById("tag-query").value = "";
+      }
+        // also add error for tag already exits in list
+    } else {
+      if (document.getElementById(message) != null) {
+        //document.getElementById(message).style.display = "none";
+        document.getElementById(message).remove();
+      }
+      var control = document.createElement("div");
+      control.className = "control";
+      control.id = value.concat("control");
+      var fullGroup = document.getElementById("tags-input");
+      fullGroup.appendChild(control);
+
+      var fullTag = document.createElement("div");
+      fullTag.className = "tags has-addons";
+      fullTag.id = value.concat("tag-group");
+      var allTagsGroup = document.getElementById(control.id);
+      allTagsGroup.appendChild(fullTag);
+
+      var badge = document.createElement("span");
+      badge.className = "tag is-medium is-link";
+      badge.id = value.concat("badge");
+      badge.name = "tag";
+      var badge_name = document.createTextNode(value);
+      badge.appendChild(badge_name);
+      var parent = document.getElementById(value.concat("tag-group"));
+      parent.appendChild(badge);
+      document.getElementById("tag-query").value = "";
+
+      var deleteButton = document.createElement("a");
+      deleteButton.className = "tag is-delete is-medium";
+      deleteButton.value = value;
+      parent.appendChild(deleteButton);
+
+      var input = document.createElement("input");
+      input.name = "tags";
+      input.class="input";
+      input.id = value.concat("badgeTag");
+      input.value = value;
+      input.type = "hidden";
+      input.onkeydown="return event.key != 'Enter';"
+      var inputParent = document.getElementById("tags-data");
+      inputParent.appendChild(input);
+    }
+  }
+  var deletions = document.querySelectorAll("a");
+  deletions.forEach(function(button) {
+    button.onclick = function() {
+      button.parentElement.parentElement.remove();
+      document.getElementById(button.value.concat("badgeTag")).remove();
+    }
+  });
+});
+
+});
+</script>
 {% endblock %}

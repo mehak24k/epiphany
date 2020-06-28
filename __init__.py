@@ -18,6 +18,8 @@ app.wsgi_app = SassMiddleware(app.wsgi_app, {
 # Configure database
 app.config['SECRET_KEY'] = '9OLWxND4o83j4K4iuopO'
 app.config['SQLALCHEMY_DATABASE_URI']='postgres://xtpgjbaiezwjjt:9794c81f9add840240fa3ad9740a67b1998d025e85f0d9577981dd9641807b39@ec2-54-236-169-55.compute-1.amazonaws.com:5432/d51r9vlkgad9hm'
+
+
 # init SQLAlchemy so we can use it later in our models
 db = SQLAlchemy(app)
 

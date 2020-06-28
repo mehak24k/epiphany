@@ -1,28 +1,357 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1 class="title">
-  Welcome, {{ name }}!
-</h1>
-<div>
-    <form action="/uploader" method="POST" enctype="multipart/form-data">
-        <div id="file-js-example" class="file has-name">
-            <label class="file-label">
-                <input class="file-input" type="file" name="resume">
-                <span class="file-cta">
-                    <span class="file-icon">
-                        <i class="fas fa-upload"></i>
-                    </span>
-                    <span class="file-label">
-                        Choose a file…
-                    </span>
-                </span>
-                <span class="file-name">
-                    No file uploaded
-                </span>
-            </label>
-            <button type="submit">Submit</button>
-        </div>
-    </form>
+
+<form method="POST" enctype=multipart/form-data>
+  <div class="field">
+    <label class="label" for="title">Title</label>
+      <div class="control">
+        <input class="input" name="title" type="text" placeholder="Insert title" onkeydown="return event.key != 'Enter';" autocomplete="off">
+      </div>
+  </div>
+
+  <label class="label" for="body">Tag your video!</label>
+  <div id="errors">
+  </div>
+
+  <div class="field is-grouped is-grouped-multiline" id="tags-input">
+  </div>
+  <div id="tags-data">
+  </div>
+  <div class="columns">
+  <div class="column is-half">
+    <input class="input level-left" type="text" placeholder="Text input" id="filter" style="width:50%;" onkeydown="return event.key != 'Enter';" autocomplete="off">
+    <div class="field">
+    <div class="control">
+      <div class="select is-multiple is-fullwidth" style="width:50%;" id="filter2">
+        <select multiple id="filter3">
+        </select>
+      </div>
+    </div>
+  </div>
+  </div>
+  <div class="column">
+    <input class="input level-right" type="text" placeholder="Create your own tag!" id="new-tag" style="width:50%;" onkeydown="return event.key != 'Enter';" autocomplete="off">
+  </div>
 </div>
+
+<div class="field">
+<div class="control">
+  <div id="file-js-example" class="file has-name">
+    <label class="file-label">
+      <input class="file-input" type="file" name="file">
+      <span class="file-cta">
+        <span class="file-icon">
+          <i class="fas fa-upload"></i>
+        </span>
+        <span class="file-label">
+          Choose a file…
+        </span>
+      </span>
+      <span class="file-name">
+        No file uploaded
+      </span>
+    </label>
+  </div>
+  </div>
+  </div>
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div class="notification is-danger">
+          {{ messages[0] }}
+      </div>
+    {% endif %}
+  {% endwith %}
+  <div class="field is-grouped">
+    <p class="control">
+      <button class="button is-link">Upload</button>
+    </p>
+  </div>
+</form>
+
+<script>
+  const fileInput = document.querySelector('#file-js-example input[type=file]');
+  fileInput.onchange = () => {
+    if (fileInput.files.length > 0) {
+      const fileName = document.querySelector('#file-js-example .file-name');
+      fileName.textContent = fileInput.files[0].name;
+    }
+  }
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      function alerts (message) {
+        var alert = document.createElement("div");
+        var alertContent = document.createTextNode(message);
+        alert.className = "notification is-danger";
+        alert.id = message;
+        alert.appendChild(alertContent);
+        const parent = document.getElementById("errors");
+        parent.appendChild(alert);
+      }
+      const my_tag_array = {{ tags | safe }}
+      // creating select items list
+      my_tag_array.forEach(
+        my_tag => {
+          var tag = document.createElement("option");
+          var tag_name = document.createTextNode(my_tag.name);
+          tag.id = my_tag.name;
+          tag.className = "my-tag"
+          tag.appendChild(tag_name);
+          var element = document.getElementById("filter3");
+          element.appendChild(tag);
+        }
+      );
+      document.querySelector('#filter').onkeyup = function() {
+        // updating select items list
+          const string = document.querySelector('#filter').value;
+          my_tag_array.forEach(
+            my_tag => {
+              if (my_tag.name.toLowerCase().includes(string.toLowerCase())) {
+                if (document.getElementById(my_tag.name) === null) {
+                  var tag = document.createElement("option");
+                  var tag_name = document.createTextNode(my_tag.name);
+                  tag.id = my_tag.name;
+                  tag.className = "my-tag"
+                  tag.appendChild(tag_name);
+                  var element = document.getElementById("filter3");
+                  element.appendChild(tag);
+                }
+              } else {
+                if (document.getElementById(my_tag.name) != null) {
+                  document.getElementById(my_tag.name).remove();
+                }
+              }
+            }
+          );
+          // creating the tag
+
+          document.querySelectorAll('.my-tag').forEach(function(button) {
+              button.onclick = function() {
+                const message = "Tag has already been added."
+                const message2 = "Tag already exists. Please select the tag from the list."
+                // removing the tag if it exists
+                if (document.getElementById(button.id.concat("badge")) != null) {
+                  if (document.getElementById(message2) != null) {
+                    document.getElementById(message2).remove();
+                  }
+                  if (document.getElementById(message) === null) {
+                    alerts(message);
+                  }
+                } else {
+                  if (document.getElementById(message) != null) {
+                    //document.getElementById(message).style.display = "none";
+                    document.getElementById(message).remove();
+                  }
+                  if (document.getElementById(message2) != null) {
+                    document.getElementById(message2).remove();
+                  }
+                  // creating the tag
+                  var value = button.id;
+
+                  var control = document.createElement("div");
+                  control.className = "control";
+                  control.id = value.concat("control");
+                  var fullGroup = document.getElementById("tags-input");
+                  fullGroup.appendChild(control);
+
+                  var fullTag = document.createElement("div");
+                  fullTag.className = "tags has-addons";
+                  fullTag.id = value.concat("tag-group");
+                  var allTagsGroup = document.getElementById(control.id);
+                  allTagsGroup.appendChild(fullTag);
+
+                  var badge = document.createElement("span");
+                  badge.className = "tag is-medium is-link";
+                  badge.id = value.concat("badge");
+                  badge.name = "tag";
+                  var badge_name = document.createTextNode(value);
+                  badge.appendChild(badge_name);
+                  var parent = document.getElementById(value.concat("tag-group"));
+                  parent.appendChild(badge);
+
+                  var deleteButton = document.createElement("a");
+                  deleteButton.className = "tag is-delete is-medium";
+                  deleteButton.value = button.id;
+                  parent.appendChild(deleteButton);
+
+
+                  var input = document.createElement("input");
+                  input.name = "tags";
+                  input.id = button.id.concat("badgeTag");
+                  input.value = button.id;
+                  input.type = "hidden";
+                  input.onkeydown="return event.key != 'Enter';"
+                  var inputParent = document.getElementById("tags-data");
+                  inputParent.appendChild(input);
+
+                }
+                var deletions = document.querySelectorAll("a");
+                deletions.forEach(function(button) {
+                  button.onclick = function() {
+                    button.parentElement.parentElement.remove();
+                    document.getElementById(button.value.concat("badgeTag")).remove();
+                  }
+                });
+              };
+          });
+      };
+      // creating tag, repeated code
+      document.querySelectorAll('.my-tag').forEach(function(button) {
+          button.onclick = function() {
+            const message = "Tag has already been added."
+            const message2 = "Tag already exists. Please select the tag from the list."
+            if (document.getElementById(button.id.concat("badge")) != null) {
+              if (document.getElementById(message2) != null) {
+                document.getElementById(message2).remove();
+              }
+              const message = "Tag has already been added."
+              if (document.getElementById(message) === null) {
+                alerts(message);
+              }
+            } else {
+              if (document.getElementById(message) != null) {
+                //document.getElementById(message).style.display = "none";
+                document.getElementById(message).remove();
+              }
+              if (document.getElementById(message2) != null) {
+                document.getElementById(message2).remove();
+              }
+              var value = button.id;
+
+              var control = document.createElement("div");
+              control.className = "control";
+              control.id = value.concat("control");
+              var fullGroup = document.getElementById("tags-input");
+              fullGroup.appendChild(control);
+
+              var fullTag = document.createElement("div");
+              fullTag.className = "tags has-addons";
+              fullTag.id = value.concat("tag-group");
+              var allTagsGroup = document.getElementById(control.id);
+              allTagsGroup.appendChild(fullTag);
+
+              var badge = document.createElement("span");
+              badge.className = "tag is-medium is-link";
+              badge.id = value.concat("badge");
+              badge.name = "tag";
+              var badge_name = document.createTextNode(value);
+              badge.appendChild(badge_name);
+              var parent = document.getElementById(value.concat("tag-group"));
+              parent.appendChild(badge);
+
+              var deleteButton = document.createElement("a");
+              deleteButton.className = "tag is-delete is-medium";
+              deleteButton.value = button.id;
+              parent.appendChild(deleteButton);
+
+
+              var input = document.createElement("input");
+              input.name = "tags";
+              input.id = button.id.concat("badgeTag");
+              input.value = button.id;
+              input.type = "hidden";
+              input.onkeydown="return event.key != 'Enter';"
+              var inputParent = document.getElementById("tags-data");
+              inputParent.appendChild(input);
+
+            }
+            var deletions = document.querySelectorAll("a");
+            deletions.forEach(function(button) {
+              button.onclick = function() {
+                button.parentElement.parentElement.remove();
+                document.getElementById(button.value.concat("badgeTag")).remove();
+              }
+            });
+          };
+      });
+
+    // Execute a function when the user releases a key on the keyboard
+    document.getElementById("new-tag").addEventListener("keyup", function(event) {
+      const value = document.getElementById("new-tag").value;
+
+      // Number 13 is the "Enter" key on the keyboard
+      if (event.keyCode === 13) {
+        const message2 = "Tag already exists. Please select the tag from the list."
+        const message = "Tag has already been added."
+        var found = false;
+        for(var i = 0; i < my_tag_array.length; i++) {
+            if (my_tag_array[i].name === value) {
+                found = true;
+                break;
+            }
+        }
+        if (document.getElementById(value.concat("badge")) != null) {
+          if (document.getElementById(message2) != null) {
+            document.getElementById(message2).remove();
+          }
+          if (document.getElementById(message) === null) {
+            alerts(message);
+          }
+            // also add error for tag already exits in list
+        } else if (found) {
+          if (document.getElementById(message2) === null) {
+            if (document.getElementById(message) != null) {
+              document.getElementById(message).remove();
+            }
+            alerts(message2);
+          }
+        } else {
+          if (document.getElementById(message) != null) {
+            //document.getElementById(message).style.display = "none";
+            document.getElementById(message).remove();
+          }
+          if (document.getElementById(message2) != null) {
+            document.getElementById(message2).remove();
+          }
+          var control = document.createElement("div");
+          control.className = "control";
+          control.id = value.concat("control");
+          var fullGroup = document.getElementById("tags-input");
+          fullGroup.appendChild(control);
+
+          var fullTag = document.createElement("div");
+          fullTag.className = "tags has-addons";
+          fullTag.id = value.concat("tag-group");
+          var allTagsGroup = document.getElementById(control.id);
+          allTagsGroup.appendChild(fullTag);
+
+          var badge = document.createElement("span");
+          badge.className = "tag is-medium is-link";
+          badge.id = value.concat("badge");
+          badge.name = "tag";
+          var badge_name = document.createTextNode(value);
+          badge.appendChild(badge_name);
+          var parent = document.getElementById(value.concat("tag-group"));
+          parent.appendChild(badge);
+          document.getElementById("new-tag").value = "";
+
+          var deleteButton = document.createElement("a");
+          deleteButton.className = "tag is-delete is-medium";
+          deleteButton.value = value;
+          parent.appendChild(deleteButton);
+
+          var input = document.createElement("input");
+          input.name = "tags";
+          input.id = value.concat("badgeTag");
+          input.value = value;
+          input.type = "hidden";
+          input.onkeydown="return event.key != 'Enter';"
+          var inputParent = document.getElementById("tags-data");
+          inputParent.appendChild(input);
+        }
+      }
+      var deletions = document.querySelectorAll("a");
+      deletions.forEach(function(button) {
+        button.onclick = function() {
+          button.parentElement.parentElement.remove();
+          alert(button.value.concat("badgeTag"));
+          document.getElementById(button.value.concat("badgeTag")).remove();
+        }
+      });
+    });
+
+    });
+</script>
 {% endblock %}
