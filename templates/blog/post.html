@@ -6,6 +6,7 @@
 
 <div class="container is-fluid">
     <div class="notification">
+      <!--Post Details-->
       <h2 class="title" style="color:black;">
         {{ post.title }}
       </h2>
@@ -28,7 +29,16 @@
           {% endfor %}
       </h3>
       {% endif %}
-    </div>
+      <!--upvote/downvote icons-->
+      <div class="field is-grouped is-pulled-left" style="color:black;">
+        <span class="icon is-small">
+          <ion-icon name="caret-up-circle-outline"></ion-icon>
+        </span>
+        <span class="icon is-small">
+          <ion-icon name="caret-down-circle-outline"></ion-icon>
+        </span>
+      </div>
+    </div> 
     {% if current_user.id == post.user.id %}
     <div class="field is-grouped is-grouped-right">
       <p class="control">
@@ -59,8 +69,10 @@
   </div>
 </form>
 
+
 <br>
 
+<!--comment section-->
 <div class="box">
 <strong>Comments</strong>
 
@@ -175,6 +187,7 @@
 
 {% endfor %}
 
+<script src="https://unpkg.com/ionicons@5.1.2/dist/ionicons.js"></script>
 <script>
   var refs = {
   modalEdicion: {
@@ -184,6 +197,7 @@
     }
   }
 };
+
 
 </script>
 
