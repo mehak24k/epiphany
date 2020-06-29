@@ -1,7 +1,7 @@
 from flask import Blueprint, flash, g, redirect, render_template, request, url_for, jsonify, json, send_from_directory
 from flask_login import login_required, current_user
 from werkzeug.exceptions import abort
-from .models import User, Post, Category, Tag, Module, Comment
+from .models import User, Post, Category, Tag, Comment
 from . import db, app
 import os
 from werkzeug.utils import secure_filename
