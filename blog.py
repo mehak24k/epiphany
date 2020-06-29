@@ -51,7 +51,7 @@ def get_post(post_id, check_author=True):
 
 # method that gets all the comments in a post
 def get_comments(post_id):
-    comments = db.session.query(Comment).filter_by(post_id=post_id).order_by(Comment.timestamp.desc(), Comment.path.asc()).all()
+    comments = db.session.query(Comment).filter_by(post_id=post_id).order_by(Comment.path.asc(), Comment.timestamp.desc()).all()
     return comments 
 
 @bp.route('/posts/<int:post_id>')
@@ -140,7 +140,7 @@ def comment(post_id):
 @login_required
 def reply(post_id, comment_id): 
     reply = request.form.get('reply')
-    new_comment = Comment(text=reply, user_id=current_user.id, post_id=post_id)
+    parent = Comment.query.get(comment_id)
+    new_comment = Comment(text=reply, user_id=current_user.id, post_id=post_id, parent=parent)
     new_comment.save()
-    flash("type of comment id is" + str(type(comment_id)))
-    return redirect(url_for('main.index'))
+    return redirect(url_for('blog.indiv_post', post_id=post_id))
