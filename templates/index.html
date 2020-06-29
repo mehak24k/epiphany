@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     }
   )
-  var deletions = document.querySelectorAll("a");
+  var deletions = document.querySelectorAll(".is-delete");
   deletions.forEach(function(button) {
     button.onclick = function() {
       button.parentElement.parentElement.remove();
@@ -245,7 +245,7 @@ document.addEventListener('DOMContentLoaded', function() {
               inputParent.appendChild(input);
 
             }
-            var deletions = document.querySelectorAll("a");
+            var deletions = document.querySelectorAll(".is-delete");
             deletions.forEach(function(button) {
               button.onclick = function() {
                 button.parentElement.parentElement.remove();
@@ -316,7 +316,7 @@ document.addEventListener('DOMContentLoaded', function() {
           inputParent.appendChild(input);
 
         }
-        var deletions = document.querySelectorAll("a");
+        var deletions = document.querySelectorAll(".is-delete");
         deletions.forEach(function(button) {
           button.onclick = function() {
             button.parentElement.parentElement.remove();
@@ -383,7 +383,7 @@ document.getElementById("tag-query").addEventListener("keyup", function(event) {
       inputParent.appendChild(input);
     }
   }
-  var deletions = document.querySelectorAll("a");
+  var deletions = document.querySelectorAll(".is-delete");
   deletions.forEach(function(button) {
     button.onclick = function() {
       button.parentElement.parentElement.remove();
