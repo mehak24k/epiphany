@@ -1,40 +1,57 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash
+from flask import Blueprint, render_template, redirect, url_for, request, flash, jsonify, current_app
 from werkzeug.security import generate_password_hash, check_password_hash
 from .models import User
-from . import db, s, mail
+from . import db, s, mail, app
 from flask_login import login_user, logout_user, login_required, current_user
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 from flask_mail import Mail, Message
 from datetime import datetime
+from flask_cors import cross_origin, CORS
 
 auth = Blueprint('auth', __name__)
 
-@auth.route('/login')
+CORS(auth)
+
+@auth.route('/login', methods=['GET'])
 def login():
-    return render_template('login.html')
+    if current_user.is_authenticated:
+        return {'logged_in': 'true'}
+    else:
+        return {'logged_in': 'false'}
+
+@auth.route('/login', methods=['OPTIONS'])
+@cross_origin()
+def login_options():
+    response = {'hello'}
+    return jsonify({'response': response}), 204
 
 @auth.route('/login', methods=['POST'])
+@cross_origin()
 def login_post():
-    email = request.form.get('email')
-    password = request.form.get('password')
-    remember = True if request.form.get('remember') else False
-
-    user = User.query.filter_by(email=email).first()
+    loginData = request.get_json(force=True)
+    email = loginData['email'];
+    password = loginData['password'];
+    remember = False;
+    user = User.query.filter_by(email=loginData['email']).first()
 
     # check if user actually exists
     # take the user supplied password, hash it, and compare it to the hashed password in database
     if not user or not check_password_hash(user.password, password):
-        flash('Please check your login details and try again.')
-        return redirect(url_for('auth.login')) # if user doesn't exist or password is wrong, reload the page
+        obj = {'test': 204}
+        return jsonify({'obj': obj}), 204
 
     # check if user has confirmed their email before login
     if not user.email_confirmed:
-        flash('Please confirm your email through the confirmation link sent to your inbox before login.')
-        return redirect(url_for('auth.login'))
+        obj = {'test': 206}
+        return jsonify({'obj': obj}), 206
 
     # if the above check passes, then we know the user has the right credentials
     login_user(user, remember=remember)
-    return redirect(url_for('main.profile'))
+    obj = {'test': 200}
+    if current_user.is_authenticated:
+        return redirect(url_for('main.profile'))
+    else:
+        return jsonify({'obj': obj}), 200
 
 @auth.route('/signup')
 def signup():
