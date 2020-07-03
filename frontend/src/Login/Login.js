@@ -4,7 +4,7 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Col from 'react-bootstrap/Col'
 import { Redirect } from "react-router-dom";
-import { UserContext } from '../Contexts/Context'
+import { userContext } from '../Contexts/Context'
 
 class Login extends Component {
   constructor(props) {
@@ -20,13 +20,9 @@ class Login extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  static contextType = UserContext
-
   componentDidMount() {
-const { user, setUser } = this.context
-    const newUser = { name: 'Joe', loggedIn: true }
-    setUser(newUser)
-    console.log(user.name) // { name: 'Tania', loggedIn: true }
+    const token = localStorage.getItem('loggedIn');
+    console.log(token);
   }
 
   handleChangeEmail(event) {
@@ -38,64 +34,29 @@ const { user, setUser } = this.context
   }
 
   async handleSubmit(event) {
-    const { user, setUser } = this.context
-
     let loginData = {"email": this.state.email, "password": this.state.password}
-    console.log(loginData);
-
-    //const { isAuthenticated } = useContext(AuthContext);
-
-    const request = {
-      method: 'POST', // *GET, POST, PUT, DELETE, etc.
-      mode: 'cors', // no-cors, *cors, same-origin
-      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: 'same-origin', // include, *same-origin, omit
-      headers: {
-       //'Content-Type': 'application/json',
-       //'Access-Control-Allow-Headers': 'Content-Type,Authorization, DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range',
-       //'Access-Control-Allow-Origin': '*'
-      },
-      redirect: 'follow', // manual, *follow, error
-      referrerPolicy: 'no-referrer', // no-referrer, *client
-      body: JSON.stringify(loginData)// body data type must match "Content-Type" header
-    }
-    //JSON.stringify(loginData)
-    console.log(request.body);
-    fetch('http://localhost:5000/login', request)
+    axios.post('http://localhost:5000/login', loginData)
     .then((response) => {
-      // Do stuff with the response
-      //const { isAuthenticated } = useContext(AuthContext);
-      if (response.status === 200) {
-        const { user, setUser } = this.context
-        this.setState({loggedIn: true});
-        const newUser = { name: 'Tim', loggedIn: true }
-        setUser(newUser)
-        console.log(user.name)
-      } else {
-        this.setState({loggedIn: false});
-        const newUser = { name: 'Tim', loggedIn: false }
-        setUser(newUser)
-      }
-      let value = this.context
-      console.log(value)
-      return console.log('Code', response.status);
-    })
-    .catch((error) => {
-
+      //console.log(response.data.user_info[0].name);
+      sessionStorage.setItem('token', response.data.user_info[0].name);
+      sessionStorage.setItem('loggedIn', true);
+      this.setState({loggedIn: true});
+      console.log(sessionStorage.getItem('token'));
+      this.props.callback();
+    }, (error) => {
       console.log('Looks like there was a problem: \n', error);
     });
 
-    event.preventDefault();
+      event.preventDefault();
   }
 
   render() {
     const redirectTo = this.state.loggedIn;
-    if (redirectTo === true) {
+    if (redirectTo) {
         return (
           <Redirect to="/" />
         );
     }
-    const { user, setUser } = this.context
     return (
       <Col md={{ span: "4", offset: "4" }}>
         <Form onSubmit={this.handleSubmit}>
@@ -109,7 +70,7 @@ const { user, setUser } = this.context
           </Form.Group>
           <Button variant="success" type="submit">Submit</Button>
         </Form>
-<p>{`Current User: ${user.name}`}</p>
+
       </Col>
     );
   }

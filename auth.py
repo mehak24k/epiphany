@@ -49,7 +49,11 @@ def login_post():
     login_user(user, remember=remember)
     obj = {'test': 200}
     if current_user.is_authenticated:
-        return redirect(url_for('main.profile'))
+        #return redirect(url_for('main.profile'))
+        obj_one = {'loggedInTrue': 123}
+        user_info = []
+        user_info.append({'name': current_user.name})
+        return jsonify({'user_info': user_info}), 200
     else:
         return jsonify({'obj': obj}), 200
 

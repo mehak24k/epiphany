@@ -10,7 +10,6 @@ from flask_cors import cross_origin, CORS
 main = Blueprint('main', __name__)
 CORS(main)
 
-
 def build_preflight_response():
     response = make_response()
     response.headers.add("Access-Control-Allow-Origin", "*")

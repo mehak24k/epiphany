@@ -1,38 +1,49 @@
 import React, { useContext, Component } from 'react';
 import {Navbar, Nav, NavDropdown} from 'react-bootstrap';
-import { UserProvider } from '../Contexts/Context'
-import { UserContext } from '../Contexts/Context'
 
 class NavBar extends Component {
-  static contextType = UserContext
+
+  constructor(props) {
+    super(props);
+    this.logout = this.logout.bind(this);
+    this.state = {
+      loggedIn: false,
+    }
+  }
+
+  // Add a logout method
+
+  logout() {
+    localStorage.clear();
+    sessionStorage.setItem('loggedIn', false);
+    this.setState({loggedIn: false});
+  }
+
+
+  update() {
+    sessionStorage.clear();
+    this.setState({loggedIn: false});
+  }
 
   render() {
-    const { user, setUser } = this.context
     return (
-    <UserProvider value={user}>
     <Navbar collapseOnSelect expand="lg" bg="primary" variant="dark" fixed="top">
     <Navbar.Brand href="/">Epiphany!</Navbar.Brand>
     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
     <Navbar.Collapse id="responsive-navbar-nav">
       <Nav className="mr-auto">
-      {!user.loggedIn && <Nav.Link href="/login">Login</Nav.Link>}
-
+        {sessionStorage.getItem('loggedIn') != "true" && <Nav.Link href="/login">Login</Nav.Link>}
         <Nav.Link href="/signup">Signup</Nav.Link>
       </Nav>
       <Nav>
         <Nav.Link href="#deets">More deets</Nav.Link>
-        <Nav.Link href="#deets2">{`Current User: ${user.name}`}</Nav.Link>
-        <Nav.Link eventKey={2} href="#memes">
-          Dank memes
-        </Nav.Link>
+        <button onClick={this.props.callback}>Logout</button>
       </Nav>
     </Navbar.Collapse>
   </Navbar>
-  </UserProvider>
     );
 }
 
 }
-
 
 export default NavBar;
