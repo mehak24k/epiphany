@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
 import axios from 'axios';
+import Badge from 'react-bootstrap/Badge'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
 
 class Post extends Component {
   constructor(props) {
@@ -21,12 +24,22 @@ class Post extends Component {
     const {post} = this.state;
     if (post === null) return <p>Loading ...</p>;
     var text = post.body
+    console.log(post.tags);
     return (
       <div className="container">
         <div className="row">
           <div className="jumbotron col-12">
             <h1 className="display-3">{post.title}</h1>
-            <p className="lead">{post.title}</p>
+            <Row>
+            {post.tags && post.tags.map(tag => (
+              <Col md="auto">
+              <h3>
+                <Badge variant="info">{tag.name}</Badge>
+              </h3>
+              </Col>
+              ))
+            }
+            </Row>
             <hr className="my-4" />
             <p>Content:</p>
               <p className="lead">

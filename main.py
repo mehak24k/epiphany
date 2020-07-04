@@ -34,16 +34,7 @@ def index():
 
 @main.route('/search')
 def search():
-    #title_query = func.lower(Post.title).contains(request.args.get('query').lower(), autoescape=True)
-    #body_query = func.lower(Post.body).contains(request.args.get('query').lower(), autoescape=True)
-    #posts=db.session.query(Post).filter(or_(title_query, body_query))
-    #return render_template('index.html', posts=posts)
-    if current_user.is_authenticated:
-        return {'logged_in': 'true'}
-    else:
-        return {'logged_in': 'false'}
-
-@main.route('/profile')
-@login_required
-def profile():
-    return render_template('profile.html', name=current_user.name, points=current_user.points)
+    title_query = func.lower(Post.title).contains(request.args.get('query').lower(), autoescape=True)
+    body_query = func.lower(Post.body).contains(request.args.get('query').lower(), autoescape=True)
+    posts=db.session.query(Post).filter(or_(title_query, body_query))
+    return render_template('index.html', posts=posts)

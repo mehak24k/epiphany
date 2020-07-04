@@ -52,7 +52,7 @@ def login_post():
         #return redirect(url_for('main.profile'))
         obj_one = {'loggedInTrue': 123}
         user_info = []
-        user_info.append({'name': current_user.name})
+        user_info.append({'name': current_user.name, 'points': current_user.points})
         return jsonify({'user_info': user_info}), 200
     else:
         return jsonify({'obj': obj}), 200
