@@ -2,8 +2,6 @@ import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import axios from 'axios';
 import Truncate from 'react-truncate';
-import { UserProvider } from '../Contexts/Context'
-import { UserContext } from '../Contexts/Context'
 
 class Posts extends Component {
 

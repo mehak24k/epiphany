@@ -1,4 +1,4 @@
-import React, { Component, useContext } from 'react';
+import React, { Component} from 'react';
 import {Route} from 'react-router-dom';
 import NavBar from './NavBar/NavBar';
 import Post from './Post/Post';
@@ -18,9 +18,8 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const token = sessionStorage.getItem('loggedIn');
+    const token = localStorage.getItem('loggedIn');
     console.log(token);
-    //sessionStorage.clear();
   }
 
   login() {
@@ -30,26 +29,23 @@ class App extends Component {
 
   logout() {
     this.setState({login: false});
-    sessionStorage.setItem('loggedIn', false);
+    localStorage.setItem('loggedIn', false);
     console.log(this.state.login);
   }
 
   render() {
-    const token = sessionStorage.getItem('loggedIn');
-    // token seems to get erased when App component re-renders after setState
+    const token = localStorage.getItem('loggedIn');
     console.log(token);
-    //console.log(localStorage.getItem('token'));
-    //console.log(localStorage.getItem('loggedIn'));
 
   return (
       <div>
         <NavBar callback={this.logout}/>
         <Route exact path='/' component={Posts}/>
         <Route exact path='/post/:postId' component={Post}/>
-        <Route exact path='/login' component={() => <Login callback={this.login}/>}/>
+        {localStorage.getItem('loggedIn') != "true" && <Route exact path='/login' component={() => <Login callback={this.login}/>}/>}
       </div>
-  );
-}
+    );
+  }
 }
 
 export default App;
