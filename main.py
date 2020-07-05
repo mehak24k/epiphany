@@ -27,7 +27,12 @@ def index():
     posts = []
 
     for post in posts_list:
-        posts.append({'id': post.id, 'title': post.title, 'body': post.body})
+        tags_list = post.tags
+        tags = []
+
+        for tag in tags_list:
+            tags.append({'name': tag.name})
+        posts.append({'id': post.id, 'title': post.title, 'body': post.body, 'tags': tags})
 
     return jsonify({'posts': posts}), {'Access-Control-Allow-Origin': '*'}
 
