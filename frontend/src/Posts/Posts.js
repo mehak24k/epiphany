@@ -8,6 +8,9 @@ import Col from 'react-bootstrap/Col'
 import Spinner from 'react-bootstrap/Spinner'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import ButtonGroup from 'react-bootstrap/ButtonGroup'
+import {TextField} from '@material-ui/core/';
+import {Autocomplete} from '@material-ui/lab/';
 
 class Posts extends Component {
 
@@ -17,23 +20,37 @@ class Posts extends Component {
     this.state = {
       posts: null,
       filteredPosts: null,
+      tags: null,
+      tagsList: null,
     };
     this.filterPosts = this.filterPosts.bind(this);
+    this.filterTags = this.filterTags.bind(this);
+    this.deleteTag = this.deleteTag.bind(this);
   }
 
   async componentDidMount() {
-      const posts = (await axios.get('http://localhost:5000/')).data;
+      const data = (await axios.get('http://localhost:5000/')).data;
+      console.log(data.data[0]);
+      const posts = data.data[0];
+      const tags = data.data[1];
+      console.log(posts);
       let arr = [];
       for (var i in posts) {
         arr.push(posts[i])
       }
+      console.log(arr);
+      let tagArr = [];
+      for (var j in tags) {
+        tagArr.push(tags[j])
+      }
       this.setState({
-        // an array of arrays
-        posts: arr[0],
-        filteredPosts: arr[0],
+        posts: arr,
+        filteredPosts: arr,
+        tagsList: tagArr,
       });
       console.log(this.state.posts);
       console.log(this.state.filteredPosts);
+      console.log(this.state.tagsList);
   }
 
   filterPosts(event) {
@@ -43,6 +60,76 @@ class Posts extends Component {
         || post.body.toLowerCase().includes(event.target.value.toLowerCase())
       })
     });
+  }
+
+  deleteTag(event) {
+    console.log(event.target.id)
+    let arr = [];
+    if (this.state.tags === null){
+      arr = [];
+    } else {
+      arr = this.state.tags;
+    }
+
+    const index = arr.indexOf(event.target.id)
+    console.log(index);
+    arr.splice(index, 1)
+    this.setState({
+      tags: arr,
+      filteredPosts: this.state.posts.filter(post => {
+        var check = false;
+        let count = 0;
+        arr.forEach(myTag => {
+          post.tags.forEach(tag => {
+            if (tag.name.toLowerCase().includes(myTag.toLowerCase())) {
+              count = count + 1;
+            }
+          })
+        });
+        if (count === arr.length) {
+          check = true;
+        } else {
+          check = false;
+        }
+        return check;
+      }),
+    })
+    console.log(arr);
+
+  }
+
+  filterTags(event) {
+    if (event.keyCode === 39) {
+      let arr = [];
+      if (this.state.tags === null){
+        arr = [];
+      } else {
+        arr = this.state.tags;
+      }
+      arr.push(event.target.value)
+      this.setState({
+        tags: arr,
+        filteredPosts: this.state.posts.filter(post => {
+          var check = false;
+          let count = 0;
+          arr.forEach(myTag => {
+            post.tags.forEach(tag => {
+              if (tag.name.toLowerCase().includes(myTag.toLowerCase())) {
+                count = count + 1;
+              }
+            })
+          });
+          if (count === arr.length) {
+            check = true;
+          } else {
+            check = false;
+          }
+          return check;
+        }),
+
+      });
+    }
+    console.log(this.state.tags);
   }
 
   colors = ["#ffbaba","#ffddab","#fdffcf","#bdffb3","#b8fff9","#ffd1ea","#edc4ff"];
@@ -58,19 +145,44 @@ class Posts extends Component {
   }
 
   render() {
+    const top100Films = this.state.tagsList;
     return (
       <div className="container">
         <div className="row">
         <Col>
           <Form>
             <Form.Group controlId="formSearch">
-              <Form.Control type="text" placeholder="Search posts!" onChange={this.filterPosts}/>
+            <Form.Control label="freeSolo" type="text" placeholder="Search posts!" onChange={this.filterPosts}/>
               <Form.Text className="text-muted">
                 Here, you can search with text that matches the title or body of the posts.
               </Form.Text>
             </Form.Group>
           </Form>
           </Col>
+        </div>
+        <div className="row">
+          <Row style={{paddingLeft: 25}}>
+          {this.state.tags && this.state.tags.map(tag => (
+            <ButtonGroup style={{ paddingLeft: 2, paddingRight: 2, paddingTop: 2, paddingBottom: 5}} aria-label="Basic example">
+              <Button onClick={this.deleteTag} id={tag} variant="secondary">x</Button>
+              <Button variant="secondary">{tag}</Button>
+            </ButtonGroup>
+            ))
+        }
+          </Row>
+        </div>
+        <div className="row">
+        {this.state.tagsList && <div style={{ width: 1125, paddingLeft: 15 }}>
+        <Autocomplete
+          id="free-solo-demo"
+          freeSolo
+          options={top100Films.map((option) => option.name)}
+          renderInput={(params) => (
+            <TextField {...params}  id="standard-full-width" label="Search with tags!" margin="normal" variant="outlined" onKeyUp={this.filterTags}/>
+          )}
+        />
+        </div>
+      }
         </div>
         <div className="row">
           {this.state.posts === null && <div> <Spinner animation="border" variant="primary" /> <p>Loading posts...</p></div>}

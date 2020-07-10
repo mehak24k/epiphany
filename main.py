@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, jsonify, make_response, flash
 from . import db
-from .models import User, Post
+from .models import User, Post, Tag
 from flask_login import login_required, current_user
 from sqlalchemy import func, or_
 from .decorators import crossdomain
@@ -25,6 +25,10 @@ def build_actual_response(response):
 def index():
     posts_list = Post.query.all()
     posts = []
+    full_tag_list = Tag.query.all()
+    all_tags = []
+    for tag in full_tag_list:
+        all_tags.append({'name': tag.name})
 
     for post in posts_list:
         tags_list = post.tags
@@ -34,7 +38,11 @@ def index():
             tags.append({'name': tag.name})
         posts.append({'id': post.id, 'title': post.title, 'body': post.body, 'tags': tags})
 
-    return jsonify({'posts': posts}), {'Access-Control-Allow-Origin': '*'}
+    data = []
+    data.append(posts)
+    data.append(all_tags)
+
+    return jsonify({'data': data}), {'Access-Control-Allow-Origin': '*'}
 
 
 @main.route('/search')

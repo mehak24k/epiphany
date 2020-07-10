@@ -32,10 +32,10 @@ class Post extends Component {
             <h1 className="display-3">{post.title}</h1>
             <Row>
             {post.tags && post.tags.map(tag => (
-              <Col md="auto">
-              <h3>
+              <Col style={{ paddingLeft: 2, paddingRight: 2 }} md="auto">
+                <h4>
                 <Badge variant="info">{tag.name}</Badge>
-              </h3>
+                </h4>
               </Col>
               ))
             }
