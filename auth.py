@@ -53,6 +53,20 @@ def login_post():
         obj_one = {'loggedInTrue': 123}
         user_info = []
         user_info.append({'name': current_user.name, 'points': current_user.points})
+
+        posts_list = current_user.posts
+        posts = []
+
+        for post in posts_list:
+            tags_list = post.tags
+            tags = []
+
+            for tag in tags_list:
+                tags.append({'name': tag.name})
+            posts.append({'id': post.id, 'title': post.title, 'body': post.body, 'tags': tags})
+
+        user_info.append({'posts': posts})
+
         return jsonify({'user_info': user_info}), 200
     else:
         return jsonify({'obj': obj}), 200
@@ -119,3 +133,29 @@ def email_confirmed():
 def logout():
     logout_user()
     return redirect(url_for('main.index'))
+
+@auth.route('/profile', methods=['OPTIONS'])
+@cross_origin()
+def profile_options():
+    response = {'hello'}
+    return jsonify({'response': response}), 204
+
+@auth.route('/profile', methods=['POST'])
+@cross_origin()
+def profile():
+    user_data = request.get_json(force=True)
+    user_email = user_data['email'];
+    user = User.query.filter_by(email=user_email).first()
+    posts_list = user.posts
+    posts = []
+    #posts.append(posts_list)
+
+    for post in posts_list:
+        tags_list = post.tags
+        tags = []
+
+        for tag in tags_list:
+            tags.append({'name': tag.name})
+        posts.append({'id': post.id, 'title': post.title, 'body': post.body, 'tags': tags})
+
+    return jsonify({'posts': posts}), 206

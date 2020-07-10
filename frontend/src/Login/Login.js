@@ -35,6 +35,7 @@ class Login extends Component {
     .then((response) => {
       //console.log(response.data.user_info[0].name);
       localStorage.setItem('userName', response.data.user_info[0].name);
+      localStorage.setItem('userEmail', this.state.email);
       localStorage.setItem('userPoints', response.data.user_info[0].points);
       localStorage.setItem('loggedIn', true);
       this.setState({loggedIn: true});
