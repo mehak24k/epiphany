@@ -29,7 +29,7 @@ class Posts extends Component {
   }
 
   async componentDidMount() {
-      const data = (await axios.get('http://localhost:5000/')).data;
+      const data = (await axios.get('http://localhost:80/')).data;
       console.log(data.data[0]);
       const posts = data.data[0];
       const tags = data.data[1];
