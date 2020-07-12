@@ -1,1 +1,1 @@
-web: gunicorn epiphany:app
+web: gunicorn app:app

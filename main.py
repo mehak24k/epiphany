@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, jsonify, make_response, flash
-from __init__ import db
+from app import db
 from models import User, Post, Tag
 from flask_login import login_required, current_user
 from sqlalchemy import func, or_

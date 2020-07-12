@@ -5,6 +5,7 @@ from flask_login import LoginManager
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 from flask_cors import CORS
+import os
 
 # Configure app
 app = Flask(__name__, static_folder='./build', static_url_path='/')
@@ -59,4 +60,4 @@ from blog import bp as blog_blueprint
 app.register_blueprint(blog_blueprint)
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', debug=False, port=os.environ.get('PORT', 80))
