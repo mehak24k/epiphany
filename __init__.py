@@ -62,3 +62,6 @@ app.register_blueprint(main_blueprint)
 # blueprint for posting
 from .blog import bp as blog_blueprint
 app.register_blueprint(blog_blueprint)
+
+if __name__ == "__main__":
+    app.run()
