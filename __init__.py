@@ -8,7 +8,7 @@ from sassutils.wsgi import SassMiddleware
 from flask_cors import CORS
 
 # Configure app
-app = Flask(__name__, static_folder='./build', static_url_path='/'))
+app = Flask(__name__, static_folder='./build', static_url_path='/')
 #CORS(app, resources={r"/*": {"origins": "*"}})
 CORS(app)
 #app.config['CORS_HEADERS'] = 'Content-Type'
