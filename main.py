@@ -1,9 +1,8 @@
 from flask import Blueprint, render_template, request, jsonify, make_response, flash
 from . import db
-from .models import User, Post, Tag
+from models import User, Post, Tag
 from flask_login import login_required, current_user
 from sqlalchemy import func, or_
-from .decorators import crossdomain
 import sys
 from flask_cors import cross_origin, CORS
 
