@@ -21,7 +21,7 @@ def build_actual_response(response):
     return response
 
 @main.route('/main')
-def index():
+def main_index():
     posts_list = Post.query.all()
     posts = []
     full_tag_list = Tag.query.all()
