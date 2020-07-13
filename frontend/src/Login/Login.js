@@ -31,7 +31,7 @@ class Login extends Component {
 
   async handleSubmit(event) {
     let loginData = {"email": this.state.email, "password": this.state.password}
-    axios.post('http://localhost:80/login', loginData)
+    axios.post('https://epiphany-test-three.herokuapp.com/login', loginData)
     .then((response) => {
       //console.log(response.data.user_info[0].name);
       localStorage.setItem('userName', response.data.user_info[0].name);

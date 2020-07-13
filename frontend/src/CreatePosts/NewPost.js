@@ -26,7 +26,7 @@ class NewPost extends Component {
 
   async handleSubmit(event) {
     let postData = {"title": this.state.title, "body": this.state.body, "user": localStorage.getItem("userEmail")}
-    axios.post('http://localhost:5000/create', postData)
+    axios.post('https://epiphany-test-three.herokuapp.com/create', postData)
     .then((response) => {
       console.log(response);
       this.setState({
