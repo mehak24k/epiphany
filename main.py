@@ -1,9 +1,8 @@
 from flask import Blueprint, render_template, request, jsonify, make_response, flash
-from . import db
-from .models import User, Post, Tag
+from app import db
+from models import User, Post, Tag
 from flask_login import login_required, current_user
 from sqlalchemy import func, or_
-from .decorators import crossdomain
 import sys
 from flask_cors import cross_origin, CORS
 
@@ -21,8 +20,8 @@ def build_actual_response(response):
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
 
-@main.route('/')
-def index():
+@main.route('/main')
+def main_index():
     posts_list = Post.query.all()
     posts = []
     full_tag_list = Tag.query.all()

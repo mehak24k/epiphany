@@ -14,7 +14,7 @@ class Post extends Component {
 
   async componentDidMount() {
     const { match: { params } } = this.props;
-    const post = (await axios.get(`http://localhost:5000/posts/${params.postId}`)).data;
+    const post = (await axios.get(`http://localhost:80/posts/${params.postId}`)).data;
     this.setState({
       post: post.json_post,
     });

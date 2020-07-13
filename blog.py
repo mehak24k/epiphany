@@ -1,9 +1,14 @@
 from flask import Blueprint, flash, g, redirect, render_template, request, url_for, jsonify
 from flask_login import login_required, current_user
 from werkzeug.exceptions import abort
+<<<<<<< HEAD
 from .models import User, Post
 from . import db
 from flask_cors import cross_origin, CORS
+=======
+from models import User, Post
+from app import db
+>>>>>>> feb3e5f290b46d370c97fa495e52ce364154a02b
 
 bp = Blueprint('blog', __name__)
 
