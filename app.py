@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, redirect, render_template, request, url_for
 from flask_sqlalchemy import SQLAlchemy
 from models import *
 from flask_login import LoginManager
@@ -8,7 +8,7 @@ from flask_cors import CORS
 import os
 
 # Configure app
-app = Flask(__name__, static_folder='frontend/build', static_url_path='/')
+app = Flask(__name__, hstatic_folder='frontend/build', static_url_path='/')
 #CORS(app, resources={r"/*": {"origins": "*"}})
 CORS(app)
 #app.config['CORS_HEADERS'] = 'Content-Type'
@@ -16,7 +16,7 @@ CORS(app)
 
 @app.route('/', methods=['GET'])
 def index():
-  return render_template('main.index')
+  return redirect(url_for('main.index'))
 
 @app.after_request
 def after_request(response):
