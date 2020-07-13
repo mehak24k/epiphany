@@ -19,8 +19,8 @@ def create_options():
 @cross_origin()
 def create():
     postData = request.get_json(force=True)
-    title = postData['title'];
-    body = postData['body'];
+    title = postData['title']
+    body = postData['body']
     user_id = User.query.filter_by(email=postData['user']).first().id
 
     new_post = Post(title=title, body=body, user_id=user_id)

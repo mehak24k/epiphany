@@ -33,11 +33,7 @@ class Posts extends Component {
   }
 
   async componentDidMount() {
-<<<<<<< HEAD
       const data = (await axios.get('https://epiphany-test-three.herokuapp.com/main')).data;
-=======
-      const data = (await axios.get('/main')).data;
->>>>>>> feb3e5f290b46d370c97fa495e52ce364154a02b
       console.log(data.data[0]);
       const posts = data.data[0];
       const tags = data.data[1];
