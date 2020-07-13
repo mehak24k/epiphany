@@ -5,7 +5,7 @@ import Post from './Post/Post';
 import Posts from './Posts/Posts';
 import Login from './Login/Login';
 import Profile from './Profile/Profile';
-
+import NewPost from './CreatePosts/NewPost';
 
 class App extends Component {
 
@@ -38,6 +38,7 @@ class App extends Component {
         <Route exact path='/post/:postId' component={Post}/>
         {localStorage.getItem('loggedIn') != "true" && <Route exact path='/login' component={() => <Login callback={this.login}/>}/>}
         <Route exact path='/profile' component={Profile}/>
+        <Route exact path='/post' component={NewPost}/>
       </div>
     );
   }

@@ -28,7 +28,7 @@ def index():
     full_tag_list = Tag.query.all()
     all_tags = []
     for tag in full_tag_list:
-        all_tags.append({'name': tag.name})
+        all_tags.append({'name': tag.name, 'id': tag.id})
 
     for post in posts_list:
         tags_list = post.tags
@@ -36,7 +36,7 @@ def index():
 
         for tag in tags_list:
             tags.append({'name': tag.name})
-        posts.append({'id': post.id, 'title': post.title, 'body': post.body, 'tags': tags})
+        posts.append({'id': post.id, 'title': post.title, 'body': post.body, 'tags': tags, 'user': User.query.filter_by(id=post.user_id).first().name, 'time': post.timestamp.strftime('%x %H:%M')})
 
     data = []
     data.append(posts)

@@ -11,6 +11,9 @@ import Button from 'react-bootstrap/Button'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import {TextField} from '@material-ui/core/';
 import {Autocomplete} from '@material-ui/lab/';
+import Card from 'react-bootstrap/Card'
+import CardDeck from 'react-bootstrap/CardDeck'
+import Container from 'react-bootstrap/Container'
 
 class Posts extends Component {
 
@@ -22,6 +25,7 @@ class Posts extends Component {
       filteredPosts: null,
       tags: null,
       tagsList: null,
+      key: 0,
     };
     this.filterPosts = this.filterPosts.bind(this);
     this.filterTags = this.filterTags.bind(this);
@@ -29,7 +33,7 @@ class Posts extends Component {
   }
 
   async componentDidMount() {
-      const data = (await axios.get('http://localhost:5000/')).data;
+      const data = (await axios.get('https://epiphany-test-three.herokuapp.com/main')).data;
       console.log(data.data[0]);
       const posts = data.data[0];
       const tags = data.data[1];
@@ -146,8 +150,13 @@ class Posts extends Component {
 
   render() {
     const top100Films = this.state.tagsList;
+    let first = 0;
+    function myKey() {
+      first = first + 1;
+      return first;
+    }
     return (
-      <div className="container">
+      <Container className="justify-content-md-center">
         <div className="row">
         <Col>
           <Form>
@@ -184,35 +193,37 @@ class Posts extends Component {
         </div>
       }
         </div>
-        <div className="row">
-          {this.state.posts === null && <div> <Spinner animation="border" variant="primary" /> <p>Loading posts...</p></div>}
-          {this.state.filteredPosts && this.state.filteredPosts.map(post => (
-              <div key={post.id} className="col-sm-12 col-md-4 col-lg-3">
-                <Link to={`/post/${post.id}`}>
-                  <div className="card mb-3" style={{backgroundColor: this.getColor(), color: "#161717", height: '250px'}}>
-                  <div className="card-body">
-                    <h4 className="card-title">{post.title}</h4>
-                    <Row>
-                    {post.tags && post.tags.map(tag => (
-                      <Col style={{ paddingLeft: 2, paddingRight: 2 }} md="auto">
-                        <Badge variant="info">{tag.name}</Badge>
-                      </Col>
-                      ))
-                    }
-                    </Row>
-                    <p className="card-text" style={{maxLength: "100"}}>
-                    <Truncate lines={2}>
-                        {post.body}
-                    </Truncate>
-                    </p>
-                  </div>
-                  </div>
-                </Link>
-              </div>
-            ))
-          }
-        </div>
-      </div>
+
+        {this.state.posts === null && <div> <Spinner animation="border" variant="primary" /> <p>Loading posts...</p></div>}
+        {this.state.filteredPosts && this.state.filteredPosts.map(post => (
+          <Row className="justify-content-md-center">
+          <Link key={myKey()} to={`/post/${post.id}`}>
+          <Card key={post.id} style={{backgroundColor: this.getColor(), marginTop: 10, marginBottom: 10, alignItems: "center", width: '50rem'}}>
+                <Card.Body>
+                  <Card.Title style={{color: "#161717", textAlign: "center"}}>{post.title}</Card.Title>
+                  <Row className="justify-content-md-center">
+                  {post.tags && post.tags.map(tag => (
+                    <Col key={myKey()} style={{ paddingLeft: 2, paddingRight: 2, alignItems: "center" }} md="auto">
+                      <Badge variant="info">{tag.name}</Badge>
+                    </Col>
+                    ))
+                  }
+                  </Row>
+                  <Card.Text style={{color: "#161717", textAlign: "center"}}>
+                  <Truncate lines={2}>
+                      {post.body}
+                  </Truncate>
+                  </Card.Text>
+                </Card.Body>
+                <Card.Footer className="text-muted" style={{color: "#161717", textAlign: "center"}}>
+                Posted by {post.user} at {post.time}
+                </Card.Footer>
+            </Card>
+            </Link>
+            </Row>
+          ))
+        }
+      </Container>
     )
   }
 }

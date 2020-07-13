@@ -3,36 +3,31 @@ from flask_login import login_required, current_user
 from werkzeug.exceptions import abort
 from .models import User, Post
 from . import db
+from flask_cors import cross_origin, CORS
 
 bp = Blueprint('blog', __name__)
 
-@bp.route('/create', methods=['GET', 'POST'])
-@login_required
+CORS(bp)
+
+@bp.route('/create', methods=['OPTIONS'])
+@cross_origin()
+def create_options():
+    response = {'hello'}
+    return jsonify({'response': response}), 205
+
+@bp.route('/create', methods=['POST'])
+@cross_origin()
 def create():
-    if request.method == 'POST':
-        title = request.form.get('title')
-        body = request.form.get('body')
-        t_error = None
-        b_error = None
+    postData = request.get_json(force=True)
+    title = postData['title'];
+    body = postData['body'];
+    user_id = User.query.filter_by(email=postData['user']).first().id
 
-        if not title:
-            t_error = 'Title is required.'
-
-        if not body:
-            b_error = 'Body is required.'
-
-        if t_error or b_error is not None:
-            if t_error is not None:
-                flash(t_error)
-            if b_error is not None:
-                flash(b_error)
-
-        else:
-            new_post = Post(title=title, body=body, user_id=current_user.id)
-            db.session.add(new_post)
-            db.session.commit()
-            return redirect(url_for('main.index'))
-    return render_template('blog/create.html')
+    new_post = Post(title=title, body=body, user_id=user_id)
+    db.session.add(new_post)
+    db.session.commit()
+    response = []
+    return jsonify({'response': response}), 204
 
 def get_post(post_id, check_author=True):
     post = Post.query.get(post_id)

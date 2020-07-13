@@ -38,6 +38,18 @@ class Profile extends Component {
     });
   }
 
+  colors = ["#ffbaba","#ffddab","#fdffcf","#bdffb3","#b8fff9","#ffd1ea","#edc4ff"];
+  getColor(){
+    if (this.colors.length === 0) {
+      this.colors = ["#ffbaba","#ffddab","#fdffcf","#bdffb3","#b8fff9","#ffd1ea","#edc4ff"];
+    }
+    var len = this.colors.length;
+    var randomNum = Math.floor(Math.random()*len);
+    var color = this.colors[randomNum];
+    this.colors.splice(randomNum, 1);
+    return color;
+  }
+
   render() {
     return (
       <div className="container">
@@ -55,7 +67,7 @@ class Profile extends Component {
             {this.state.posts && this.state.posts.map(post => (
                 <div key={post.id} className="col-sm-12 col-md-4 col-lg-3">
                   <Link to={`/post/${post.id}`}>
-                    <div className="card mb-3" style={{backgroundColor: '#abd5de', color: "#161717", height: '250px'}}>
+                    <div className="card mb-3" style={{backgroundColor: this.getColor(), color: "#161717", height: '250px'}}>
                     <div className="card-body">
                       <h4 className="card-title">{post.title}</h4>
                       <Row>
