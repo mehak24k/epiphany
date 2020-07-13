@@ -16,7 +16,7 @@ CORS(app)
 
 @app.route('/', methods=['GET'])
 def index():
-  return redirect(url_for('main.index'))
+  return redirect(url_for('main.main_index'))
 
 @app.after_request
 def after_request(response):
