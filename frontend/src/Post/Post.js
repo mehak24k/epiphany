@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
 import axios from 'axios';
+import Comment from './Comment'
 import Badge from 'react-bootstrap/Badge'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import Button from 'react-bootstrap/Button'
 
 class Post extends Component {
   constructor(props) {
@@ -10,14 +12,32 @@ class Post extends Component {
     this.state = {
       post: null,
     };
+
+    this.submitComment = this.submitComment.bind(this);
   }
 
   async componentDidMount() {
     const { match: { params } } = this.props;
-    const post = (await axios.get(`http://localhost:80/posts/${params.postId}`)).data;
+    const post = (await axios.get(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}`)).data;
     this.setState({
       post: post.json_post,
     });
+  }
+
+  async refreshPage() {
+    const { match: { params } } = this.props;
+    const post = (await axios.get(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}`)).data;
+    this.setState({
+      post: post.json_post,
+    });
+  }
+
+  async submitComment(comment) {
+    const { match: { params } } = this.props;
+    await axios.post(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}/comment`, {
+      comment,
+    });
+    await this.refreshPage();
   }
 
   render() {
@@ -46,6 +66,19 @@ class Post extends Component {
                   {text.split("\n").map((i,key) => {
                       return <div key={key}>{i}</div>;
                   })}
+              </p>
+              {localStorage.getItem('loggedIn') === "true" && <Button variant="outline-success">Update</Button>}
+              {localStorage.getItem('loggedIn') === "true" && <Button variant="outline-danger">Delete</Button>}
+            <hr className="my-4" />
+            <Comment postId={post.id} submitComment={this.submitComment}/>
+            <hr className="my-4" />
+            <p>Discussion: {post.comments} </p>
+              <p className="lead">
+              {
+                post.comments && post.comments.map((comment, idx) => (
+                  <p className="lead" key={idx}>{comment}</p>
+                ))
+              }
               </p>
           </div>
         </div>
