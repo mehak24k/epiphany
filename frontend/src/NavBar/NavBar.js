@@ -20,7 +20,7 @@ class NavBar extends Component {
         <Nav>
           {localStorage.getItem('loggedIn') === "true" && <Nav.Link href="/profile">Profile</Nav.Link>}
           {localStorage.getItem('loggedIn') === "true" && <Nav.Link href="/post">Post</Nav.Link>}
-          <Nav.Link onClick={this.props.callback}>Logout</Nav.Link>
+          {localStorage.getItem('loggedIn') === "true" && <Nav.Link onClick={this.props.callback}>Logout</Nav.Link>}
         </Nav>
       </Navbar.Collapse>
     </Navbar>

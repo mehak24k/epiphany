@@ -22,7 +22,7 @@ class Profile extends Component {
   async componentDidMount() {
     let userData = {"email": localStorage.getItem('userEmail')}
     console.log(userData);
-    axios.post('http://localhost:5000/profile', userData)
+    axios.post('https://epiphany-test-three.herokuapp.com/profile', userData)
     .then((response) => {
       console.log(response.data.posts);
       const posts = response.data.posts;
