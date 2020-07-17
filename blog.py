@@ -64,7 +64,7 @@ def indiv_post(post_id):
         tags.append({'name': tag.name})
 
     for comment in comments:
-        comm.append({'comment': comment.text, 'commentor': comment.user.name, 'comment_id': comment.id})
+        comm.append({'text': comment.text, 'commentor': comment.user.name, 'comment_id': comment.id, 'comment_level': comment.level()})
     
     json_post = {'id': post[0].id, 'title': post[0].title, 'body': post[0].body, 'tags': tags, 'comments': comm}
 
@@ -105,13 +105,18 @@ def delete(post_id):
     flash("Your post has been deleted.")
     return redirect(url_for('main.index'))
 
+@bp.route('/posts/<int:post_id>/comment', methods=['OPTIONS'])
+@cross_origin()
+def comment_options(post_id): 
+    response = {'hello'}
+    return jsonify({'response': response}), 204
+
 @bp.route('/posts/<int:post_id>/comment', methods=['POST'])
 def comment(post_id): 
     comment = request.get_json(force=True)
     
     new_comment = Comment(text=comment, user_id=current_user.id, post_id=post_id)
     new_comment.save()
-    response = []
     return jsonify({'response': response}), 204
 
 @bp.route('/posts/<int:post_id>/category/<module>', methods=['GET'])

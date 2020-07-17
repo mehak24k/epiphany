@@ -5,6 +5,8 @@ import Badge from 'react-bootstrap/Badge'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Button from 'react-bootstrap/Button'
+import Media from 'react-bootstrap/Media'
+import Card from 'react-bootstrap/Card'
 
 class Post extends Component {
   constructor(props) {
@@ -72,14 +74,44 @@ class Post extends Component {
             <hr className="my-4" />
             <Comment postId={post.id} submitComment={this.submitComment}/>
             <hr className="my-4" />
-            <p>Discussion:</p>
-              <p className="lead">
-              {
-                post.comments && post.comments.map((comment, idx) => (
-                  <p className="lead" key={idx}>{comment}</p>
-                ))
-              }
-              </p>
+                {
+                  post.comments.map(comment => (
+                    comment.comment_level === 1 ? 
+                          <Media className="mt-1">
+                            <Media.Body>
+                              <h5>{ comment.commentor }</h5>
+                              <p>
+                                { comment.text.split("\n").map((i,key) => {
+                                  return <div key={key}>{i}</div>;
+                                }) }
+                              </p>
+                            </Media.Body>
+                          </Media>
+                    : comment.comment_level === 2 ? 
+                                    <Media className="ml-3">
+                                      <Media.Body>
+                                        <h5>{ comment.commentor }</h5>
+                                        <p>
+                                          { comment.text.split("\n").map((i,key) => {
+                                            return <div key={key}>{i}</div>;
+                                          }) }
+                                        </p>
+                                      </Media.Body>
+                                    </Media>
+                                : 
+                                <Media className="ml-5">
+                                      <Media.Body>
+                                        <h5>{ comment.commentor }</h5>
+                                        <p>
+                                          { comment.text.split("\n").map((i,key) => {
+                                            return <div key={key}>{i}</div>;
+                                          }) }
+                                        </p>
+                                      </Media.Body>
+                                </Media>
+                  ))
+                } 
+                <hr className="my-4" />
           </div>
         </div>
       </div>

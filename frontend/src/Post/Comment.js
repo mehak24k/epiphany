@@ -9,17 +9,19 @@ class Comment extends Component {
     this.state = {
       text: '',
     };
+    this.submit = this.submit.bind(this);
+    this.updateComment = this.updateComment.bind(this);
   }
 
-  updateComment(event) {
+  updateComment(value) {
     this.setState({
-        [event.target.name]: event.target.value
-      });
+        text: value,
+    });
   }
 
   submit(event) {
     let postData = {"text": this.state.text, "user": localStorage.getItem("")}
-    axios.post('http://localhost:5000/posts/${params.postId}/comment', postData)
+    axios.post("http://localhost:5000/posts/${params.postId}/comment", postData)
     .then((response) => {
       console.log(response);
       this.setState({
