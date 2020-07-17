@@ -6,14 +6,12 @@ import Posts from './Posts/Posts';
 import Login from './Login/Login';
 import Profile from './Profile/Profile';
 import NewPost from './CreatePosts/NewPost';
-<<<<<<< HEAD
 import UpdatePost from './Post/UpdatePost';
-=======
 import Signup from './Signup/Signup';
 import EmailSent from './Signup/EmailSent';
 import EmailConfirmed from './Signup/EmailConfirmed';
 import UserProfile from './Profile/UserProfile';
->>>>>>> 2aa9a0ce8e516104becbc9de37b180d56187f039
+
 
 class App extends Component {
 

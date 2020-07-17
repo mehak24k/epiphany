@@ -25,11 +25,7 @@ class Post extends Component {
 
   async componentDidMount() {
     const { match: { params } } = this.props;
-<<<<<<< HEAD
-    const post = (await axios.get(`http://localhost:5000/posts/${params.postId}`)).data;
-=======
     const post = (await axios.get(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}`)).data;
->>>>>>> 2aa9a0ce8e516104becbc9de37b180d56187f039
     this.setState({
       post: post.json_post,
     });
@@ -116,7 +112,7 @@ class Post extends Component {
             <hr className="my-4" />
                 {
                   post.comments.map(comment => (
-                    comment.comment_level === 1 ? 
+                    comment.comment_level === 1 ?
                           <Media className="mt-1">
                             <Media.Body>
                               <h5>{ comment.commentor }</h5>
@@ -127,7 +123,7 @@ class Post extends Component {
                               </p>
                             </Media.Body>
                           </Media>
-                    : comment.comment_level === 2 ? 
+                    : comment.comment_level === 2 ?
                         <Media className="ml-3">
                           <Media.Body>
                             <h5>{ comment.commentor }</h5>
@@ -138,7 +134,7 @@ class Post extends Component {
                               </p>
                           </Media.Body>
                         </Media>
-                        : 
+                        :
                           <Media className="ml-5">
                             <Media.Body>
                               <h5>{ comment.commentor }</h5>
@@ -150,7 +146,7 @@ class Post extends Component {
                             </Media.Body>
                           </Media>
                   ))
-                } 
+                }
           </div>
         </div>
       </div>
