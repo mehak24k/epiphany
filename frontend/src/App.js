@@ -6,6 +6,10 @@ import Posts from './Posts/Posts';
 import Login from './Login/Login';
 import Profile from './Profile/Profile';
 import NewPost from './CreatePosts/NewPost';
+import Signup from './Signup/Signup';
+import EmailSent from './Signup/EmailSent';
+import EmailConfirmed from './Signup/EmailConfirmed';
+import UserProfile from './Profile/UserProfile';
 
 class App extends Component {
 
@@ -36,6 +40,10 @@ class App extends Component {
         <NavBar callback={this.logout}/>
         <Route exact path='/' component={Posts}/>
         <Route exact path='/post/:postId' component={Post}/>
+        <Route exact path='/users/:userId' component={UserProfile}/>
+        <Route exact path='/signup' component={Signup}/>
+        <Route exact path='/email_sent' component={EmailSent}/>
+        <Route exact path='/email_confirmed' component={EmailConfirmed}/>
         {localStorage.getItem('loggedIn') != "true" && <Route exact path='/login' component={() => <Login callback={this.login}/>}/>}
         <Route exact path='/profile' component={Profile}/>
         <Route exact path='/post' component={NewPost}/>
