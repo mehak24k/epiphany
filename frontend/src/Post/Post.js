@@ -93,27 +93,27 @@ class Post extends Component {
                             </Media.Body>
                           </Media>
                     : comment.comment_level === 2 ? 
-                                    <Media className="ml-3">
-                                      <Media.Body>
-                                        <h5>{ comment.commentor }</h5>
-                                        <p>
-                                          { comment.text.split("\n").map((i,key) => {
-                                            return <div key={key}>{i}</div>;
-                                          }) }
-                                        </p>
-                                      </Media.Body>
-                                    </Media>
-                                : 
-                                <Media className="ml-5">
-                                      <Media.Body>
-                                        <h5>{ comment.commentor }</h5>
-                                        <p>
-                                          { comment.text.split("\n").map((i,key) => {
-                                            return <div key={key}>{i}</div>;
-                                          }) }
-                                        </p>
-                                      </Media.Body>
-                                </Media>
+                        <Media className="ml-3">
+                          <Media.Body>
+                            <h5>{ comment.commentor }</h5>
+                              <p>
+                                { comment.text.split("\n").map((i,key) => {
+                                    return <div key={key}>{i}</div>;
+                                }) }
+                              </p>
+                          </Media.Body>
+                        </Media>
+                        : 
+                          <Media className="ml-5">
+                            <Media.Body>
+                              <h5>{ comment.commentor }</h5>
+                                <p>
+                                  { comment.text.split("\n").map((i,key) => {
+                                      return <div key={key}>{i}</div>;
+                                  }) }
+                                </p>
+                            </Media.Body>
+                          </Media>
                   ))
                 } 
           </div>
