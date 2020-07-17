@@ -6,6 +6,7 @@ import Posts from './Posts/Posts';
 import Login from './Login/Login';
 import Profile from './Profile/Profile';
 import NewPost from './CreatePosts/NewPost';
+import UpdatePost from './Post/UpdatePost';
 
 class App extends Component {
 
@@ -31,7 +32,7 @@ class App extends Component {
     const token = localStorage.getItem('loggedIn');
     console.log(token);
 
-  return (
+    return (
       <div>
         <NavBar callback={this.logout}/>
         <Route exact path='/' component={Posts}/>
@@ -39,6 +40,7 @@ class App extends Component {
         {localStorage.getItem('loggedIn') != "true" && <Route exact path='/login' component={() => <Login callback={this.login}/>}/>}
         <Route exact path='/profile' component={Profile}/>
         <Route exact path='/post' component={NewPost}/>
+        <Route exact path='/post/:postId/update' component={UpdatePost}/>
       </div>
     );
   }

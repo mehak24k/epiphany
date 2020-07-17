@@ -17,7 +17,7 @@
     "mdbreact": "^4.27.0",
     "path": "^0.12.7",
     "react": "^16.13.1",
-    "react-bootstrap": "^1.0.1",
+    "react-bootstrap": "^1.2.2",
     "react-dom": "^16.13.1",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
@@ -25,10 +25,10 @@
     "react-truncate": "^2.4.0"
   },
   "scripts": {
-    "start": "node server.js",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject", 
+    "eject": "react-scripts eject",
     "heroku-postbuild": "cd frontend && yarn install && yarn build"
   },
   "eslintConfig": {
