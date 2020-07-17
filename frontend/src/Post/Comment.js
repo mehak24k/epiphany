@@ -11,15 +11,15 @@ class Comment extends Component {
     };
   }
 
-  updateComment(value) {
+  updateComment(event) {
     this.setState({
-      text: value,
-    });
+        [event.target.name]: event.target.value
+      });
   }
 
   submit(event) {
     let postData = {"text": this.state.text, "user": localStorage.getItem("")}
-    axios.post('https://epiphany-test-three.herokuapp.com/posts/${params.postId}/comment', postData)
+    axios.post('http://localhost:5000/posts/${params.postId}/comment', postData)
     .then((response) => {
       console.log(response);
       this.setState({
@@ -34,8 +34,8 @@ class Comment extends Component {
   render() {
     return (
         <Form onSubmit={this.submit}> 
-          <Form.Group controlId="comment">
-              <Form.Control as="textarea" name="comment" placeholder="Any comments?" onChange={this.updateComment} />
+          <Form.Group controlId="text">
+              <Form.Control as="textarea" name="text" placeholder="Any comments?" onChange={this.updateComment} />
           </Form.Group>
           <Button variant="success" type="submit">Comment</Button>
         </Form>

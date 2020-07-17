@@ -18,7 +18,7 @@ class Post extends Component {
 
   async componentDidMount() {
     const { match: { params } } = this.props;
-    const post = (await axios.get(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}`)).data;
+    const post = (await axios.get(`http://localhost:5000/posts/${params.postId}`)).data;
     this.setState({
       post: post.json_post,
     });
@@ -26,7 +26,7 @@ class Post extends Component {
 
   async refreshPage() {
     const { match: { params } } = this.props;
-    const post = (await axios.get(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}`)).data;
+    const post = (await axios.get(`http://localhost:5000/posts/${params.postId}`)).data;
     this.setState({
       post: post.json_post,
     });
@@ -34,7 +34,7 @@ class Post extends Component {
 
   async submitComment(comment) {
     const { match: { params } } = this.props;
-    await axios.post(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}/comment`, {
+    await axios.post(`http://localhost:5000/posts/${params.postId}/comment`, {
       comment,
     });
     await this.refreshPage();
@@ -72,7 +72,7 @@ class Post extends Component {
             <hr className="my-4" />
             <Comment postId={post.id} submitComment={this.submitComment}/>
             <hr className="my-4" />
-            <p>Discussion: {post.comments} </p>
+            <p>Discussion:</p>
               <p className="lead">
               {
                 post.comments && post.comments.map((comment, idx) => (

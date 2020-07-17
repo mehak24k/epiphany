@@ -2,8 +2,8 @@ from flask import Blueprint, flash, g, redirect, render_template, request, url_f
 from flask_login import login_required, current_user
 from werkzeug.exceptions import abort
 from flask_cors import cross_origin, CORS
-from models import User, Post
-from app import db
+from .models import User, Post, Comment
+from . import db
 
 bp = Blueprint('blog', __name__)
 
@@ -50,7 +50,7 @@ def get_comments(post_id):
 @bp.route('/posts/<int:post_id>')
 def indiv_post(post_id):
     post = get_post(post_id, False)
-    comments = get_post(post_id)
+    comments = get_comments(post_id)
 
     if post[1] != None:
         flash(post[1])
@@ -64,9 +64,9 @@ def indiv_post(post_id):
         tags.append({'name': tag.name})
 
     for comment in comments:
-        comm.append({'comment': comment, 'id': comment.id})
+        comm.append({'comment': comment.text, 'commentor': comment.user.name, 'comment_id': comment.id})
     
-    json_post = {'id': post[0].id, 'title': post[0].title, 'body': post[0].body, 'tags': tags, 'comments': comments}
+    json_post = {'id': post[0].id, 'title': post[0].title, 'body': post[0].body, 'tags': tags, 'comments': comm}
 
     return jsonify({'json_post': json_post})
 
