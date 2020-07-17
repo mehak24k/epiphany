@@ -25,11 +25,7 @@ class Post extends Component {
 
   async componentDidMount() {
     const { match: { params } } = this.props;
-<<<<<<< HEAD
-    const post = (await axios.get(`http://localhost:5000/posts/${params.postId}`)).data;
-=======
     const post = (await axios.get(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}`)).data;
->>>>>>> 2aa9a0ce8e516104becbc9de37b180d56187f039
     this.setState({
       post: post.json_post,
     });
@@ -45,7 +41,7 @@ class Post extends Component {
     const { match: { params } } = this.props;
     let postData = {"text": this.state.text, "user_email": localStorage.getItem('userEmail'), "post_id": params.postId}
     console.log(postData);
-    axios.post(`http://localhost:5000/posts/${params.postId}/comment`, postData)
+    axios.post(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}/comment`, postData)
     .then((response) => {
       console.log(response);
     }, (error) => {
