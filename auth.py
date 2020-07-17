@@ -71,21 +71,25 @@ def login_post():
     else:
         return jsonify({'obj': obj}), 200
 
-@auth.route('/signup')
-def signup():
-    return render_template('signup.html')
+@auth.route('/signup', methods=['OPTIONS'])
+@cross_origin()
+def signup_options():
+    response = {'hello'}
+    return jsonify({'response': response}), 204
 
 @auth.route('/signup', methods=['POST'])
+@cross_origin()
 def signup_post():
-    email = request.form.get('email')
-    name = request.form.get('name')
-    password = request.form.get('password')
+    signupData = request.get_json(force=True)
+    name = signupData['name'];
+    email = signupData['email'];
+    password = signupData['password'];
 
     user = User.query.filter_by(email=email).first() # if this returns a user, then the email already exists in database
 
     if user: # if a user is found, we want to redirect back to signup page so user can try again
-        flash('Email address already exists')
-        return redirect(url_for('auth.signup'))
+        response = []
+        return jsonify({'response': response}), 206
 
     # create new user with the form data. Hash the password so plaintext version isn't saved.
     new_user = User(email=email, name=name, password=generate_password_hash(password, method='sha256'))
@@ -96,6 +100,7 @@ def signup_post():
 
     token = s.dumps(email, salt='email-confirm')
     msg = Message('Confirm Email', sender='epiphany.orbital@gmail.com', recipients=[email])
+    # change url to that in frontend react app to be sent through email here
     link = url_for('auth.confirm_email', token=token, _external=True)
     msg.body = 'Your link is {}'.format(link)
 
@@ -103,7 +108,9 @@ def signup_post():
 
     new_user.email_confirmation_sent_on = datetime.now()
     db.session.commit()
-    return redirect(url_for('auth.email_sent'))
+
+    response = []
+    return jsonify({'response': response}), 200
 
 @auth.route('/confirm_email/<token>')
 def confirm_email(token):
@@ -126,7 +133,8 @@ def email_confirmed():
     user.email_confirmed = True
     # commits the changes to the database
     db.session.commit()
-    return render_template('email_confirmed.html', email=request.args.get('email'))
+    #return render_template('email_confirmed.html', email=request.args.get('email'))
+    return redirect('http://localhost:3000/email_confirmed')
 
 @auth.route('/logout')
 @login_required
@@ -159,3 +167,34 @@ def profile():
         posts.append({'id': post.id, 'title': post.title, 'body': post.body, 'tags': tags})
 
     return jsonify({'posts': posts}), 206
+
+@auth.route('/users/<int:user_id>', methods=['OPTIONS'])
+@cross_origin()
+def user_options():
+    response = {'hello'}
+    return jsonify({'response': response}), 204
+
+@auth.route('/users/<int:user_id>', methods=['POST'])
+@cross_origin()
+def user(user_id):
+    user_data = request.get_json(force=True)
+    user_id = user_data['id'];
+    user = User.query.filter_by(id=user_id).first()
+    posts_list = user.posts
+    posts = []
+    #posts.append(posts_list)
+
+    for post in posts_list:
+        tags_list = post.tags
+        tags = []
+
+        for tag in tags_list:
+            tags.append({'name': tag.name})
+        posts.append({'id': post.id, 'title': post.title, 'body': post.body, 'tags': tags})
+
+    user_info = []
+    user_info.append({'name': user.name})
+    user_info.append({'points': user.points})
+    user_info.append({'posts': posts})
+
+    return jsonify({'user_info': user_info}), 206

@@ -22,7 +22,7 @@ def build_actual_response(response):
 
 @main.route('/main')
 def main_index():
-    posts_list = Post.query.all()
+    posts_list = db.session.query(Post).join(User).filter(User.id == Post.user_id).order_by(Post.timestamp.desc()).all()
     posts = []
     full_tag_list = Tag.query.all()
     all_tags = []
@@ -35,7 +35,7 @@ def main_index():
 
         for tag in tags_list:
             tags.append({'name': tag.name})
-        posts.append({'id': post.id, 'title': post.title, 'body': post.body, 'tags': tags, 'user': User.query.filter_by(id=post.user_id).first().name, 'time': post.timestamp.strftime('%x %H:%M')})
+        posts.append({'id': post.id, 'user_id': post.user_id, 'title': post.title, 'body': post.body, 'tags': tags, 'user': User.query.filter_by(id=post.user_id).first().name, 'time': post.timestamp.strftime('%x %H:%M')})
 
     data = []
     data.append(posts)

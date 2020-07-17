@@ -14,6 +14,7 @@ import {Autocomplete} from '@material-ui/lab/';
 import Card from 'react-bootstrap/Card'
 import CardDeck from 'react-bootstrap/CardDeck'
 import Container from 'react-bootstrap/Container'
+import Alert from 'react-bootstrap/Alert'
 
 class Posts extends Component {
 
@@ -33,16 +34,14 @@ class Posts extends Component {
   }
 
   async componentDidMount() {
-      const data = (await axios.get('https://epiphany-test-three.herokuapp.com/main')).data;
-      console.log(data.data[0]);
+      const data = (await axios.get('http://localhost:5000/main')).data;
+
       const posts = data.data[0];
       const tags = data.data[1];
-      console.log(posts);
       let arr = [];
       for (var i in posts) {
         arr.push(posts[i])
       }
-      console.log(arr);
       let tagArr = [];
       for (var j in tags) {
         tagArr.push(tags[j])
@@ -52,9 +51,6 @@ class Posts extends Component {
         filteredPosts: arr,
         tagsList: tagArr,
       });
-      console.log(this.state.posts);
-      console.log(this.state.filteredPosts);
-      console.log(this.state.tagsList);
   }
 
   filterPosts(event) {
@@ -67,7 +63,6 @@ class Posts extends Component {
   }
 
   deleteTag(event) {
-    console.log(event.target.id)
     let arr = [];
     if (this.state.tags === null){
       arr = [];
@@ -76,7 +71,6 @@ class Posts extends Component {
     }
 
     const index = arr.indexOf(event.target.id)
-    console.log(index);
     arr.splice(index, 1)
     this.setState({
       tags: arr,
@@ -98,43 +92,59 @@ class Posts extends Component {
         return check;
       }),
     })
-    console.log(arr);
-
   }
 
   filterTags(event) {
-    if (event.keyCode === 39) {
-      let arr = [];
-      if (this.state.tags === null){
-        arr = [];
+    if (event.keyCode === 13) {
+      if (this.state.tags !== null && this.state.tags.some(tag => tag.toLowerCase() === event.target.value.toLowerCase())) {
+        this.setState({
+          errorMessage: "Tag has already been added."
+        })
+      } else if (!this.state.tagsList.some(tag => tag.name.toLowerCase() === event.target.value.toLowerCase())) {
+        this.setState({
+          errorMessage: "Tag does not exist."
+        })
       } else {
-        arr = this.state.tags;
+        this.setState({
+          errorMessage: ''
+        })
+        let arr = [];
+        if (this.state.tags === null){
+          arr = [];
+        } else {
+          arr = this.state.tags;
+        }
+        let tempArr = this.state.tagsList.map(function(value) {
+          return value.name.toLowerCase();
+        });
+        if (tempArr.indexOf(event.target.value.toLowerCase()) !== -1) {
+          arr.push(this.state.tagsList[tempArr.indexOf(event.target.value.toLowerCase())].name);
+        } else {
+          arr.push(event.target.value)
+        }
+        this.setState({
+          tags: arr,
+          filteredPosts: this.state.posts.filter(post => {
+            var check = false;
+            let count = 0;
+            arr.forEach(myTag => {
+              post.tags.forEach(tag => {
+                if (tag.name.toLowerCase().includes(myTag.toLowerCase())) {
+                  count = count + 1;
+                }
+              })
+            });
+            if (count === arr.length) {
+              check = true;
+            } else {
+              check = false;
+            }
+            return check;
+          }),
+        });
       }
-      arr.push(event.target.value)
-      this.setState({
-        tags: arr,
-        filteredPosts: this.state.posts.filter(post => {
-          var check = false;
-          let count = 0;
-          arr.forEach(myTag => {
-            post.tags.forEach(tag => {
-              if (tag.name.toLowerCase().includes(myTag.toLowerCase())) {
-                count = count + 1;
-              }
-            })
-          });
-          if (count === arr.length) {
-            check = true;
-          } else {
-            check = false;
-          }
-          return check;
-        }),
-
-      });
-    }
-    console.log(this.state.tags);
   }
+}
 
   colors = ["#ffbaba","#ffddab","#fdffcf","#bdffb3","#b8fff9","#ffd1ea","#edc4ff"];
   getColor(){
@@ -161,7 +171,7 @@ class Posts extends Component {
         <Col>
           <Form>
             <Form.Group controlId="formSearch">
-            <Form.Control label="freeSolo" type="text" placeholder="Search posts!" onChange={this.filterPosts}/>
+            <Form.Control onKeyPress={(e) => { e.key === 'Enter' && e.preventDefault(); }} label="freeSolo" type="text" placeholder="Search posts!" onChange={this.filterPosts}/>
               <Form.Text className="text-muted">
                 Here, you can search with text that matches the title or body of the posts.
               </Form.Text>
@@ -169,6 +179,11 @@ class Posts extends Component {
           </Form>
           </Col>
         </div>
+
+        <Row className="justify-content-md-center">
+        { this.state.errorMessage &&
+          <Alert variant='danger'> { this.state.errorMessage } </Alert> }
+        </Row>
         <div className="row">
           <Row style={{paddingLeft: 25}}>
           {this.state.tags && this.state.tags.map(tag => (
@@ -187,7 +202,7 @@ class Posts extends Component {
           freeSolo
           options={top100Films.map((option) => option.name)}
           renderInput={(params) => (
-            <TextField {...params}  id="standard-full-width" label="Search with tags!" margin="normal" variant="outlined" onKeyUp={this.filterTags}/>
+            <TextField {...params}  onKeyPress={(e) => { e.key === 'Enter' && e.preventDefault(); }} id="standard-full-width" label="Search with tags!" margin="normal" variant="outlined" onKeyUp={this.filterTags}/>
           )}
         />
         </div>
@@ -197,8 +212,9 @@ class Posts extends Component {
         {this.state.posts === null && <div> <Spinner animation="border" variant="primary" /> <p>Loading posts...</p></div>}
         {this.state.filteredPosts && this.state.filteredPosts.map(post => (
           <Row className="justify-content-md-center">
-          <Link key={myKey()} to={`/post/${post.id}`}>
+
           <Card key={post.id} style={{backgroundColor: this.getColor(), marginTop: 10, marginBottom: 10, alignItems: "center", width: '50rem'}}>
+            <Link key={myKey()} to={`/post/${post.id}`}>
                 <Card.Body>
                   <Card.Title style={{color: "#161717", textAlign: "center"}}>{post.title}</Card.Title>
                   <Row className="justify-content-md-center">
@@ -215,11 +231,13 @@ class Posts extends Component {
                   </Truncate>
                   </Card.Text>
                 </Card.Body>
+                </Link>
+                <Link key={myKey()} to={`/users/${post.user_id}`}>
                 <Card.Footer className="text-muted" style={{color: "#161717", textAlign: "center"}}>
                 Posted by {post.user} at {post.time}
                 </Card.Footer>
+                </Link>
             </Card>
-            </Link>
             </Row>
           ))
         }

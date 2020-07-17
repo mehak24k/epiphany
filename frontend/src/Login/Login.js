@@ -1,9 +1,10 @@
-import React, {Component} from 'react';
+import React, {Component, useState, render} from 'react';
 import axios from 'axios';
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Col from 'react-bootstrap/Col'
 import { Redirect } from "react-router-dom";
+import Alert from 'react-bootstrap/Alert'
 
 class Login extends Component {
   constructor(props) {
@@ -12,15 +13,11 @@ class Login extends Component {
       email: '',
       password:'',
       loggedIn: false,
+      errorMessage: '',
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  componentDidMount() {
-    const token = localStorage.getItem('loggedIn');
-    console.log(token);
   }
 
   handleChange(event) {
@@ -30,19 +27,37 @@ class Login extends Component {
   }
 
   async handleSubmit(event) {
-    let loginData = {"email": this.state.email, "password": this.state.password}
-    axios.post('https://epiphany-test-three.herokuapp.com/login', loginData)
-    .then((response) => {
-      //console.log(response.data.user_info[0].name);
-      localStorage.setItem('userName', response.data.user_info[0].name);
-      localStorage.setItem('userEmail', this.state.email);
-      localStorage.setItem('userPoints', response.data.user_info[0].points);
-      localStorage.setItem('loggedIn', true);
-      this.setState({loggedIn: true});
-      this.props.callback();
-    }, (error) => {
-      console.log('Looks like there was a problem: \n', error);
-    });
+    if (this.state.email === '' || this.state.password === '') {
+      this.setState({
+        errorMessage: "Please fill in all fields."
+      })
+    } else {
+      let loginData = {"email": this.state.email, "password": this.state.password}
+      axios.post('https://epiphany-test-three.herokuapp.com/login', loginData)
+      .then((response) => {
+        console.log(response);
+        if (response.status === 200) {
+          localStorage.setItem('userName', response.data.user_info[0].name);
+          localStorage.setItem('userEmail', this.state.email);
+          localStorage.setItem('userPoints', response.data.user_info[0].points);
+          localStorage.setItem('loggedIn', true);
+          this.setState({loggedIn: true});
+          this.props.callback();
+        } else {
+          if (response.status === 206) {
+            this.setState({
+              errorMessage: "Please confirm your email before login."
+            });
+          } else {
+            this.setState({
+              errorMessage: "Invalid email or password. Please check your login details and try again."
+            });
+          }
+        }
+      }, (error) => {
+        console.log('Looks like there was a problem: \n', error);
+      });
+    }
 
       event.preventDefault();
   }
@@ -56,6 +71,9 @@ class Login extends Component {
     }
     return (
       <Col md={{ span: "4", offset: "4" }}>
+      { this.state.errorMessage &&
+        <Alert variant='danger'> { this.state.errorMessage } </Alert> }
+
         <Form onSubmit={this.handleSubmit}>
           <Form.Group controlId="formGroupEmail">
               <Form.Label>Email address</Form.Label>

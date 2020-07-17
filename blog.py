@@ -1,8 +1,9 @@
 from flask import Blueprint, flash, g, redirect, render_template, request, url_for, jsonify
 from flask_login import login_required, current_user
+from sqlalchemy import and_
 from werkzeug.exceptions import abort
 from flask_cors import cross_origin, CORS
-from .models import User, Post, Comment
+from .models import User, Post, Comment, Tag
 from . import db
 
 bp = Blueprint('blog', __name__)
@@ -21,9 +22,24 @@ def create():
     postData = request.get_json(force=True)
     title = postData['title']
     body = postData['body']
+    tags = postData['tags']
+    if postData['newTags'] is None:
+        newTags = []
+    else:
+        newTags = postData['newTags']
+
     user_id = User.query.filter_by(email=postData['user']).first().id
 
     new_post = Post(title=title, body=body, user_id=user_id)
+
+    for tag in tags:
+        curr_tag = db.session.query(Tag).filter_by(name=tag).first()
+        new_post.tags.append(curr_tag)
+
+    for newTag in newTags:
+        new_tag = Tag(name=newTag)
+        db.session.add(new_tag)
+
     db.session.add(new_post)
     db.session.commit()
     response = []
