@@ -21,11 +21,13 @@ class UpdatePost extends Component {
   async componentDidMount() {
     const { match: { params } } = this.props;
     const post = (await axios.get(`http://localhost:5000/posts/${params.postId}/update`)).data;
-    console.log(post);
+    console.log(post.json_post.body);
+
     this.setState({
       title: post.json_post.title,
       body: post.json_post.body
     });
+
   }
 
   handleChange(event) {
@@ -62,11 +64,11 @@ class UpdatePost extends Component {
         <Form onSubmit={this.handleSubmit}>
           <Form.Group controlId="formGroupTitle">
               <Form.Label>Title</Form.Label>
-              <Form.Control type="text" name="title" placeholder="Enter title" title={this.state.title} onChange={this.handleChange} />
+              <Form.Control type="text" name="title" value={this.state.title} title={this.state.title} onChange={this.handleChange} />
           </Form.Group>
             <Form.Group controlId="formGroupPassword">
               <Form.Label>Body</Form.Label>
-              <Form.Control as="textarea" rows="15" name="body" placeholder="Body" password={this.state.body} onChange={this.handleChange}/>
+              <Form.Control as="textarea" rows="15" name="body" value={this.state.body} password={this.state.body} onChange={this.handleChange}/>
           </Form.Group>
           <Button variant="success" type="submit">Submit</Button>
         </Form>
