@@ -45,7 +45,7 @@ def get_post(post_id, check_author=True):
 
 def get_comments(post_id):
     comments = db.session.query(Comment).filter_by(post_id=post_id).order_by(Comment.path.asc(), Comment.timestamp.desc()).all()
-    return comments 
+    return comments
 
 @bp.route('/posts/<int:post_id>')
 def indiv_post(post_id):
@@ -64,8 +64,13 @@ def indiv_post(post_id):
         tags.append({'name': tag.name})
 
     for comment in comments:
+<<<<<<< HEAD
         comm.append({'text': comment.text, 'commentor': comment.user.name, 'comment_id': comment.id, 'comment_level': comment.level()})
     
+=======
+        comm.append({'comment': comment.text, 'commentor': comment.user.name, 'comment_id': comment.id})
+
+>>>>>>> 5fe71a4b7b5b4c90d9d728e2a54a4e702a8ec378
     json_post = {'id': post[0].id, 'title': post[0].title, 'body': post[0].body, 'tags': tags, 'comments': comm}
 
     return jsonify({'json_post': json_post})
@@ -107,16 +112,29 @@ def delete(post_id):
 
 @bp.route('/posts/<int:post_id>/comment', methods=['OPTIONS'])
 @cross_origin()
+<<<<<<< HEAD
 def comment_options(post_id): 
     response = {'hello'}
     return jsonify({'response': response}), 204
+=======
+def comment_options():
+    response = {'hello'}
+    return jsonify({'response': response}), 205
+>>>>>>> 5fe71a4b7b5b4c90d9d728e2a54a4e702a8ec378
 
 @bp.route('/posts/<int:post_id>/comment', methods=['POST'])
-def comment(post_id): 
+def comment(post_id):
     comment = request.get_json(force=True)
-    
-    new_comment = Comment(text=comment, user_id=current_user.id, post_id=post_id)
+    text = comment['text']
+    user_id = User.query.filter_by(email=comment['user_email']).first().id
+    post_id = comment['post_id']
+    new_comment = Comment(text=text, user_id=user_id, post_id=post_id)
     new_comment.save()
+<<<<<<< HEAD
+=======
+
+    response = []
+>>>>>>> 5fe71a4b7b5b4c90d9d728e2a54a4e702a8ec378
     return jsonify({'response': response}), 204
 
 @bp.route('/posts/<int:post_id>/category/<module>', methods=['GET'])
