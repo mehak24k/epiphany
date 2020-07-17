@@ -34,12 +34,8 @@ class Posts extends Component {
   }
 
   async componentDidMount() {
-<<<<<<< HEAD
-      const data = (await axios.get('https://epiphany-test-three.herokuapp.com/main')).data;
-      console.log(data.data[0]);
-=======
       const data = (await axios.get('http://localhost:5000/main')).data;
->>>>>>> reactbranch
+
       const posts = data.data[0];
       const tags = data.data[1];
       let arr = [];

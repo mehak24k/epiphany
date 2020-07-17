@@ -22,15 +22,12 @@ def create():
     postData = request.get_json(force=True)
     title = postData['title']
     body = postData['body']
-<<<<<<< HEAD
-=======
     tags = postData['tags']
     if postData['newTags'] is None:
         newTags = []
     else:
         newTags = postData['newTags']
 
->>>>>>> reactbranch
     user_id = User.query.filter_by(email=postData['user']).first().id
 
     new_post = Post(title=title, body=body, user_id=user_id)
