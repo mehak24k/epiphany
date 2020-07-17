@@ -23,7 +23,7 @@ class UpdatePost extends Component {
     const post = (await axios.get(`http://localhost:5000/posts/${params.postId}/update`)).data;
     console.log(post);
     this.setState({
-      title: post.json_post.title,
+      title: post.json_post.body,
       body: post.json_post.body
     });
   }
@@ -54,7 +54,7 @@ class UpdatePost extends Component {
     const { match: { params } } = this.props;
     if (redirectTo) {
         return (
-          <Redirect to={`/posts/${params.postId}`} />
+          <Redirect to={`/post/${params.postId}`} />
         );
     }
     return (
@@ -62,11 +62,11 @@ class UpdatePost extends Component {
         <Form onSubmit={this.handleSubmit}>
           <Form.Group controlId="formGroupTitle">
               <Form.Label>Title</Form.Label>
-              <Form.Control type="text" name="title" placeholder="Enter title" title={this.state.title} onChange={this.handleChange} />
+              <Form.Control type="text" name="title" value={this.state.title} onChange={this.handleChange} />
           </Form.Group>
             <Form.Group controlId="formGroupPassword">
               <Form.Label>Body</Form.Label>
-              <Form.Control as="textarea" rows="15" name="body" placeholder="Body" password={this.state.body} onChange={this.handleChange}/>
+              <Form.Control as="textarea" rows="15" name="body" value={this.state.body} onChange={this.handleChange}/>
           </Form.Group>
           <Button variant="success" type="submit">Submit</Button>
         </Form>
