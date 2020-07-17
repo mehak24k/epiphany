@@ -12,7 +12,6 @@ import EmailSent from './Signup/EmailSent';
 import EmailConfirmed from './Signup/EmailConfirmed';
 import UserProfile from './Profile/UserProfile';
 
-
 class App extends Component {
 
   constructor(props) {

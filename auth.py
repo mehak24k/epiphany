@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash, jsonify, current_app
 from werkzeug.security import generate_password_hash, check_password_hash
-from .models import User
-from . import db, s, mail, app
+from models import User
+from app import db, s, mail, app
 from flask_login import login_user, logout_user, login_required, current_user
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 from flask_mail import Mail, Message
@@ -29,9 +29,9 @@ def login_options():
 @cross_origin()
 def login_post():
     loginData = request.get_json(force=True)
-    email = loginData['email'];
-    password = loginData['password'];
-    remember = False;
+    email = loginData['email']
+    password = loginData['password']
+    remember = False
     user = User.query.filter_by(email=loginData['email']).first()
 
     # check if user actually exists
@@ -81,9 +81,9 @@ def signup_options():
 @cross_origin()
 def signup_post():
     signupData = request.get_json(force=True)
-    name = signupData['name'];
-    email = signupData['email'];
-    password = signupData['password'];
+    name = signupData['name']
+    email = signupData['email']
+    password = signupData['password']
 
     user = User.query.filter_by(email=email).first() # if this returns a user, then the email already exists in database
 
@@ -152,7 +152,7 @@ def profile_options():
 @cross_origin()
 def profile():
     user_data = request.get_json(force=True)
-    user_email = user_data['email'];
+    user_email = user_data['email']
     user = User.query.filter_by(email=user_email).first()
     posts_list = user.posts
     posts = []
@@ -178,7 +178,7 @@ def user_options():
 @cross_origin()
 def user(user_id):
     user_data = request.get_json(force=True)
-    user_id = user_data['id'];
+    user_id = user_data['id']
     user = User.query.filter_by(id=user_id).first()
     posts_list = user.posts
     posts = []
