@@ -54,7 +54,7 @@ def indiv_post(post_id):
 
     if post[1] != None:
         flash(post[1])
-        return redirect(url_for('main.index'))
+        return redirect(url_for('main.main_index'))
 
     tags_list = post[0].tags
     tags = []
@@ -70,15 +70,17 @@ def indiv_post(post_id):
 
     return jsonify({'json_post': json_post})
 
+@bp.route('/posts/<int:post_id>/update', methods=['OPTIONS'])
+@cross_origin()
+def update_options(post_id):
+    response = {'hello'}
+    return jsonify({'response': response}), 205
+
 @bp.route('/posts/<int:post_id>/update', methods=['GET', 'POST'])
 @cross_origin()
-@login_required
 def update(post_id):
-    result = get_post(post_id)
-
-    if result[1] != None:
-        flash(result[1])
-        return redirect(url_for('main.index'))
+    post = get_post(post_id, False)
+    json_post = {'id': post[0].id, 'title': post[0].title, 'body': post[0].body}
 
     if request.method == 'POST':
         postData = request.get_json(force=True)
@@ -91,19 +93,24 @@ def update(post_id):
         new_post.body = body
         db.session.commit()
         response = []
-        return redirect(url_for('main.index'))
+        return jsonify({'response': response}), 204
 
-    return render_template('blog/update.html', post=result[0])
+    return jsonify({'json_post': json_post})
+
+@bp.route('/posts/<int:post_id>/delete', methods=['OPTIONS'])
+@cross_origin()
+def delete_options(post_id):
+    response = {'hello'}
+    return jsonify({'response': response}), 205
 
 @bp.route('/posts/<int:post_id>/delete', methods=['POST'])
-@login_required
 def delete(post_id):
     post = db.session.query(Post).get(post_id)
     db.session.delete(post)
     db.session.commit()
-
-    flash("Your post has been deleted.")
-    return redirect(url_for('main.index'))
+    
+    response = []
+    return jsonify({'response': response}), 204
 
 @bp.route('/posts/<int:post_id>/comment', methods=['OPTIONS'])
 @cross_origin()

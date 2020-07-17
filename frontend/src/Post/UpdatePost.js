@@ -11,8 +11,21 @@ class UpdatePost extends Component {
     this.state = {
       title: '',
       body:'',
-      posted: false,
+      updated: false,
     };
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  async componentDidMount() {
+    const { match: { params } } = this.props;
+    const post = (await axios.get(`http://localhost:5000/posts/${params.postId}/update`)).data;
+    console.log(post);
+    this.setState({
+      title: post.json_post.title,
+      body: post.json_post.body
+    });
   }
 
   handleChange(event) {
@@ -22,12 +35,13 @@ class UpdatePost extends Component {
   }
 
   async handleSubmit(event) {
+    const { match: { params } } = this.props;
     let postData = {"title": this.state.title, "body": this.state.body, "user": localStorage.getItem("userEmail")}
-    axios.post('http://localhost:5000/create', postData)
+    axios.post(`http://localhost:5000/posts/${params.postId}/update`, postData)
     .then((response) => {
       console.log(response);
       this.setState({
-        posted: true,
+        updated: true,
       })
     }, (error) => {
       console.log('Looks like there was a problem: \n', error);
@@ -36,10 +50,11 @@ class UpdatePost extends Component {
   }
 
   render() {
-    const redirectTo = this.state.posted;
+    const redirectTo = this.state.updated;
+    const { match: { params } } = this.props;
     if (redirectTo) {
         return (
-          <Redirect to="/" />
+          <Redirect to={`/posts/${params.postId}`} />
         );
     }
     return (
@@ -58,8 +73,6 @@ class UpdatePost extends Component {
       </Col>
     );
   }
-
-
 }
 
 

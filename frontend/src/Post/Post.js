@@ -1,4 +1,6 @@
 import React, {Component} from 'react';
+import { Redirect } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import axios from 'axios';
 import Comment from './Comment'
 import Badge from 'react-bootstrap/Badge'
@@ -14,10 +16,11 @@ class Post extends Component {
     this.state = {
       post: null,
       text:'',
+      deleted: false,
     };
     this.submit = this.submit.bind(this);
     this.updateComment = this.updateComment.bind(this);
-
+    this.deletePost = this.deletePost.bind(this);
   }
 
   async componentDidMount() {
@@ -44,10 +47,32 @@ class Post extends Component {
     }, (error) => {
       console.log('Looks like there was a problem: \n', error);
     });
-      event.preventDefault();
+    event.preventDefault();
+
+  }
+
+  async deletePost() {
+    const { match: { params } } = this.props;
+    let postData = {"text": this.state.text, "user_email": localStorage.getItem('userEmail'), "post_id": params.postId}
+    console.log(postData);
+    axios.post(`http://localhost:5000/posts/${params.postId}/delete`, postData)
+    .then((response) => {
+      console.log(response);
+      this.setState({
+        deleted: true,
+      })
+    }, (error) => {
+      console.log('Looks like there was a problem: \n', error);
+    });
   }
 
   render() {
+    const deleted = this.state.deleted;
+    if (deleted) {
+      return (
+        <Redirect to="/" />
+      );
+    }
     const {post} = this.state;
     if (post === null) return <p>Loading ...</p>;
     var text = post.body
@@ -74,10 +99,17 @@ class Post extends Component {
                       return <div key={key}>{i}</div>;
                   })}
               </p>
-              {localStorage.getItem('loggedIn') === "true" && <Button variant="outline-success">Update</Button>}
-              {localStorage.getItem('loggedIn') === "true" && <Button variant="outline-danger">Delete</Button>}
+              {localStorage.getItem('loggedIn') === "true" && <Button variant="outline-success"><Link to={`${post.id}/update`}>Update</Link></Button>}
+              {localStorage.getItem('loggedIn') === "true" && <Button variant="outline-danger" onClick={() => {this.deletePost()}}>Delete</Button>}
             <hr className="my-4" />
-            <Comment postId={post.id} submitComment={this.submitComment}/>
+
+            <Form onSubmit={this.submit}>
+              <Form.Group controlId="text">
+                  <Form.Control as="textarea" name="text" placeholder="Any comments?" text={this.state.text} onChange={this.updateComment} />
+              </Form.Group>
+              <Button variant="success" type="submit">Comment</Button>
+            </Form>
+
             <hr className="my-4" />
                 {
                   post.comments.map(comment => (
