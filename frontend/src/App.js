@@ -6,10 +6,14 @@ import Posts from './Posts/Posts';
 import Login from './Login/Login';
 import Profile from './Profile/Profile';
 import NewPost from './CreatePosts/NewPost';
+<<<<<<< HEAD
+import UpdatePost from './Post/UpdatePost';
+=======
 import Signup from './Signup/Signup';
 import EmailSent from './Signup/EmailSent';
 import EmailConfirmed from './Signup/EmailConfirmed';
 import UserProfile from './Profile/UserProfile';
+>>>>>>> 2aa9a0ce8e516104becbc9de37b180d56187f039
 
 class App extends Component {
 
@@ -35,7 +39,7 @@ class App extends Component {
     const token = localStorage.getItem('loggedIn');
     console.log(token);
 
-  return (
+    return (
       <div>
         <NavBar callback={this.logout}/>
         <Route exact path='/' component={Posts}/>
@@ -47,6 +51,7 @@ class App extends Component {
         {localStorage.getItem('loggedIn') != "true" && <Route exact path='/login' component={() => <Login callback={this.login}/>}/>}
         <Route exact path='/profile' component={Profile}/>
         <Route exact path='/post' component={NewPost}/>
+        <Route exact path='/post/:postId/update' component={UpdatePost}/>
       </div>
     );
   }
