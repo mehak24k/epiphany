@@ -66,7 +66,7 @@ def indiv_post(post_id):
     for comment in comments:
         comm.append({'text': comment.text, 'commentor': comment.user.name, 'comment_id': comment.id, 'comment_level': comment.level()})
 
-    json_post = {'id': post[0].id, 'title': post[0].title, 'body': post[0].body, 'tags': tags, 'comments': comm}
+    json_post = {'id': post[0].id, 'user_email': post[0].user.email, 'title': post[0].title, 'body': post[0].body, 'tags': tags, 'comments': comm}
 
     return jsonify({'json_post': json_post})
 

@@ -93,14 +93,13 @@ class Post extends Component {
             }
             </Row>
             <hr className="my-4" />
-            <p>Content:</p>
               <p className="lead">
                   {text.split("\n").map((i,key) => {
                       return <div key={key}>{i}</div>;
                   })}
               </p>
-              {localStorage.getItem('loggedIn') === "true" && <Button variant="outline-success"><Link to={`${post.id}/update`}>Update</Link></Button>}
-              {localStorage.getItem('loggedIn') === "true" && <Button variant="outline-danger" onClick={() => {this.deletePost()}}>Delete</Button>}
+              {(localStorage.getItem('loggedIn') === "true" && localStorage.getItem('userEmail') === post.user_email) && <Link to={`${post.id}/update`}><Button variant="outline-success">Update</Button></Link>}
+              {(localStorage.getItem('loggedIn') === "true" && localStorage.getItem('userEmail') === post.user_email) && <Button variant="outline-danger" onClick={() => {this.deletePost()}}>Delete</Button>}
             <hr className="my-4" />
 
             <Form onSubmit={this.submit}>
