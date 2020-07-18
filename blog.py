@@ -125,7 +125,7 @@ def delete(post_id):
     post = db.session.query(Post).get(post_id)
     db.session.delete(post)
     db.session.commit()
-    
+
     response = []
     return jsonify({'response': response}), 204
 
