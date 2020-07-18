@@ -35,13 +35,15 @@ def create():
 
     new_post.tags = []
 
-    for tag in tags:
-        curr_tag = db.session.query(Tag).filter_by(name=tag).first()
-        new_post.tags.append(curr_tag)
-
     for newTag in newTags:
         new_tag = Tag(name=newTag)
         db.session.add(new_tag)
+    
+    db.session.commit()
+
+    for tag in tags:
+        curr_tag = db.session.query(Tag).filter_by(name=tag).first()
+        new_post.tags.append(curr_tag)
 
     db.session.add(new_post)
     db.session.commit()
