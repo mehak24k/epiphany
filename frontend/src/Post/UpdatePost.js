@@ -21,11 +21,13 @@ class UpdatePost extends Component {
   async componentDidMount() {
     const { match: { params } } = this.props;
     const post = (await axios.get(`http://localhost:5000/posts/${params.postId}/update`)).data;
-    console.log(post);
+    console.log(post.json_post.body);
+
     this.setState({
       title: post.json_post.body,
       body: post.json_post.body
     });
+
   }
 
   handleChange(event) {
