@@ -134,7 +134,7 @@ def email_confirmed():
     # commits the changes to the database
     db.session.commit()
     #return render_template('email_confirmed.html', email=request.args.get('email'))
-    return redirect('https://whispering-oasis-25381.herokuapp.com//email_confirmed')
+    return redirect('https://whispering-oasis-25381.herokuapp.com/email_confirmed')
 
 @auth.route('/logout')
 @login_required

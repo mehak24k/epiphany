@@ -81,7 +81,7 @@ def indiv_post(post_id):
 
     for comment in comments:
         comm.append({'text': comment.text, 'commentor': comment.user.name, 'comment_id': comment.id, 'comment_level': comment.level()})
-    
+
     json_post = {'id': post[0].id, 'user_email': post[0].user.email, 'title': post[0].title, 'body': post[0].body, 'tags': tags, 'comments': comm}
 
     return jsonify({'json_post': json_post})
@@ -120,11 +120,12 @@ def delete_options(post_id):
     return jsonify({'response': response}), 205
 
 @bp.route('/posts/<int:post_id>/delete', methods=['POST'])
+@cross_origin()
 def delete(post_id):
     post = db.session.query(Post).get(post_id)
     db.session.delete(post)
     db.session.commit()
-    
+
     response = []
     return jsonify({'response': response}), 204
 
