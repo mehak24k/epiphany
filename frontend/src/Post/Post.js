@@ -118,7 +118,10 @@ class Post extends Component {
                               <h5>{ comment.commentor }</h5>
                               <p>
                                 { comment.text.split("\n").map((i,key) => {
-                                  return <div key={key}>{i}</div>;
+                                  return <div key={key}>
+                                    {i}
+                                    <p><small>reply</small></p>
+                                  </div>;
                                 }) }
                               </p>
                             </Media.Body>
@@ -129,7 +132,10 @@ class Post extends Component {
                             <h5>{ comment.commentor }</h5>
                               <p>
                                 { comment.text.split("\n").map((i,key) => {
-                                    return <div key={key}>{i}</div>;
+                                    return <div key={key}>
+                                      {i}
+                                      <p><small>reply</small></p>
+                                    </div>;
                                 }) }
                               </p>
                           </Media.Body>
@@ -140,7 +146,10 @@ class Post extends Component {
                               <h5>{ comment.commentor }</h5>
                                 <p>
                                   { comment.text.split("\n").map((i,key) => {
-                                      return <div key={key}>{i}</div>;
+                                      return <div key={key}>
+                                        {i}
+                                        <p><small>reply</small></p>
+                                      </div>;
                                   }) }
                                 </p>
                             </Media.Body>
