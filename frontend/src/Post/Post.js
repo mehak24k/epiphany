@@ -9,6 +9,7 @@ import Col from 'react-bootstrap/Col'
 import Button from 'react-bootstrap/Button'
 import Media from 'react-bootstrap/Media'
 import Form from 'react-bootstrap/Form'
+import Collapse from 'react-bootstrap/Collapse'
 
 class Post extends Component {
   constructor(props) {
@@ -70,16 +71,22 @@ class Post extends Component {
   }
 
   render() {
+    // checking for deleted post
     const deleted = this.state.deleted;
     if (deleted) {
       return (
         <Redirect to="/" />
       );
     }
+
+    // post stuffs
     const {post} = this.state;
     if (post === null) return <p>Loading ...</p>;
     var text = post.body
     console.log(post.tags);
+
+    // comment stuffs 
+    const [open, setOpen] = useState(false);
     return (
       <div className="container">
         <div className="row">
@@ -124,6 +131,20 @@ class Post extends Component {
                                   return <div key={key}>
                                     {i}
                                     <p><small>reply · { comment.time }</small></p>
+                                      <Button
+                                          onClick={() => setOpen(!open)}
+                                          aria-controls="example-collapse-text"
+                                          aria-expanded={open}
+                                        >
+                                          click
+                                      </Button>
+                                      <Collapse in={open}>
+                                          <div id="example-collapse-text">
+                                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus
+                                            terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer
+                                            labore wes anderson cred nesciunt sapiente ea proident.
+                                          </div>
+                                      </Collapse>
                                     </div>;
                                 }) }
                               </p>
