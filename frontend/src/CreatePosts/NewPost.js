@@ -138,7 +138,7 @@ class NewPost extends Component {
         errorMessage: "Please fill in all fields."
       })
     } else {
-      axios.post('https://epiphany-test-three.herokuapp.com/create', postData)
+      axios.post('http://localhost:5000/create', postData)
       .then((response) => {
         console.log(response);
         this.setState({
