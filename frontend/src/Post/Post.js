@@ -112,7 +112,7 @@ class Post extends Component {
             <hr className="my-4" />
                 {
                   post.comments.map(comment => (
-                    comment.comment_level === 1 ? 
+                    comment.comment_level === 1 ?
                           <Media className="mt-1">
                             <Media.Body>
                               <h5>{ comment.commentor }</h5>
@@ -123,7 +123,7 @@ class Post extends Component {
                               </p>
                             </Media.Body>
                           </Media>
-                    : comment.comment_level === 2 ? 
+                    : comment.comment_level === 2 ?
                         <Media className="ml-3">
                           <Media.Body>
                             <h5>{ comment.commentor }</h5>
@@ -134,7 +134,7 @@ class Post extends Component {
                               </p>
                           </Media.Body>
                         </Media>
-                        : 
+                        :
                           <Media className="ml-5">
                             <Media.Body>
                               <h5>{ comment.commentor }</h5>
@@ -146,7 +146,7 @@ class Post extends Component {
                             </Media.Body>
                           </Media>
                   ))
-                } 
+                }
           </div>
         </div>
       </div>
