@@ -23,16 +23,17 @@ def create():
     title = postData['title']
     body = postData['body']
     tags = postData['tags']
-    newTags = postData['newTags']
     
-    # if postData['newTags'] is None:
-    #     newTags = []
-    # else:
-    #     newTags = postData['newTags']
+    if postData['newTags'] is None:
+        newTags = []
+    else:
+        newTags = postData['newTags']
 
     user_id = User.query.filter_by(email=postData['user']).first().id
 
     new_post = Post(title=title, body=body, user_id=user_id)
+
+    new_post.tags = []
 
     for tag in tags:
         curr_tag = db.session.query(Tag).filter_by(name=tag).first()
