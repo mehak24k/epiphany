@@ -39,7 +39,7 @@ class UpdatePost extends Component {
   async handleSubmit(event) {
     const { match: { params } } = this.props;
     let postData = {"title": this.state.title, "body": this.state.body, "user": localStorage.getItem("userEmail")}
-    axios.post(`http://localhost:5000/posts/${params.postId}/update`, postData)
+    axios.post(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}/update`, postData)
     .then((response) => {
       console.log(response);
       this.setState({
