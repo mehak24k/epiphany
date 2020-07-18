@@ -80,7 +80,7 @@ def indiv_post(post_id):
         tags.append({'name': tag.name})
 
     for comment in comments:
-        comm.append({'text': comment.text, 'commentor': comment.user.name, 'comment_id': comment.id, 'comment_level': comment.level()})
+        comm.append({'text': comment.text, 'commentor': comment.user.name, 'comment_id': comment.id, 'comment_level': comment.level(), 'time': comment.timestamp})
     
     json_post = {'id': post[0].id, 'user_email': post[0].user.email, 'title': post[0].title, 'body': post[0].body, 'tags': tags, 'comments': comm}
 
@@ -120,6 +120,7 @@ def delete_options(post_id):
     return jsonify({'response': response}), 205
 
 @bp.route('/posts/<int:post_id>/delete', methods=['POST'])
+@cross_origin()
 def delete(post_id):
     post = db.session.query(Post).get(post_id)
     db.session.delete(post)
@@ -143,8 +144,7 @@ def comment(post_id):
     new_comment = Comment(text=text, user_id=user_id, post_id=post_id)
     new_comment.save()
 
-    response = []
-    return jsonify({'response': response}), 204
+    return redirect(url_for('blog.indiv_post', post_id=post_id))
 
 @bp.route('/posts/<int:post_id>/category/<module>', methods=['GET'])
 @login_required
@@ -154,7 +154,7 @@ def category(module, post_id):
     db.session.commit()
 
     flash("Your post is now under module " + module)
-    return redirect(url_for('main.index'))
+    return redirect(url_for('main.main_index'))
 
 @bp.route('/add_module', methods=['POST'])
 def add_module():

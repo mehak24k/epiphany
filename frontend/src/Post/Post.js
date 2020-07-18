@@ -24,6 +24,10 @@ class Post extends Component {
   }
 
   async componentDidMount() {
+    this.refreshPost();
+  }
+
+  async refreshPost() {
     const { match: { params } } = this.props;
     const post = (await axios.get(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}`)).data;
     this.setState({
@@ -48,14 +52,13 @@ class Post extends Component {
       console.log('Looks like there was a problem: \n', error);
     });
     event.preventDefault();
-
   }
 
   async deletePost() {
     const { match: { params } } = this.props;
     let postData = {"text": this.state.text, "user_email": localStorage.getItem('userEmail'), "post_id": params.postId}
     console.log(postData);
-    axios.post(`http://localhost:5000/posts/${params.postId}/delete`, postData)
+    axios.post(`http://epiphany-test-three.herokuapp.com/posts/${params.postId}/delete`, postData)
     .then((response) => {
       console.log(response);
       this.setState({
@@ -118,7 +121,10 @@ class Post extends Component {
                               <h5>{ comment.commentor }</h5>
                               <p>
                                 { comment.text.split("\n").map((i,key) => {
-                                  return <div key={key}>{i}</div>;
+                                  return <div key={key}>
+                                    {i}
+                                    <p><small>reply · { comment.time }</small></p>
+                                    </div>;
                                 }) }
                               </p>
                             </Media.Body>
@@ -129,7 +135,10 @@ class Post extends Component {
                             <h5>{ comment.commentor }</h5>
                               <p>
                                 { comment.text.split("\n").map((i,key) => {
-                                    return <div key={key}>{i}</div>;
+                                    return <div key={key}>
+                                      {i}
+                                      <p><small>reply · { comment.time }</small></p>
+                                    </div>;
                                 }) }
                               </p>
                           </Media.Body>
@@ -140,7 +149,10 @@ class Post extends Component {
                               <h5>{ comment.commentor }</h5>
                                 <p>
                                   { comment.text.split("\n").map((i,key) => {
-                                      return <div key={key}>{i}</div>;
+                                      return <div key={key}>
+                                        {i}
+                                        <p><small>reply · { comment.time }</small></p>
+                                      </div>;
                                   }) }
                                 </p>
                             </Media.Body>
