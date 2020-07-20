@@ -202,7 +202,7 @@ class Posts extends Component {
           freeSolo
           options={top100Films.map((option) => option.name)}
           renderInput={(params) => (
-            <TextField {...params}  onKeyPress={(e) => { e.key === 'Enter' && e.preventDefault(); }} id="standard-full-width" label="Search with tags!" margin="normal" variant="outlined" onKeyUp={this.filterTags}/>
+            <TextField {...params}  onKeyPress={(e) => { e.key === 'Enter' && e.preventDefault(); }} id="standard-full-width" label="Search with tags! Press enter to add a tag." margin="normal" variant="outlined" onKeyUp={this.filterTags}/>
           )}
         />
         </div>

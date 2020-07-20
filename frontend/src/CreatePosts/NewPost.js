@@ -196,7 +196,7 @@ class NewPost extends Component {
           </div>
             <Form.Group controlId="formGroupPassword">
               <Form.Label>Body</Form.Label>
-              <Form.Control onKeyPress={(e) => { e.key === 'Enter' && e.preventDefault(); }} as="textarea" rows="15" name="body" placeholder="Body" body={this.state.body} onChange={this.handleChange}/>
+              <Form.Control as="textarea" rows="15" name="body" placeholder="Body" body={this.state.body} onChange={this.handleChange}/>
           </Form.Group>
           <Button variant="success" type="submit">Submit</Button>
         </Form>

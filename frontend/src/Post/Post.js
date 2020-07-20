@@ -16,7 +16,9 @@ class Post extends Component {
     this.state = {
       post: null,
       text:'',
+      postId: 0,
       deleted: false,
+      commented: false,
     };
     this.submit = this.submit.bind(this);
     this.updateComment = this.updateComment.bind(this);
@@ -32,6 +34,8 @@ class Post extends Component {
     const post = (await axios.get(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}`)).data;
     this.setState({
       post: post.json_post,
+      postId: params.postId,
+      commented: false,
     });
   }
 
@@ -48,6 +52,9 @@ class Post extends Component {
     axios.post(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}/comment`, postData)
     .then((response) => {
       console.log(response);
+      this.setState({
+        commented: true,
+      })
     }, (error) => {
       console.log('Looks like there was a problem: \n', error);
     });
@@ -71,10 +78,14 @@ class Post extends Component {
 
   render() {
     const deleted = this.state.deleted;
+    const commented = this.state.commented;
     if (deleted) {
       return (
         <Redirect to="/" />
       );
+    }
+    if (commented) {
+      this.refreshPost();
     }
     const {post} = this.state;
     if (post === null) return <p>Loading ...</p>;

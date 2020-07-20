@@ -11,6 +11,7 @@ import Signup from './Signup/Signup';
 import EmailSent from './Signup/EmailSent';
 import EmailConfirmed from './Signup/EmailConfirmed';
 import UserProfile from './Profile/UserProfile';
+import { Redirect } from "react-router-dom";
 
 class App extends Component {
 
@@ -30,6 +31,9 @@ class App extends Component {
   logout() {
     localStorage.clear();
     this.setState({login: false});
+    return (
+      <Redirect to="/" />
+    );
   }
 
   render() {
@@ -46,9 +50,9 @@ class App extends Component {
         <Route exact path='/email_sent' component={EmailSent}/>
         <Route exact path='/email_confirmed' component={EmailConfirmed}/>
         {localStorage.getItem('loggedIn') != "true" && <Route exact path='/login' component={() => <Login callback={this.login}/>}/>}
-        <Route exact path='/profile' component={Profile}/>
-        <Route exact path='/post' component={NewPost}/>
-        <Route exact path='/post/:postId/update' component={UpdatePost}/>
+        {localStorage.getItem('loggedIn') === "true" && <Route exact path='/profile' component={Profile}/>}
+        {localStorage.getItem('loggedIn') === "true" && <Route exact path='/post' component={NewPost}/>}
+        {localStorage.getItem('loggedIn') === "true" && <Route exact path='/post/:postId/update' component={UpdatePost}/>}
       </div>
     );
   }

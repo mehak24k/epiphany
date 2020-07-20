@@ -24,7 +24,7 @@ class UpdatePost extends Component {
     console.log(post.json_post.body);
 
     this.setState({
-      title: post.json_post.body,
+      title: post.json_post.title,
       body: post.json_post.body
     });
 

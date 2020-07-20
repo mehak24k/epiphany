@@ -31,14 +31,17 @@ def create():
     user_id = User.query.filter_by(email=postData['user']).first().id
 
     new_post = Post(title=title, body=body, user_id=user_id)
-
-    for tag in tags:
-        curr_tag = db.session.query(Tag).filter_by(name=tag).first()
-        new_post.tags.append(curr_tag)
+    new_post.tags = []
 
     for newTag in newTags:
         new_tag = Tag(name=newTag)
         db.session.add(new_tag)
+
+    db.session.commit()
+
+    for tag in tags:
+        curr_tag = db.session.query(Tag).filter_by(name=tag).first()
+        new_post.tags.append(curr_tag)
 
     db.session.add(new_post)
     db.session.commit()
@@ -81,7 +84,7 @@ def indiv_post(post_id):
 
     for comment in comments:
         comm.append({'text': comment.text, 'commentor': comment.user.name, 'comment_id': comment.id, 'comment_level': comment.level(), 'time': comment.timestamp})
-    
+
     json_post = {'id': post[0].id, 'user_email': post[0].user.email, 'title': post[0].title, 'body': post[0].body, 'tags': tags, 'comments': comm}
 
     return jsonify({'json_post': json_post})
