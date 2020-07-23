@@ -86,7 +86,6 @@ class Post extends Component {
     console.log(post.tags);
 
     // comment stuffs 
-    const [open, setOpen] = useState(false);
     return (
       <div className="container">
         <div className="row">
@@ -131,20 +130,6 @@ class Post extends Component {
                                   return <div key={key}>
                                     {i}
                                     <p><small>reply · { comment.time }</small></p>
-                                      <Button
-                                          onClick={() => setOpen(!open)}
-                                          aria-controls="example-collapse-text"
-                                          aria-expanded={open}
-                                        >
-                                          click
-                                      </Button>
-                                      <Collapse in={open}>
-                                          <div id="example-collapse-text">
-                                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus
-                                            terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer
-                                            labore wes anderson cred nesciunt sapiente ea proident.
-                                          </div>
-                                      </Collapse>
                                     </div>;
                                 }) }
                               </p>
