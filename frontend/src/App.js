@@ -12,6 +12,8 @@ import EmailSent from './Signup/EmailSent';
 import EmailConfirmed from './Signup/EmailConfirmed';
 import UserProfile from './Profile/UserProfile';
 import { Redirect } from "react-router-dom";
+import NewVideo from './CreatePosts/NewVideo';
+import Create from './CreatePosts/Create';
 
 class App extends Component {
 
@@ -49,6 +51,8 @@ class App extends Component {
         <Route exact path='/signup' component={Signup}/>
         <Route exact path='/email_sent' component={EmailSent}/>
         <Route exact path='/email_confirmed' component={EmailConfirmed}/>
+        <Route exact path='/new-video' component={NewVideo}/>
+        <Route exact path='/create' component={Create}/>
         {localStorage.getItem('loggedIn') != "true" && <Route exact path='/login' component={() => <Login callback={this.login}/>}/>}
         {localStorage.getItem('loggedIn') === "true" && <Route exact path='/profile' component={Profile}/>}
         {localStorage.getItem('loggedIn') === "true" && <Route exact path='/post' component={NewPost}/>}

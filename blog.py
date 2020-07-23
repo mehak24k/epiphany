@@ -3,12 +3,23 @@ from flask_login import login_required, current_user
 from sqlalchemy import and_
 from werkzeug.exceptions import abort
 from flask_cors import cross_origin, CORS
-from models import User, Post, Comment, Tag
-from app import db
+from .models import User, Post, Comment, Tag
+from . import db, app
+import os
+from werkzeug.utils import secure_filename
 
 bp = Blueprint('blog', __name__)
 
 CORS(bp)
+
+UPLOAD_FOLDER = '/Users/Mehak/Desktop/epiphany/static'
+ALLOWED_EXTENSIONS = {'mp4'}
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @bp.route('/create', methods=['OPTIONS'])
 @cross_origin()
@@ -179,3 +190,55 @@ def modules():
         modules.append({'name': module.name, 'code': module.code})
 
     return jsonify({'modules' : modules})
+
+
+@bp.route('/upload', methods=['OPTIONS'])
+@cross_origin()
+def upload_options():
+    response = {'hello'}
+    return jsonify({'response': response}), 205
+
+@bp.route('/upload', methods=['POST'])
+@cross_origin()
+def upload():
+    #postData = request.get_json(force=True)
+    title = request.form.get('title')
+    file = request.files['video']
+    tags = request.form.getlist('tags[]')
+    file_name = request.form.get('filename')
+    file_type = request.form.get('fileType')
+    if request.form.getlist('newTags[]') is None:
+        newTags = []
+    else:
+        newTags = request.form.getlist('newTags[]')
+        #newTags = []
+
+    user_id = User.query.filter_by(email=request.form.get('user')).first().id
+
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        body = filename
+        #response = []
+        #return jsonify({'response': response}), 206
+    else:
+        response = []
+        return jsonify({'response': response}), 400
+
+    new_post = Post(title=title, body=body, user_id=user_id, is_file=True)
+    new_post.tags = []
+
+    for newTag in newTags:
+        new_tag = Tag(name=newTag)
+        db.session.add(new_tag)
+
+    db.session.commit()
+
+    for tag in tags:
+        curr_tag = db.session.query(Tag).filter_by(name=tag).first()
+        new_post.tags.append(curr_tag)
+
+    db.session.add(new_post)
+    db.session.commit()
+    response = []
+    return jsonify({'response': response}), 204

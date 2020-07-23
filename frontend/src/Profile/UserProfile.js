@@ -26,7 +26,7 @@ class UserProfile extends Component {
     const { match: { params } } = this.props;
     let userData = {"id": params.userId}
     console.log(userData);
-    axios.post(`https://epiphany-test-three.herokuapp.com/users/${params.userId}`, userData)
+    axios.post(`http://localhost:5000/users/${params.userId}`, userData)
     .then((response) => {
       console.log(response.data.user_info[0]);
 

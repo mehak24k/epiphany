@@ -15,6 +15,9 @@ import Card from 'react-bootstrap/Card'
 import CardDeck from 'react-bootstrap/CardDeck'
 import Container from 'react-bootstrap/Container'
 import Alert from 'react-bootstrap/Alert'
+import Carousel from 'react-bootstrap/Carousel'
+import ResponsiveEmbed from 'react-bootstrap/ResponsiveEmbed'
+
 
 class Posts extends Component {
 
@@ -34,7 +37,7 @@ class Posts extends Component {
   }
 
   async componentDidMount() {
-      const data = (await axios.get('https://epiphany-test-three.herokuapp.com/main')).data;
+      const data = (await axios.get('http://localhost:5000/main')).data;
 
       const posts = data.data[0];
       const tags = data.data[1];
@@ -210,6 +213,47 @@ class Posts extends Component {
         </div>
 
         {this.state.posts === null && <div> <Spinner animation="border" variant="primary" /> <p>Loading posts...</p></div>}
+
+        <Carousel>
+          <Carousel.Item>
+          <img
+            className="d-block w-100"
+            src="./static/carousel1.png"
+            alt="First slide"
+          />
+            <Carousel.Caption>
+              <h3>First slide label</h3>
+              <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+            </Carousel.Caption>
+          </Carousel.Item>
+          <Carousel.Item>
+            <img
+              className="d-block w-100"
+              src="holder.js/800x400?text=Second slide&bg=282c34"
+              alt="Third slide"
+            />
+
+            <Carousel.Caption>
+              <h3>Second slide label</h3>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </Carousel.Caption>
+          </Carousel.Item>
+          <Carousel.Item>
+            <img
+              className="d-block w-100"
+              src="holder.js/800x400?text=Third slide&bg=20232a"
+              alt="Third slide"
+            />
+
+            <Carousel.Caption>
+              <h3>Third slide label</h3>
+              <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
+            </Carousel.Caption>
+          </Carousel.Item>
+        </Carousel>
+
+
+
         {this.state.filteredPosts && this.state.filteredPosts.map(post => (
           <Row className="justify-content-md-center">
 
@@ -225,11 +269,22 @@ class Posts extends Component {
                     ))
                   }
                   </Row>
+                  {post.is_file === false &&
                   <Card.Text style={{color: "#161717", textAlign: "center"}}>
                   <Truncate lines={2}>
                       {post.body}
                   </Truncate>
                   </Card.Text>
+                }
+                {post.is_file === true &&
+                  <div>
+                    <video id="samp" width="540" height="380" controls>
+                        <source src={`./static/${post.body}`} type="video/mp4">
+                        </source>
+                        Your browser does not support this video format.
+                    </video>
+                  </div>
+              }
                 </Card.Body>
                 </Link>
                 <Link key={myKey()} to={`/users/${post.user_id}`}>
