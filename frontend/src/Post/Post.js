@@ -17,9 +17,12 @@ class Post extends Component {
     super(props);
     this.state = {
       post: null,
-      text:'',
+      text: '',
+      postId: 0,
       deleted: false,
-      reply:'',
+      commented: false,
+      reply: '',
+      replied: false,
     };
     this.submit = this.submit.bind(this);
     this.updateComment = this.updateComment.bind(this);
@@ -31,12 +34,13 @@ class Post extends Component {
   async componentDidMount() {
     this.refreshPost();
   }
-
   async refreshPost() {
     const { match: { params } } = this.props;
     const post = (await axios.get(`http://localhost:5000/posts/${params.postId}`)).data;
     this.setState({
       post: post.json_post,
+      postId: params.postId,
+      commented: false,
     });
   }
 
@@ -54,6 +58,9 @@ class Post extends Component {
     axios.post(`http://localhost:5000/posts/${params.postId}/comment`, postData)
     .then((response) => {
       console.log(response);
+      this.setState({
+        commented: true,
+      })
     }, (error) => {
       console.log('Looks like there was a problem: \n', error);
     });
@@ -82,6 +89,9 @@ class Post extends Component {
     axios.post(`http://localhost:5000/posts/${params.postId}/${id}/reply`, postData)
     .then((response) => {
       console.log(response);
+      this.setState({
+        replied: true,
+      })
     }, (error) => {
       console.log('Looks like there was a problem: \n', error);
     });
@@ -117,10 +127,18 @@ class Post extends Component {
 
   render() {
     const deleted = this.state.deleted;
+    const commented = this.state.commented;
+    const replied = this.state.replied;
     if (deleted) {
       return (
         <Redirect to="/" />
       );
+    }
+    if (commented) {
+      this.refreshPost();
+    }
+    if (replied) {
+      this.refreshPost();
     }
     const {post} = this.state;
     if (post === null) return <p>Loading ...</p>;
