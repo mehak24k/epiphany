@@ -23,6 +23,7 @@ class Post extends Component {
       commented: false,
       reply: '',
       replied: false,
+      c_deleted: false,
     };
     this.submit = this.submit.bind(this);
     this.updateComment = this.updateComment.bind(this);
@@ -40,7 +41,12 @@ class Post extends Component {
     this.setState({
       post: post.json_post,
       postId: params.postId,
+      deleted: false,
       commented: false,
+      text: '',
+      reply: '',
+      replied: false,
+      c_deleted: false,
     });
   }
 
@@ -48,16 +54,13 @@ class Post extends Component {
     this.setState({
         [event.target.name]: event.target.value
       });
-    console.log(this.state.reply);
   }
 
   async submit(event) {
     const { match: { params } } = this.props;
     let postData = {"text": this.state.text, "user_email": localStorage.getItem('userEmail'), "post_id": params.postId}
-    console.log(postData);
     axios.post(`http://localhost:5000/posts/${params.postId}/comment`, postData)
     .then((response) => {
-      console.log(response);
       this.setState({
         commented: true,
       })
@@ -69,11 +72,8 @@ class Post extends Component {
 
   async deletePost() {
     const { match: { params } } = this.props;
-    let postData = {"text": this.state.text, "user_email": localStorage.getItem('userEmail'), "post_id": params.postId}
-    console.log(postData);
-    axios.post(`http://localhost:5000/posts/${params.postId}/delete`, postData)
+    axios.post(`http://localhost:5000/posts/${params.postId}/delete`)
     .then((response) => {
-      console.log(response);
       this.setState({
         deleted: true,
       })
@@ -82,13 +82,25 @@ class Post extends Component {
     });
   }
 
+  async deleteComment(event, id) {
+    const { match: { params } } = this.props;
+    axios.post(`http://localhost:5000/posts/${params.postId}/${id}/delete`)
+    .then((response) => {
+      console.log(response);
+      this.setState({
+        c_deleted: true,
+      })
+    }, (error) => {
+      console.log('Looks like there was a problem: \n', error);
+    });
+    event.preventDefault();
+  }
+
   async replyTo(event, id) {
     const { match: { params } } = this.props;
     let postData = {"text": this.state.reply, "user_email": localStorage.getItem('userEmail'), "post_id": params.postId, "parent_id": id}
-    console.log(postData);
     axios.post(`http://localhost:5000/posts/${params.postId}/${id}/reply`, postData)
     .then((response) => {
-      console.log(response);
       this.setState({
         replied: true,
       })
@@ -103,19 +115,19 @@ class Post extends Component {
 
     return (
       <>
-        <Link
+        <Button variant="link"
           onClick={() => setOpen(!open)}
           aria-controls="example-collapse-text"
           aria-expanded={open}
           size="sm"
         >
         Reply
-        </Link>
+        </Button>
         <Collapse in={open}>
-          <div>
+          <div className="mt-1">
             <Form onSubmit={(e) => this.replyTo(e, props.id)}>
                 <Form.Group controlId="text">
-                    <Form.Control as="textarea" name="reply" placeholder={props.id} reply={this.state.reply} onChange={this.updateComment} />
+                    <Form.Control as="textarea" name="reply" placeholder="Reply here!" reply={this.state.reply} onChange={this.updateComment} />
                 </Form.Group>
                 <Button variant="success" type="submit" size="sm">Reply</Button>
             </Form>
@@ -125,31 +137,43 @@ class Post extends Component {
     );
   }
 
+  Delete = (props) => {
+    return  (
+      <Button 
+        variant="link" 
+        size="sm"
+        onClick={(e) => this.deleteComment(e, props.id)}
+      >
+        Delete
+      </Button>
+    );
+  }
+
   render() {
     const deleted = this.state.deleted;
     const commented = this.state.commented;
     const replied = this.state.replied;
+    const c_deleted = this.state.c_deleted;
     if (deleted) {
       return (
         <Redirect to="/" />
       );
     }
-    if (commented) {
-      this.refreshPost();
-    }
-    if (replied) {
+    if (commented || replied || c_deleted) {
       this.refreshPost();
     }
     const {post} = this.state;
-    if (post === null) return <p>Loading ...</p>;
+    if (post === null) 
+      return <p>
+        Loading ...
+        </p>;
     var text = post.body
-    console.log(post.tags);
     return (
       <div className="container">
         <div className="row">
           <div className="jumbotron col-12">
             <h1 className="display-3">{post.title}</h1>
-            <Row>
+            <Row className="ml-1">
             {post.tags && post.tags.map(tag => (
               <Col style={{ paddingLeft: 2, paddingRight: 2 }} md="auto">
                 <h4>
@@ -158,6 +182,9 @@ class Post extends Component {
               </Col>
               ))
             }
+            </Row>
+            <Row className="ml-1">
+              Posted by&nbsp;<Link to={`/users/${post.user_id}`}>{ post.username }</Link>&nbsp;at { post.time }
             </Row>
             <hr className="my-4" />
               <p className="lead">
@@ -187,7 +214,14 @@ class Post extends Component {
                                 { comment.text.split("\n").map((i,key) => {
                                   return <div key={key}>
                                     {i}
-                                    <p><small> { comment.time } · <this.Reply id={ comment.comment_id }/> </small></p>
+                                <p><small> 
+                                  { comment.commentor !== "deleted" && comment.time }
+                                  {
+                                    (localStorage.getItem('loggedIn') === "true" && localStorage.getItem('userEmail') === comment.user_email) 
+                                    && <this.Delete id={ comment.comment_id }/>
+                                  }
+                                  { comment.commentor !== "deleted" && <this.Reply id={ comment.comment_id }/> }
+                                </small></p>
                                     </div>;
                                 }) }
                               </p>
@@ -201,7 +235,13 @@ class Post extends Component {
                                 { comment.text.split("\n").map((i,key) => {
                                     return <div key={key}>
                                       {i}
-                                      <p><small>{ comment.time } · <this.Reply id={ comment.comment_id }/></small></p>
+                                      <p><small>{ comment.commentor !== "deleted" && comment.time }
+                                        {
+                                          (localStorage.getItem('loggedIn') === "true" && localStorage.getItem('userEmail') === comment.user_email) 
+                                          && <this.Delete id={ comment.comment_id }/>
+                                        }
+                                        { comment.commentor !== "deleted" && <this.Reply id={ comment.comment_id }/> }
+                                      </small></p>
                                     </div>;
                                 }) }
                               </p>
@@ -215,7 +255,14 @@ class Post extends Component {
                                   { comment.text.split("\n").map((i,key) => {
                                       return <div key={key}>
                                         {i}
-                                        <p><small>{ comment.time } · <this.Reply id={ comment.comment_id }/></small></p>
+                                        <p><small>
+                                          { comment.commentor !== "deleted" && comment.time }
+                                          {
+                                            (localStorage.getItem('loggedIn') === "true" && localStorage.getItem('userEmail') === comment.user_email) 
+                                            && <this.Delete id={ comment.comment_id }/>
+                                          }
+                                          { comment.commentor !== "deleted" && <this.Reply id={ comment.comment_id }/> } 
+                                        </small></p>
                                       </div>;
                                   }) }
                                 </p>

@@ -29,9 +29,9 @@ def login_options():
 @cross_origin()
 def login_post():
     loginData = request.get_json(force=True)
-    email = loginData['email'];
-    password = loginData['password'];
-    remember = False;
+    email = loginData['email']
+    password = loginData['password']
+    remember = False
     user = User.query.filter_by(email=loginData['email']).first()
 
     # check if user actually exists
@@ -144,7 +144,7 @@ def profile_options():
 @cross_origin()
 def profile():
     user_data = request.get_json(force=True)
-    user_email = user_data['email'];
+    user_email = user_data['email']
     user = User.query.filter_by(email=user_email).first()
     posts_list = user.posts
     posts = []
@@ -159,3 +159,34 @@ def profile():
         posts.append({'id': post.id, 'title': post.title, 'body': post.body, 'tags': tags})
 
     return jsonify({'posts': posts}), 206
+
+@auth.route('/users/<int:user_id>', methods=['OPTIONS'])
+@cross_origin()
+def user_options():
+    response = {'hello'}
+    return jsonify({'response': response}), 204
+
+@auth.route('/users/<int:user_id>', methods=['POST'])
+@cross_origin()
+def user(user_id):
+    user_data = request.get_json(force=True)
+    user_id = user_data['id']
+    user = User.query.filter_by(id=user_id).first()
+    posts_list = user.posts
+    posts = []
+    #posts.append(posts_list)
+
+    for post in posts_list:
+        tags_list = post.tags
+        tags = []
+
+        for tag in tags_list:
+            tags.append({'name': tag.name})
+        posts.append({'id': post.id, 'title': post.title, 'body': post.body, 'tags': tags})
+
+    user_info = []
+    user_info.append({'name': user.name})
+    user_info.append({'points': user.points})
+    user_info.append({'posts': posts})
+
+    return jsonify({'user_info': user_info}), 206

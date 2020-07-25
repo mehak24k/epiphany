@@ -92,7 +92,7 @@ class Profile extends Component {
             </div>
           </Tab>
           <Tab eventKey="followers" title="Followers">
-            hello again
+            hi
           </Tab>
           <Tab eventKey="following" title="Following">
             hello again2

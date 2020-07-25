@@ -64,9 +64,18 @@ def indiv_post(post_id):
         tags.append({'name': tag.name})
 
     for comment in comments:
-        comm.append({'text': comment.text, 'commentor': comment.user.name, 'comment_id': comment.id, 'comment_level': comment.level(), 'time': comment.timestamp})
+        comm.append({'text': comment.text, 'commentor': comment.user.name, 'user_email': comment.user.email, 'comment_id': comment.id, 'comment_level': comment.level(), 'time': comment.timestamp})
 
-    json_post = {'id': post[0].id, 'user_email': post[0].user.email, 'title': post[0].title, 'body': post[0].body, 'tags': tags, 'comments': comm}
+    json_post = {'id': post[0].id, 
+        'user_id': post[0].user.id, 
+        'username': post[0].user.name,
+        'time': post[0].timestamp.strftime('%x %H:%M'), 
+        'user_email': post[0].user.email, 
+        'title': post[0].title, 
+        'body': post[0].body, 
+        'tags': tags, 
+        'comments': comm
+        }
 
     return jsonify({'json_post': json_post})
 
@@ -148,6 +157,23 @@ def reply(post_id, comment_id):
     parent = Comment.query.get(parent_id)
     new_comment = Comment(text=text, user_id=user_id, post_id=post_id, parent=parent)
     new_comment.save()
+
+    response = []
+    return jsonify({'response': response}), 204
+
+@bp.route('/posts/<int:post_id>/<int:comment_id>/delete', methods=['OPTIONS'])
+@cross_origin()
+def delete_comment_options(post_id, comment_id):
+    response = {'hello'}
+    return jsonify({'response': response}), 205
+
+@bp.route('/posts/<int:post_id>/<int:comment_id>/delete', methods=['POST'])
+@cross_origin()
+def delete_comment(post_id, comment_id):
+    comment = db.session.query(Comment).get(comment_id)
+    comment.user_id = 46
+    comment.text = "This comment has been deleted."
+    db.session.commit()
 
     response = []
     return jsonify({'response': response}), 204
