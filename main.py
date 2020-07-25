@@ -50,3 +50,18 @@ def search():
     body_query = func.lower(Post.body).contains(request.args.get('query').lower(), autoescape=True)
     posts=db.session.query(Post).filter(or_(title_query, body_query))
     return render_template('index.html', posts=posts)
+
+""" @auth.route('/follow/<user_id>', methods=['POST'])
+def follow(user_id):
+    
+    user = User.query.filter_by(id=user_id).first()
+    if user is None:
+        flash('User {} not found.'.format(username))
+        return redirect(url_for('index'))
+    if user == current_user:
+        flash('You cannot follow yourself!')
+        return redirect(url_for('user', username=username))
+    current_user.follow(user)
+    db.session.commit()
+    flash('You are following {}!'.format(username))
+        return redirect(url_for('user', username=username)) """
