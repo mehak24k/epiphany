@@ -158,8 +158,9 @@ class UserProfile extends Component {
             <div className="row">
               <div className="jumbotron col-12">
                 <h1 className="display-3">{this.state.userName}</h1>
-                <h2 className="display-3">Points: {this.state.userPoints}</h2>
-                <h3 className="display-3">Badges:</h3>
+                <h3 className="display-7">Points: {this.state.userPoints}</h3>
+                <this.check />
+                <h3 className="display-7">Badges:</h3>
                 <Row>
                 <Col>
                 <ResponsiveEmbed aspectRatio="1by1">
@@ -207,13 +208,11 @@ class UserProfile extends Component {
             </div>
           </Tab>
           <Tab eventKey="followers" title="Followers">
-            hello again
             <ListGroup variant="flush">
               <this.followedBy />
             </ListGroup>
           </Tab>
           <Tab eventKey="following" title="Following">
-            hello again2
             <ListGroup variant="flush">
               <this.following />
             </ListGroup>

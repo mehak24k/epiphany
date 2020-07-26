@@ -52,12 +52,8 @@ class App extends Component {
         <Route exact path='/email_sent' component={EmailSent}/>
         <Route exact path='/email_confirmed' component={EmailConfirmed}/>
         {localStorage.getItem('loggedIn') !== "true" && <Route exact path='/login' component={() => <Login callback={this.login}/>}/>}
-        <Route exact path='/profile' component={Profile}/>
-        <Route exact path='/post' component={NewPost}/>
-        <Route exact path='/post/:postId/update' component={UpdatePost}/>
-        <Route exact path='/new-video' component={NewVideo}/>
-        <Route exact path='/create' component={Create}/>
-        {localStorage.getItem('loggedIn') != "true" && <Route exact path='/login' component={() => <Login callback={this.login}/>}/>}
+        {localStorage.getItem('loggedIn') === "true" && <Route exact path='/new-video' component={NewVideo}/>}
+        {localStorage.getItem('loggedIn') === "true" && <Route exact path='/create' component={Create}/>}
         {localStorage.getItem('loggedIn') === "true" && <Route exact path='/profile' component={Profile}/>}
         {localStorage.getItem('loggedIn') === "true" && <Route exact path='/post' component={NewPost}/>}
         {localStorage.getItem('loggedIn') === "true" && <Route exact path='/post/:postId/update' component={UpdatePost}/>}

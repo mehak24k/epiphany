@@ -103,8 +103,8 @@ class Profile extends Component {
             <div className="row">
               <div className="jumbotron col-12">
                 <h1 className="display-3">{localStorage.getItem('userName')}</h1>
-                <h2 className="display-3">Points: {this.state.points}</h2>
-                <h3 className="display-3">Badges:</h3>
+                <h3 className="display-7">Points: {this.state.points}</h3>
+                <h3 className="display-7">Badges:</h3>
                 <ResponsiveEmbed aspectRatio="1by1">
                   <embed type="image/png" src={joined_badge} />
                 </ResponsiveEmbed>
