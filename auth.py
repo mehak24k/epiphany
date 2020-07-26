@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash, jsonify, current_app
 from werkzeug.security import generate_password_hash, check_password_hash
-from models import User
-from app import db, s, mail, app
+from .models import User
+from . import db, s, mail, app
 from flask_login import login_user, logout_user, login_required, current_user
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 from flask_mail import Mail, Message
@@ -158,6 +158,17 @@ def profile():
     posts = []
     #posts.append(posts_list)
 
+    who_user_is_following = user.followed.all()
+    who_follows_user = user.followers.all()
+    user_is_following = []
+    user_is_followed_by = []
+
+    for f in who_user_is_following:
+        user_is_following.append({'name': f.name, 'user_id': f.id})
+
+    for f in who_follows_user:
+        user_is_followed_by.append({'name': f.name, 'user_id': f.id})
+
     for post in posts_list:
         tags_list = post.tags
         tags = []
@@ -166,7 +177,12 @@ def profile():
             tags.append({'name': tag.name})
         posts.append({'id': post.id, 'title': post.title, 'body': post.body, 'tags': tags})
 
-    return jsonify({'posts': posts}), 206
+    user_info = []
+    user_info.append({'posts': posts})
+    user_info.append({'user_is_following': user_is_following})
+    user_info.append({'user_is_followed_by': user_is_followed_by})
+
+    return jsonify({'user_info': user_info}), 206
 
 @auth.route('/users/<int:user_id>', methods=['OPTIONS'])
 @cross_origin()
@@ -179,10 +195,23 @@ def user_options():
 def user(user_id):
     user_data = request.get_json(force=True)
     user_id = user_data['id']
+    current_user = User.query.filter_by(email=user_data['current_user_email']).first()
     user = User.query.filter_by(id=user_id).first()
     posts_list = user.posts
     posts = []
     #posts.append(posts_list)
+
+    who_user_is_following = user.followed.all()
+    who_follows_user = user.followers.all()
+    user_is_following = []
+    user_is_followed_by = []
+    check = current_user.is_following(user)
+
+    for f in who_user_is_following:
+        user_is_following.append({'name': f.name, 'user_id': f.id})
+
+    for f in who_follows_user:
+        user_is_followed_by.append({'name': f.name, 'user_id': f.id})
 
     for post in posts_list:
         tags_list = post.tags
@@ -196,5 +225,10 @@ def user(user_id):
     user_info.append({'name': user.name})
     user_info.append({'points': user.points})
     user_info.append({'posts': posts})
+    user_info.append({'email': user.email})
+    user_info.append({'id': user_id})
+    user_info.append({'user_is_following': user_is_following})
+    user_info.append({'user_is_followed_by': user_is_followed_by})
+    user_info.append({'check': check})
 
     return jsonify({'user_info': user_info}), 206

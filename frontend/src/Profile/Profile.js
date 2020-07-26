@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import axios from 'axios';
-import Nav from 'react-bootstrap/Nav'
 import Tabs from 'react-bootstrap/Tabs'
 import Tab from 'react-bootstrap/Tab'
 import {Link} from 'react-router-dom';
@@ -8,6 +7,7 @@ import Truncate from 'react-truncate';
 import Badge from 'react-bootstrap/Badge'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import ListGroup from 'react-bootstrap/ListGroup'
 
 class Profile extends Component {
 
@@ -16,23 +16,29 @@ class Profile extends Component {
 
     this.state = {
       posts: null,
+      user_is_following: null,
+      user_is_followed_by: null,
     };
   }
 
   async componentDidMount() {
     let userData = {"email": localStorage.getItem('userEmail')}
     console.log(userData);
-    axios.post('https://epiphany-test-three.herokuapp.com/profile', userData)
+    axios.post('http://localhost:5000/profile', userData)
     .then((response) => {
-      console.log(response.data.posts);
-      const posts = response.data.posts;
+      console.log(response.data.user_info[0]);
+      console.log(response.data.user_info[2].user_is_followed_by)
+      const posts = response.data.user_info[0].posts;
       let arr = [];
       for (var i in posts) {
         arr.push(posts[i])
       }
       this.setState({
         posts: arr,
+        user_is_following: response.data.user_info[1].user_is_following,
+        user_is_followed_by: response.data.user_info[2].user_is_followed_by,
       });
+      console.log(this.state.user_is_followed_by);
     }, (error) => {
       console.log('Looks like there was a problem: \n', error);
     });
@@ -48,6 +54,33 @@ class Profile extends Component {
     var color = this.colors[randomNum];
     this.colors.splice(randomNum, 1);
     return color;
+  }
+
+  following = () => {
+    if (this.state.user_is_following && this.state.user_is_following.length) {
+      return (
+        this.state.user_is_following.map(f => 
+          <Link to={ `/users/${f.user_id}` }><ListGroup.Item action variant="success">{ f.name }</ListGroup.Item></Link>
+        )
+      );
+    } 
+    return (
+      <ListGroup.Item>No followed users here! :D</ListGroup.Item>
+    );
+  }
+
+  followedBy = () => {
+    if (this.state.user_is_followed_by && this.state.user_is_followed_by.length) {
+      return (
+        this.state.user_is_followed_by.map(f => 
+          <Link to={ `/users/${f.user_id}` }><ListGroup.Item action variant="success">{ f.name }</ListGroup.Item></Link>
+        )
+      );
+    } else {
+      return (
+        <ListGroup.Item>No followers here! :D</ListGroup.Item>
+      );
+    }
   }
 
   render() {
@@ -92,10 +125,14 @@ class Profile extends Component {
             </div>
           </Tab>
           <Tab eventKey="followers" title="Followers">
-            hi
+            <ListGroup variant="flush">
+              <this.followedBy />
+            </ListGroup>
           </Tab>
           <Tab eventKey="following" title="Following">
-            hello again2
+            <ListGroup variant="flush">
+              <this.following />
+            </ListGroup>
           </Tab>
         </Tabs>
       </div>

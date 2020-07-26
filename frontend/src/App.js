@@ -45,7 +45,7 @@ class App extends Component {
         <Route exact path='/signup' component={Signup}/>
         <Route exact path='/email_sent' component={EmailSent}/>
         <Route exact path='/email_confirmed' component={EmailConfirmed}/>
-        {localStorage.getItem('loggedIn') != "true" && <Route exact path='/login' component={() => <Login callback={this.login}/>}/>}
+        {localStorage.getItem('loggedIn') !== "true" && <Route exact path='/login' component={() => <Login callback={this.login}/>}/>}
         <Route exact path='/profile' component={Profile}/>
         <Route exact path='/post' component={NewPost}/>
         <Route exact path='/post/:postId/update' component={UpdatePost}/>

@@ -1,6 +1,5 @@
-import React, {Component} from 'react';
+import React, {Component, useState} from 'react';
 import axios from 'axios';
-import Nav from 'react-bootstrap/Nav'
 import Tabs from 'react-bootstrap/Tabs'
 import Tab from 'react-bootstrap/Tab'
 import {Link} from 'react-router-dom';
@@ -9,6 +8,9 @@ import Badge from 'react-bootstrap/Badge'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Spinner from 'react-bootstrap/Spinner'
+import Button from 'react-bootstrap/Button'
+import ListGroup from 'react-bootstrap/ListGroup'
+
 
 class UserProfile extends Component {
 
@@ -17,19 +19,29 @@ class UserProfile extends Component {
 
     this.state = {
       userName: '',
+      user_id: 0,
       userPoints: 0,
       posts: null,
+      email: '',
+      user_is_following: null,
+      user_is_followed_by: null,
+      check: false,
+      clicked: false,
     };
   }
 
   async componentDidMount() {
+    this.refreshProfile();
+  }
+
+  async refreshProfile() {
     const { match: { params } } = this.props;
-    let userData = {"id": params.userId}
+    let userData = {"id": params.userId, "current_user_email": localStorage.getItem('userEmail')}
     console.log(userData);
-    axios.post(`https://epiphany-test-three.herokuapp.com/users/${params.userId}`, userData)
+    axios.post(`http://localhost:5000/users/${params.userId}`, userData)
     .then((response) => {
       console.log(response.data.user_info[0]);
-
+      console.log(response.data.user_info[6]);
       const posts = response.data.user_info[2].posts;
       let arr = [];
       for (var i in posts) {
@@ -38,9 +50,44 @@ class UserProfile extends Component {
       this.setState({
         posts: arr,
         userName: response.data.user_info[0].name,
+        user_id: response.data.user_info[4].id,
         userPoints: response.data.user_info[1].points,
+        email: response.data.user_info[3].email,
+        user_is_following: response.data.user_info[5].user_is_following,
+        user_is_followed_by: response.data.user_info[6].user_is_followed_by,
+        check: response.data.user_info[7].check,
+        clicked: false,
       });
+    }, (error) => {
+      console.log('Looks like there was a problem: \n', error);
+    });
+  }
 
+  async followUser() {
+    const { match: { params } } = this.props;
+    let postData = {"user_email": localStorage.getItem('userEmail')};
+    axios.post(`http://localhost:5000/follow/${params.userId}`, postData)
+    .then((response) => {
+      console.log(response);
+      console.log('followed');
+      this.setState({
+        clicked: true,
+      })
+    }, (error) => {
+      console.log('Looks like there was a problem: \n', error);
+    });
+  }
+
+  async unfollowUser() {
+    const { match: { params } } = this.props;
+    let postData = {"user_email": localStorage.getItem('userEmail')};
+    axios.post(`http://localhost:5000/unfollow/${params.userId}`, postData)
+    .then((response) => {
+      console.log(response);
+      console.log('unfollowed');
+      this.setState({
+        clicked: true,
+      })
     }, (error) => {
       console.log('Looks like there was a problem: \n', error);
     });
@@ -58,7 +105,49 @@ class UserProfile extends Component {
     return color;
   }
 
+  following = () => {
+    if (this.state.user_is_following && this.state.user_is_following.length) {
+      return (
+        this.state.user_is_following.map(f => 
+          <Link to={ `/users/${f.user_id}` }><ListGroup.Item action variant="success">{ f.name }</ListGroup.Item></Link>
+        )
+      );
+    } 
+    return (
+      <ListGroup.Item>No followed users here! :D</ListGroup.Item>
+    );
+  }
+
+  followedBy = () => {
+    if (this.state.user_is_followed_by && this.state.user_is_followed_by.length) {
+      return (
+        this.state.user_is_followed_by.map(f => 
+          <Link to={ `/users/${f.user_id}` }><ListGroup.Item action variant="success">{ f.name }</ListGroup.Item></Link>
+        )
+      );
+    } else {
+      return (
+        <ListGroup.Item>No followers here! :D</ListGroup.Item>
+      );
+    }
+  }
+
+  check = () => {
+    if (! this.state.check) {
+      if (localStorage.getItem('loggedIn') === "true" && localStorage.getItem('userEmail') !== this.state.email) {
+        return <Button size="sm" onClick={() => this.followUser()}>Follow</Button>
+      }
+    } else {
+      if (localStorage.getItem('loggedIn') === "true" && localStorage.getItem('userEmail') !== this.state.email) {
+      return <Button size="sm" onClick={() => this.unfollowUser()}>Unfollow</Button>
+      }
+    }
+  }
+
   render() {
+    if (this.state.clicked) {
+      this.refreshProfile();
+    }
     return (
       <div className="container">
       {!this.state.userName && <div> <Spinner animation="border" variant="primary" /> <p>Loading Profile...</p></div>}
@@ -68,7 +157,8 @@ class UserProfile extends Component {
             <div className="row">
               <div className="jumbotron col-12">
                 <h1 className="display-3">{this.state.userName}</h1>
-                <h2 className="display-3">Points: {this.state.userPoints}</h2>
+                <h3 className="display-5">Points: {this.state.userPoints}</h3>
+                <this.check />
               </div>
             </div>
           </Tab>
@@ -102,10 +192,14 @@ class UserProfile extends Component {
             </div>
           </Tab>
           <Tab eventKey="followers" title="Followers">
-            hello again
+            <ListGroup variant="flush">
+              <this.followedBy />
+            </ListGroup>
           </Tab>
           <Tab eventKey="following" title="Following">
-            hello again2
+            <ListGroup variant="flush">
+              <this.following />
+            </ListGroup>
           </Tab>
         </Tabs>
       }

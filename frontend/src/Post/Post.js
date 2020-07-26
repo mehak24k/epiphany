@@ -3,7 +3,6 @@ import React, {Component, useState} from 'react';
 import { Redirect } from 'react-router-dom';
 import {Link} from 'react-router-dom';
 import axios from 'axios';
-import Comment from './Comment'
 import Badge from 'react-bootstrap/Badge'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
@@ -37,7 +36,7 @@ class Post extends Component {
   }
   async refreshPost() {
     const { match: { params } } = this.props;
-    const post = (await axios.get(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}`)).data;
+    const post = (await axios.get(`http://localhost:5000/posts/${params.postId}`)).data;
     this.setState({
       post: post.json_post,
       postId: params.postId,
@@ -58,9 +57,9 @@ class Post extends Component {
 
   async submit(event) {
     const { match: { params } } = this.props;
-    let postData = {"text": this.state.text, "user_email": localStorage.getItem('userEmail'), "post_id": params.postId}
+    let postData = {"text": this.state.text, "user_email": localStorage.getItem('userEmail'), "post_id": params.postId};
     console.log(postData);
-    axios.post(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}/comment`, postData)
+    axios.post(`http://localhost:5000/posts/${params.postId}/comment`, postData)
     .then((response) => {
       this.setState({
         commented: true,
@@ -73,7 +72,7 @@ class Post extends Component {
 
   async deletePost() {
     const { match: { params } } = this.props;
-    axios.post(`http://epiphany-test-three.herokuapp.com/posts/${params.postId}/delete`)
+    axios.post(`http://localhost:5000/posts/${params.postId}/delete`)
     .then((response) => {
       this.setState({
         deleted: true,

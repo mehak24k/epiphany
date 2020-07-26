@@ -3,8 +3,8 @@ from flask_login import login_required, current_user
 from sqlalchemy import and_
 from werkzeug.exceptions import abort
 from flask_cors import cross_origin, CORS
-from models import User, Post, Comment, Tag
-from app import db
+from .models import User, Post, Comment, Tag
+from . import db
 
 bp = Blueprint('blog', __name__)
 
