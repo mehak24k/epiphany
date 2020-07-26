@@ -67,7 +67,6 @@ class UserProfile extends Component {
   async followUser() {
     const { match: { params } } = this.props;
     let postData = {"user_email": localStorage.getItem('userEmail')};
-    axios.post(`https://epiphany-test-three.herokuapp.com/follow/${params.userId}`, postData)
     axios.post(`http://localhost:5000/follow/${params.userId}`, postData)
     .then((response) => {
       console.log(response);
@@ -83,7 +82,6 @@ class UserProfile extends Component {
   async unfollowUser() {
     const { match: { params } } = this.props;
     let postData = {"user_email": localStorage.getItem('userEmail')};
-    axios.post(`https://epiphany-test-three.herokuapp.com/unfollow/${params.userId}`, postData)
     axios.post(`http://localhost:5000/unfollow/${params.userId}`, postData)
     .then((response) => {
       console.log(response);
@@ -162,9 +160,12 @@ class UserProfile extends Component {
               <Col>
                 <h1 className="display-3">{this.state.userName}</h1>
                 </Col>
-                <h3 className="display-7">Points: {this.state.userPoints}</h3>
+                <Col md={{ offset: "10" }}>
                 <this.check />
-                <h3 className="display-7">Badges:</h3>
+                </Col>
+                <h2 className="display-3">Points: {this.state.userPoints}</h2>
+
+                <h3 className="display-3">Badges:</h3>
                 <Row>
                 <Col>
                 <ResponsiveEmbed aspectRatio="1by1">
