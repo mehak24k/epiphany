@@ -14,13 +14,8 @@ class NavBar extends Component {
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">
         <Nav className="mr-auto">
-<<<<<<< HEAD
-          {localStorage.getItem('loggedIn') != "true" && <Nav.Link href="/login">Login</Nav.Link>}
-          {localStorage.getItem('loggedIn') != "true" && <Nav.Link href="/signup">Signup</Nav.Link>}
-=======
           {localStorage.getItem('loggedIn') !== "true" && <Nav.Link href="/login">Login</Nav.Link>}
           {localStorage.getItem('loggedIn') !== "true" && <Nav.Link href="/signup">Signup</Nav.Link>}
->>>>>>> e39959244f0ba9f7b1c1298cc72ecfc8192933fe
         </Nav>
         <Nav>
           {localStorage.getItem('loggedIn') === "true" && <Nav.Link href="/profile">Profile</Nav.Link>}

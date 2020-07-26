@@ -163,7 +163,6 @@ class UserProfile extends Component {
               <div className="jumbotron col-12">
               <Col>
                 <h1 className="display-3">{this.state.userName}</h1>
-<<<<<<< HEAD
                 </Col>
                 <Col md={{ offset: "10" }}>
                 <this.check />
@@ -171,11 +170,6 @@ class UserProfile extends Component {
                 <h2 className="display-3">Points: {this.state.userPoints}</h2>
 
                 <h3 className="display-3">Badges:</h3>
-=======
-                <h3 className="display-7">Points: {this.state.userPoints}</h3>
-                <this.check />
-                <h3 className="display-7">Badges:</h3>
->>>>>>> e39959244f0ba9f7b1c1298cc72ecfc8192933fe
                 <Row>
                 <Col>
                 <ResponsiveEmbed aspectRatio="1by1">
