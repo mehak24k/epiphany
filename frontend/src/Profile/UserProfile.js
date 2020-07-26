@@ -109,7 +109,7 @@ class UserProfile extends Component {
   following = () => {
     if (this.state.user_is_following && this.state.user_is_following.length) {
       return (
-        this.state.user_is_following.map(f => 
+        this.state.user_is_following.map(f =>
           <Link to={ `/users/${f.user_id}` }><ListGroup.Item action variant="success">{ f.name }</ListGroup.Item></Link>
         )
       );
