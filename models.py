@@ -55,6 +55,7 @@ class Post(db.Model):
     category_id = db.Column(db.Integer(), db.ForeignKey('categories.id'))
     is_file = db.Column(db.Boolean, nullable=True, default=False)
     comments = db.relationship("Comment", backref="post", lazy=True)
+    net_upvotes = db.Column(db.Integer, default=0)
 
 class Category(db.Model):
     __tablename__="categories"
@@ -74,8 +75,30 @@ class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, unique=True, nullable=False)
     # we can access a post's module using this e.g.
-    # my_post.tag
+    # my_post.tags
     posts = db.relationship('Post', secondary=post_tags, backref='tags')
+
+user_likedposts = db.Table('user_likedposts',
+    db.Column('post_id', db.Integer, db.ForeignKey('likedposts.id')),
+    db.Column('user_id', db.Integer, db.ForeignKey('users2.id'))
+)
+
+class LikedPost(db.Model):
+    __tablename__="likedposts"
+    id = db.Column(db.Integer, primary_key=True)
+    post_id = db.Column(db.Integer)
+    users2 = db.relationship('User', secondary=user_likedposts, backref='liked_posts')
+
+user_dislikedposts = db.Table('user_dislikedposts',
+    db.Column('post_id', db.Integer, db.ForeignKey('dislikedposts.id')),
+    db.Column('user_id', db.Integer, db.ForeignKey('users2.id'))
+)
+
+class DislikedPost(db.Model):
+    __tablename__="dislikedposts"
+    id = db.Column(db.Integer, primary_key=True)
+    post_id = db.Column(db.Integer, unique=True, nullable=False)
+    users2 = db.relationship('User', secondary=user_dislikedposts, backref='disliked_posts')
 
 class Comment(db.Model):
     _N = 6

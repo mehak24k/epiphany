@@ -25,7 +25,6 @@ class Comment extends Component {
     const { match: { params } } = this.props;
     let postData = {"text": this.state.text, "user_email": localStorage.getItem('userEmail'), "post_id": params.postId}
     console.log(postData);
-    axios.post(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}/comment`, postData)
     .then((response) => {
       console.log(response);
     }, (error) => {

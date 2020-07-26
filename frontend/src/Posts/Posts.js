@@ -15,6 +15,12 @@ import Card from 'react-bootstrap/Card'
 import CardDeck from 'react-bootstrap/CardDeck'
 import Container from 'react-bootstrap/Container'
 import Alert from 'react-bootstrap/Alert'
+import Carousel from 'react-bootstrap/Carousel'
+import ResponsiveEmbed from 'react-bootstrap/ResponsiveEmbed'
+import welcome from '../Files/welcome.png'
+import topuser from '../Files/topuser.png'
+import usercount from '../Files/usercount.png'
+
 
 class Posts extends Component {
 
@@ -34,7 +40,6 @@ class Posts extends Component {
   }
 
   async componentDidMount() {
-      const data = (await axios.get('https://epiphany-test-three.herokuapp.com/main')).data;
 
       const posts = data.data[0];
       const tags = data.data[1];
@@ -167,6 +172,27 @@ class Posts extends Component {
     }
     return (
       <Container className="justify-content-md-center">
+      <Carousel>
+        <Carousel.Item>
+        <img
+          className="d-block w-100"
+          src={welcome}
+        />
+        </Carousel.Item>
+        <Carousel.Item>
+          <img
+            className="d-block w-100"
+            src={topuser}
+          />
+        </Carousel.Item>
+        <Carousel.Item>
+          <img
+            className="d-block w-100"
+            src={usercount}
+          />
+        </Carousel.Item>
+      </Carousel>
+      {this.state.filteredPosts &&
         <div className="row">
         <Col>
           <Form>
@@ -179,6 +205,7 @@ class Posts extends Component {
           </Form>
           </Col>
         </div>
+      }
 
         <Row className="justify-content-md-center">
         { this.state.errorMessage &&
@@ -202,7 +229,7 @@ class Posts extends Component {
           freeSolo
           options={top100Films.map((option) => option.name)}
           renderInput={(params) => (
-            <TextField {...params}  onKeyPress={(e) => { e.key === 'Enter' && e.preventDefault(); }} id="standard-full-width" label="Search with tags!" margin="normal" variant="outlined" onKeyUp={this.filterTags}/>
+            <TextField {...params}  onKeyPress={(e) => { e.key === 'Enter' && e.preventDefault(); }} id="standard-full-width" label="Search with tags! Press enter to add a tag." margin="normal" variant="outlined" onKeyUp={this.filterTags}/>
           )}
         />
         </div>
@@ -210,6 +237,7 @@ class Posts extends Component {
         </div>
 
         {this.state.posts === null && <div> <Spinner animation="border" variant="primary" /> <p>Loading posts...</p></div>}
+
         {this.state.filteredPosts && this.state.filteredPosts.map(post => (
           <Row className="justify-content-md-center">
 
@@ -225,11 +253,22 @@ class Posts extends Component {
                     ))
                   }
                   </Row>
+                  {post.is_file === false &&
                   <Card.Text style={{color: "#161717", textAlign: "center"}}>
                   <Truncate lines={2}>
                       {post.body}
                   </Truncate>
                   </Card.Text>
+                }
+                {post.is_file === true &&
+                  <div>
+                    <video id="samp" width="540" height="380" controls>
+                        <source src={`./static/${post.body}`} type="video/mp4">
+                        </source>
+                        Your browser does not support this video format.
+                    </video>
+                  </div>
+              }
                 </Card.Body>
                 </Link>
                 <Link key={myKey()} to={`/users/${post.user_id}`}>
@@ -246,4 +285,3 @@ class Posts extends Component {
   }
 }
 
-export default Posts;

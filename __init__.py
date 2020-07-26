@@ -1,29 +1,23 @@
-from flask import Flask, jsonify, redirect, render_template, request, url_for
+from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from .models import *
 from flask_login import LoginManager
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
+from sassutils.wsgi import SassMiddleware
 from flask_cors import CORS
-import os
 
 # Configure app
-app = Flask(__name__) #, static_folder='frontend/build', static_url_path='/')
-#CORS(app, resources={r"/*": {"origins": "*"}})
+app = Flask(__name__)
 CORS(app)
-#app.config['CORS_HEADERS'] = 'Content-Type'
-#api = Api(app)
-
-@app.route('/', methods=['GET'])
-def index():
-  return redirect(url_for('main.main_index'))
 
 @app.after_request
 def after_request(response):
-  #response.headers.add('Access-Control-Allow-Origin', '*')
-  #response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-  #response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
   return response
+
+app.wsgi_app = SassMiddleware(app.wsgi_app, {
+    'epiphany': ('static/sass', 'static/css', '/static/css')
+})
 
 # Configure database
 app.config['SECRET_KEY'] = '9OLWxND4o83j4K4iuopO'
@@ -58,6 +52,3 @@ app.register_blueprint(main_blueprint)
 # blueprint for posting
 from .blog import bp as blog_blueprint
 app.register_blueprint(blog_blueprint)
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=False, port=os.environ.get('PORT', 80))

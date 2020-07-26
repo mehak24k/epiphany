@@ -1,3 +1,4 @@
+import React, {Component} from 'react';
 import React, {Component, useState} from 'react';
 import axios from 'axios';
 import Tabs from 'react-bootstrap/Tabs'
@@ -10,7 +11,8 @@ import Col from 'react-bootstrap/Col'
 import Spinner from 'react-bootstrap/Spinner'
 import Button from 'react-bootstrap/Button'
 import ListGroup from 'react-bootstrap/ListGroup'
-
+import joined_badge from '../Files/joined_badge.png'
+import ResponsiveEmbed from 'react-bootstrap/ResponsiveEmbed'
 
 class UserProfile extends Component {
 
@@ -36,9 +38,9 @@ class UserProfile extends Component {
 
   async refreshProfile() {
     const { match: { params } } = this.props;
+    let userData = {"id": params.userId}
     let userData = {"id": params.userId, "current_user_email": localStorage.getItem('userEmail')}
     console.log(userData);
-    axios.post(`https://epiphany-test-three.herokuapp.com/users/${params.userId}`, userData)
     .then((response) => {
       console.log(response.data.user_info[0]);
       console.log(response.data.user_info[6]);
@@ -157,8 +159,22 @@ class UserProfile extends Component {
             <div className="row">
               <div className="jumbotron col-12">
                 <h1 className="display-3">{this.state.userName}</h1>
-                <h3 className="display-5">Points: {this.state.userPoints}</h3>
-                <this.check />
+                <h2 className="display-3">Points: {this.state.userPoints}</h2>
+                <h3 className="display-3">Badges:</h3>
+                <Row>
+                <Col>
+                <ResponsiveEmbed aspectRatio="1by1">
+                  <embed type="image/png" src={joined_badge} />
+                </ResponsiveEmbed>
+                </Col>
+                {this.state.userPoints >= 10 &&
+                  <Col>
+                  <ResponsiveEmbed aspectRatio="1by1">
+                    <embed type="image/png" src={joined_badge} />
+                  </ResponsiveEmbed>
+                  </Col>
+                }
+                </Row>
               </div>
             </div>
           </Tab>
@@ -192,11 +208,13 @@ class UserProfile extends Component {
             </div>
           </Tab>
           <Tab eventKey="followers" title="Followers">
+            hello again
             <ListGroup variant="flush">
               <this.followedBy />
             </ListGroup>
           </Tab>
           <Tab eventKey="following" title="Following">
+            hello again2
             <ListGroup variant="flush">
               <this.following />
             </ListGroup>

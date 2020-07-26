@@ -35,7 +35,7 @@ def main_index():
 
         for tag in tags_list:
             tags.append({'name': tag.name})
-        posts.append({'id': post.id, 'user_id': post.user_id, 'title': post.title, 'body': post.body, 'tags': tags, 'user': User.query.filter_by(id=post.user_id).first().name, 'time': post.timestamp.strftime('%x %H:%M')})
+        posts.append({'id': post.id, 'user_id': post.user_id, 'is_file': post.is_file, 'title': post.title, 'body': post.body, 'tags': tags, 'user': User.query.filter_by(id=post.user_id).first().name, 'time': post.timestamp.strftime('%x %H:%M')})
 
     data = []
     data.append(posts)

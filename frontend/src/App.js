@@ -11,6 +11,9 @@ import Signup from './Signup/Signup';
 import EmailSent from './Signup/EmailSent';
 import EmailConfirmed from './Signup/EmailConfirmed';
 import UserProfile from './Profile/UserProfile';
+import { Redirect } from "react-router-dom";
+import NewVideo from './CreatePosts/NewVideo';
+import Create from './CreatePosts/Create';
 
 class App extends Component {
 
@@ -30,6 +33,9 @@ class App extends Component {
   logout() {
     localStorage.clear();
     this.setState({login: false});
+    return (
+      <Redirect to="/" />
+    );
   }
 
   render() {
@@ -49,9 +55,16 @@ class App extends Component {
         <Route exact path='/profile' component={Profile}/>
         <Route exact path='/post' component={NewPost}/>
         <Route exact path='/post/:postId/update' component={UpdatePost}/>
+        <Route exact path='/new-video' component={NewVideo}/>
+        <Route exact path='/create' component={Create}/>
+        {localStorage.getItem('loggedIn') != "true" && <Route exact path='/login' component={() => <Login callback={this.login}/>}/>}
+        {localStorage.getItem('loggedIn') === "true" && <Route exact path='/profile' component={Profile}/>}
+        {localStorage.getItem('loggedIn') === "true" && <Route exact path='/post' component={NewPost}/>}
+        {localStorage.getItem('loggedIn') === "true" && <Route exact path='/post/:postId/update' component={UpdatePost}/>}
       </div>
     );
   }
 }
 
+export default App;
 export default App;
