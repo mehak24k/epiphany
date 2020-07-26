@@ -38,7 +38,7 @@ class UserProfile extends Component {
     const { match: { params } } = this.props;
     let userData = {"id": params.userId, "current_user_email": localStorage.getItem('userEmail')}
     console.log(userData);
-    axios.post(`http://localhost:5000/users/${params.userId}`, userData)
+    axios.post(`https://epiphany-test-three.herokuapp.com/users/${params.userId}`, userData)
     .then((response) => {
       console.log(response.data.user_info[0]);
       console.log(response.data.user_info[6]);
@@ -66,7 +66,7 @@ class UserProfile extends Component {
   async followUser() {
     const { match: { params } } = this.props;
     let postData = {"user_email": localStorage.getItem('userEmail')};
-    axios.post(`http://localhost:5000/follow/${params.userId}`, postData)
+    axios.post(`https://epiphany-test-three.herokuapp.com/follow/${params.userId}`, postData)
     .then((response) => {
       console.log(response);
       console.log('followed');
@@ -81,7 +81,7 @@ class UserProfile extends Component {
   async unfollowUser() {
     const { match: { params } } = this.props;
     let postData = {"user_email": localStorage.getItem('userEmail')};
-    axios.post(`http://localhost:5000/unfollow/${params.userId}`, postData)
+    axios.post(`https://epiphany-test-three.herokuapp.com/unfollow/${params.userId}`, postData)
     .then((response) => {
       console.log(response);
       console.log('unfollowed');

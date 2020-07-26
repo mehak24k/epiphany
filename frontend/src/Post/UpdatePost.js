@@ -20,7 +20,7 @@ class UpdatePost extends Component {
 
   async componentDidMount() {
     const { match: { params } } = this.props;
-    const post = (await axios.get(`http://localhost:5000/posts/${params.postId}/update`)).data;
+    const post = (await axios.get(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}/update`)).data;
     console.log(post.json_post.body);
 
     this.setState({
@@ -39,7 +39,7 @@ class UpdatePost extends Component {
   async handleSubmit(event) {
     const { match: { params } } = this.props;
     let postData = {"title": this.state.title, "body": this.state.body, "user": localStorage.getItem("userEmail")}
-    axios.post(`http://localhost:5000/posts/${params.postId}/update`, postData)
+    axios.post(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}/update`, postData)
     .then((response) => {
       console.log(response);
       this.setState({

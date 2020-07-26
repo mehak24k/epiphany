@@ -24,7 +24,7 @@ class Profile extends Component {
   async componentDidMount() {
     let userData = {"email": localStorage.getItem('userEmail')}
     console.log(userData);
-    axios.post('http://localhost:5000/profile', userData)
+    axios.post('https://epiphany-test-three.herokuapp.com/profile', userData)
     .then((response) => {
       console.log(response.data.user_info[0]);
       console.log(response.data.user_info[2].user_is_followed_by)
