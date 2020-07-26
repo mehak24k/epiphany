@@ -1,4 +1,3 @@
-import React, {Component} from 'react';
 import React, {Component, useState} from 'react';
 import { Redirect } from 'react-router-dom';
 import {Link} from 'react-router-dom';
@@ -67,6 +66,7 @@ class Post extends Component {
   }
   async refreshPost() {
     const { match: { params } } = this.props;
+    const post = (await axios.get(`http://localhost:5000/posts/${params.postId}`)).data;
     this.setState({
       post: post.json_post,
       postId: params.postId,
@@ -88,17 +88,14 @@ class Post extends Component {
 
   async submit(event) {
     const { match: { params } } = this.props;
-    let postData = {"text": this.state.text, "user_email": localStorage.getItem('userEmail'), "post_id": params.postId}
     let postData = {"text": this.state.text, "user_email": localStorage.getItem('userEmail'), "post_id": params.postId};
     console.log(postData);
+    axios.post(`http://localhost:5000/posts/${params.postId}/comment`, postData)
     .then((response) => {
       this.setState({
         commented: true,
       })
       console.log(response);
-      this.setState({
-        commented: true,
-      })
       this.refreshPost();
     }, (error) => {
       console.log('Looks like there was a problem: \n', error);
@@ -110,6 +107,7 @@ class Post extends Component {
     const { match: { params } } = this.props;
     let postData = {"text": this.state.text, "user_email": localStorage.getItem('userEmail'), "post_id": params.postId}
     console.log(postData);
+    axios.post(`http://localhost:5000/posts/${params.postId}/delete`, postData)
     .then((response) => {
       this.setState({
         deleted: true,
@@ -122,12 +120,17 @@ class Post extends Component {
 
   async deleteComment(event, id) {
     const { match: { params } } = this.props;
-    axios.post(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}/${id}/delete`)
+    axios.post(`http://localhost:5000/posts/${params.postId}/${id}/delete`)
     .then((response) => {
       console.log(response);
       this.setState({
         c_deleted: true,
       })
+    }, (error) => {
+    console.log('Looks like there was a problem: \n', error);
+  });
+  event.preventDefault();
+}
   async upvote(event) {
     const { match: { params } } = this.props;
     let postData = {"user_email": localStorage.getItem('userEmail'), "post_id": params.postId}
@@ -152,14 +155,19 @@ class Post extends Component {
   }
 
   async replyTo(event, id) {
-    const { match: { params } } = this.props;
-    let postData = {"text": this.state.reply, "user_email": localStorage.getItem('userEmail'), "post_id": params.postId, "parent_id": id}
-    axios.post(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}/${id}/reply`, postData)
-    .then((response) => {
-      this.setState({
-        replied: true,
-      })
-    }, (error) => {
+      const { match: { params } } = this.props;
+      let postData = {"text": this.state.reply, "user_email": localStorage.getItem('userEmail'), "post_id": params.postId, "parent_id": id}
+      axios.post(`http://localhost:5000/posts/${params.postId}/${id}/reply`, postData)
+      .then((response) => {
+        this.setState({
+          replied: true,
+        })
+      }, (error) => {
+        console.log('Looks like there was a problem: \n', error);
+      });
+      event.preventDefault();
+    }
+
   async downvote(event) {
     const { match: { params } } = this.props;
     let postData = {"user_email": localStorage.getItem('userEmail'), "post_id": params.postId}
@@ -212,8 +220,8 @@ class Post extends Component {
 
   Delete = (props) => {
     return  (
-      <Button 
-        variant="link" 
+      <Button
+        variant="link"
         size="sm"
         onClick={(e) => this.deleteComment(e, props.id)}
       >
@@ -221,6 +229,7 @@ class Post extends Component {
       </Button>
     );
   }
+
 
   render() {
     // checking for deleted post
@@ -233,20 +242,15 @@ class Post extends Component {
         <Redirect to="/" />
       );
     }
-    if (commented) {
     if (commented || replied || c_deleted) {
       this.refreshPost();
     }
-  render() {
     const {post} = this.state;
     if (post === null) return <p>Loading ...</p>;
-    if (post === null) 
-      return <p>
-        Loading ...
-        </p>;
     var text = post.body
     return (
       <div className="container">
+            {post === null && <p>Loading ...</p>}
         <div className="row">
           <div className="jumbotron col-12">
           { this.state.errorMessage &&
@@ -350,10 +354,10 @@ class Post extends Component {
                                 { comment.text.split("\n").map((i,key) => {
                                   return <div key={key}>
                                     {i}
-                                <p><small> 
+                                <p><small>
                                   { comment.commentor !== "deleted" && comment.time }
                                   {
-                                    (localStorage.getItem('loggedIn') === "true" && localStorage.getItem('userEmail') === comment.user_email) 
+                                    (localStorage.getItem('loggedIn') === "true" && localStorage.getItem('userEmail') === comment.user_email)
                                     && <this.Delete id={ comment.comment_id }/>
                                   }
                                   { comment.commentor !== "deleted" && <this.Reply id={ comment.comment_id }/> }
@@ -373,7 +377,7 @@ class Post extends Component {
                                       {i}
                                       <p><small>{ comment.commentor !== "deleted" && comment.time }
                                         {
-                                          (localStorage.getItem('loggedIn') === "true" && localStorage.getItem('userEmail') === comment.user_email) 
+                                          (localStorage.getItem('loggedIn') === "true" && localStorage.getItem('userEmail') === comment.user_email)
                                           && <this.Delete id={ comment.comment_id }/>
                                         }
                                         { comment.commentor !== "deleted" && <this.Reply id={ comment.comment_id }/> }
@@ -394,10 +398,10 @@ class Post extends Component {
                                         <p><small>
                                           { comment.commentor !== "deleted" && comment.time }
                                           {
-                                            (localStorage.getItem('loggedIn') === "true" && localStorage.getItem('userEmail') === comment.user_email) 
+                                            (localStorage.getItem('loggedIn') === "true" && localStorage.getItem('userEmail') === comment.user_email)
                                             && <this.Delete id={ comment.comment_id }/>
                                           }
-                                          { comment.commentor !== "deleted" && <this.Reply id={ comment.comment_id }/> } 
+                                          { comment.commentor !== "deleted" && <this.Reply id={ comment.comment_id }/> }
                                         </small></p>
                                       </div>;
                                   }) }

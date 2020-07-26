@@ -1,4 +1,3 @@
-import React, {Component} from 'react';
 import React, {Component, useState} from 'react';
 import axios from 'axios';
 import Tabs from 'react-bootstrap/Tabs'
@@ -38,9 +37,9 @@ class UserProfile extends Component {
 
   async refreshProfile() {
     const { match: { params } } = this.props;
-    let userData = {"id": params.userId}
     let userData = {"id": params.userId, "current_user_email": localStorage.getItem('userEmail')}
     console.log(userData);
+    axios.post(`http://localhost:5000/users/${params.userId}`, userData)
     .then((response) => {
       console.log(response.data.user_info[0]);
       console.log(response.data.user_info[6]);
@@ -68,7 +67,7 @@ class UserProfile extends Component {
   async followUser() {
     const { match: { params } } = this.props;
     let postData = {"user_email": localStorage.getItem('userEmail')};
-    axios.post(`https://epiphany-test-three.herokuapp.com/follow/${params.userId}`, postData)
+    axios.post(`http://localhost:5000/follow/${params.userId}`, postData)
     .then((response) => {
       console.log(response);
       console.log('followed');
@@ -83,7 +82,7 @@ class UserProfile extends Component {
   async unfollowUser() {
     const { match: { params } } = this.props;
     let postData = {"user_email": localStorage.getItem('userEmail')};
-    axios.post(`https://epiphany-test-three.herokuapp.com/unfollow/${params.userId}`, postData)
+    axios.post(`http://localhost:5000/unfollow/${params.userId}`, postData)
     .then((response) => {
       console.log(response);
       console.log('unfollowed');
@@ -110,11 +109,11 @@ class UserProfile extends Component {
   following = () => {
     if (this.state.user_is_following && this.state.user_is_following.length) {
       return (
-        this.state.user_is_following.map(f => 
+        this.state.user_is_following.map(f =>
           <Link to={ `/users/${f.user_id}` }><ListGroup.Item action variant="success">{ f.name }</ListGroup.Item></Link>
         )
       );
-    } 
+    }
     return (
       <ListGroup.Item>No followed users here! :D</ListGroup.Item>
     );
@@ -123,7 +122,7 @@ class UserProfile extends Component {
   followedBy = () => {
     if (this.state.user_is_followed_by && this.state.user_is_followed_by.length) {
       return (
-        this.state.user_is_followed_by.map(f => 
+        this.state.user_is_followed_by.map(f =>
           <Link to={ `/users/${f.user_id}` }><ListGroup.Item action variant="success">{ f.name }</ListGroup.Item></Link>
         )
       );

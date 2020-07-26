@@ -3,15 +3,10 @@ from flask_login import login_required, current_user
 from sqlalchemy import and_
 from werkzeug.exceptions import abort
 from flask_cors import cross_origin, CORS
-<<<<<<< HEAD
-from .models import User, Post, Comment, Tag
-from . import db
-=======
 from .models import User, Post, Comment, Tag, LikedPost, DislikedPost
 from . import db, app
 import os
 from werkzeug.utils import secure_filename
->>>>>>> gamification
 
 bp = Blueprint('blog', __name__)
 
@@ -39,7 +34,7 @@ def create():
     title = postData['title']
     body = postData['body']
     tags = postData['tags']
-    
+
     if postData['newTags'] is None:
         newTags = []
     else:
@@ -48,16 +43,13 @@ def create():
     user_id = User.query.filter_by(email=postData['user']).first().id
 
     new_post = Post(title=title, body=body, user_id=user_id)
-<<<<<<< HEAD
 
-=======
->>>>>>> gamification
     new_post.tags = []
 
     for newTag in newTags:
         new_tag = Tag(name=newTag)
         db.session.add(new_tag)
-    
+
     db.session.commit()
 
     for tag in tags:
@@ -129,24 +121,18 @@ def indiv_post(post_id):
         tags.append({'name': tag.name})
 
     for comment in comments:
-<<<<<<< HEAD
         comm.append({'text': comment.text, 'commentor': comment.user.name, 'user_email': comment.user.email, 'comment_id': comment.id, 'comment_level': comment.level(), 'time': comment.timestamp})
 
-    json_post = {'id': post[0].id, 
-        'user_id': post[0].user.id, 
+    json_post = {'id': post[0].id,
+        'user_id': post[0].user.id,
         'username': post[0].user.name,
-        'time': post[0].timestamp.strftime('%x %H:%M'), 
-        'user_email': post[0].user.email, 
-        'title': post[0].title, 
-        'body': post[0].body, 
-        'tags': tags, 
+        'time': post[0].timestamp.strftime('%x %H:%M'),
+        'user_email': post[0].user.email,
+        'title': post[0].title,
+        'body': post[0].body,
+        'tags': tags,
         'comments': comm
         }
-=======
-        comm.append({'text': comment.text, 'commentor': comment.user.name, 'comment_id': comment.id, 'comment_level': comment.level(), 'time': comment.timestamp})
-
-    json_post = {'id': post[0].id, 'user_email': post[0].user.email, 'title': post[0].title, 'body': post[0].body, 'tags': tags, 'comments': comm, 'upvotes': post[0].net_upvotes, 'is_file': post[0].is_file}
->>>>>>> gamification
 
     return jsonify({'json_post': json_post})
 
@@ -213,13 +199,13 @@ def comment(post_id):
 
 @bp.route('/posts/<int:post_id>/<int:comment_id>/reply', methods=['OPTIONS'])
 @cross_origin()
-def reply_options(): 
+def reply_options():
     response = {'hello'}
     return jsonify({'response': response}), 205
 
 @bp.route('/posts/<int:post_id>/<int:comment_id>/reply', methods=['POST'])
 @cross_origin()
-def reply(post_id, comment_id): 
+def reply(post_id, comment_id):
     reply = request.get_json(force=True)
     text=reply['text']
     user_id = User.query.filter_by(email=reply['user_email']).first().id
@@ -278,9 +264,6 @@ def modules():
     for module in modules_list:
         modules.append({'name': module.name, 'code': module.code})
 
-<<<<<<< HEAD
-    return jsonify({'modules' : modules})
-=======
     return jsonify({'modules' : modules})
 
 
@@ -432,4 +415,3 @@ def downvote(post_id):
         response = []
 
         return jsonify({'response': response}), 200
->>>>>>> gamification

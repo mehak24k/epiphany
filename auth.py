@@ -1,10 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash, jsonify, current_app
 from werkzeug.security import generate_password_hash, check_password_hash
-<<<<<<< HEAD
-from .models import User
-=======
 from .models import User, Post
->>>>>>> gamification
 from . import db, s, mail, app
 from flask_login import login_user, logout_user, login_required, current_user
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
@@ -165,7 +161,6 @@ def profile():
     data = []
     #posts.append(posts_list)
 
-<<<<<<< HEAD
     who_user_is_following = user.followed.all()
     who_follows_user = user.followers.all()
     user_is_following = []
@@ -176,7 +171,7 @@ def profile():
 
     for f in who_follows_user:
         user_is_followed_by.append({'name': f.name, 'user_id': f.id})
-=======
+
     for post in liked_posts_list:
         my_post = Post.query.filter_by(id=post.post_id).first()
         tags_list = my_post.tags
@@ -185,7 +180,6 @@ def profile():
         for tag in tags_list:
             tags.append({'name': tag.name})
         liked_posts.append({'id': my_post.id, 'title': my_post.title, 'body': my_post.body, 'tags': tags})
->>>>>>> gamification
 
     for post in posts_list:
         tags_list = post.tags
@@ -195,20 +189,14 @@ def profile():
             tags.append({'name': tag.name})
         posts.append({'id': post.id, 'title': post.title, 'body': post.body, 'tags': tags})
 
-<<<<<<< HEAD
     user_info = []
-    user_info.append({'posts': posts})
+    user_info.append(posts)
+    user_info.append(liked_posts)
+    user_info.append({'points': user.points})
     user_info.append({'user_is_following': user_is_following})
     user_info.append({'user_is_followed_by': user_is_followed_by})
 
     return jsonify({'user_info': user_info}), 206
-=======
-    data.append(posts)
-    data.append(liked_posts)
-    data.append({'points': user.points})
-
-    return jsonify({'data': data}), 206
->>>>>>> gamification
 
 @auth.route('/users/<int:user_id>', methods=['OPTIONS'])
 @cross_origin()

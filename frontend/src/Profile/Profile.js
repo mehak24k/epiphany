@@ -28,27 +28,21 @@ class Profile extends Component {
   async componentDidMount() {
     let userData = {"email": localStorage.getItem('userEmail')}
     console.log(userData);
+    axios.post('http://localhost:5000/profile', userData)
     .then((response) => {
-      console.log(response.data.user_info[0]);
-      console.log(response.data.user_info[2].user_is_followed_by)
       const posts = response.data.user_info[0].posts;
-      console.log(response.data.data[2]);
 
-      const posts = response.data.data[0];
       let arr = [];
       for (var i in posts) {
         arr.push(posts[i])
       }
       this.setState({
         posts: arr,
-        user_is_following: response.data.user_info[1].user_is_following,
-        user_is_followed_by: response.data.user_info[2].user_is_followed_by,
+        user_is_following: response.data.user_info[3].user_is_following,
+        user_is_followed_by: response.data.user_info[4].user_is_followed_by,
+        points: response.data.user_info[2].points,
       });
-      console.log(this.state.user_is_followed_by);
-        points: response.data.data[2].points
-      });
-
-      const likedPosts = response.data.data[1];
+      const likedPosts = response.data.user_info[1];
       let arr2 = [];
       for (var i in likedPosts) {
         arr2.push(likedPosts[i])
@@ -77,11 +71,11 @@ class Profile extends Component {
   following = () => {
     if (this.state.user_is_following && this.state.user_is_following.length) {
       return (
-        this.state.user_is_following.map(f => 
+        this.state.user_is_following.map(f =>
           <Link to={ `/users/${f.user_id}` }><ListGroup.Item action variant="success">{ f.name }</ListGroup.Item></Link>
         )
       );
-    } 
+    }
     return (
       <ListGroup.Item>No followed users here! :D</ListGroup.Item>
     );
@@ -90,7 +84,7 @@ class Profile extends Component {
   followedBy = () => {
     if (this.state.user_is_followed_by && this.state.user_is_followed_by.length) {
       return (
-        this.state.user_is_followed_by.map(f => 
+        this.state.user_is_followed_by.map(f =>
           <Link to={ `/users/${f.user_id}` }><ListGroup.Item action variant="success">{ f.name }</ListGroup.Item></Link>
         )
       );
@@ -109,7 +103,6 @@ class Profile extends Component {
             <div className="row">
               <div className="jumbotron col-12">
                 <h1 className="display-3">{localStorage.getItem('userName')}</h1>
-                <h2 className="display-3">Points: {localStorage.getItem('userPoints')}</h2>
                 <h2 className="display-3">Points: {this.state.points}</h2>
                 <h3 className="display-3">Badges:</h3>
                 <ResponsiveEmbed aspectRatio="1by1">
@@ -190,10 +183,6 @@ class Profile extends Component {
             <ListGroup variant="flush">
               <this.following />
             </ListGroup>
-            under construction
-          </Tab>
-          <Tab eventKey="following" title="Following">
-            under construction
           </Tab>
         </Tabs>
       </div>
