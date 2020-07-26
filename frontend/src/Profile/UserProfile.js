@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import React, {Component, useState} from 'react';
 import axios from 'axios';
 import Tabs from 'react-bootstrap/Tabs'
 import Tab from 'react-bootstrap/Tab'
@@ -38,7 +37,6 @@ class UserProfile extends Component {
 
   async refreshProfile() {
     const { match: { params } } = this.props;
-    let userData = {"id": params.userId}
     let userData = {"id": params.userId, "current_user_email": localStorage.getItem('userEmail')}
     console.log(userData);
     axios.post(`http://localhost:5000/users/${params.userId}`, userData)
@@ -113,7 +111,7 @@ class UserProfile extends Component {
   following = () => {
     if (this.state.user_is_following && this.state.user_is_following.length) {
       return (
-        this.state.user_is_following.map(f => 
+        this.state.user_is_following.map(f =>
           <Link to={ `/users/${f.user_id}` }><ListGroup.Item action variant="success">{ f.name }</ListGroup.Item></Link>
         )
       );
@@ -163,19 +161,10 @@ class UserProfile extends Component {
               <div className="jumbotron col-12">
               <Col>
                 <h1 className="display-3">{this.state.userName}</h1>
-<<<<<<< HEAD
                 </Col>
-                <Col md={{ offset: "10" }}>
-                <this.check />
-                </Col>
-                <h2 className="display-3">Points: {this.state.userPoints}</h2>
-
-                <h3 className="display-3">Badges:</h3>
-=======
                 <h3 className="display-7">Points: {this.state.userPoints}</h3>
                 <this.check />
                 <h3 className="display-7">Badges:</h3>
->>>>>>> e39959244f0ba9f7b1c1298cc72ecfc8192933fe
                 <Row>
                 <Col>
                 <ResponsiveEmbed aspectRatio="1by1">
