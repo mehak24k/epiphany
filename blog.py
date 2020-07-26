@@ -3,8 +3,8 @@ from flask_login import login_required, current_user
 from sqlalchemy import and_
 from werkzeug.exceptions import abort
 from flask_cors import cross_origin, CORS
-from models import User, Post, Comment, Tag
-from app import db
+from .models import User, Post, Comment, Tag
+from . import db
 
 bp = Blueprint('blog', __name__)
 
@@ -23,6 +23,7 @@ def create():
     title = postData['title']
     body = postData['body']
     tags = postData['tags']
+    
     if postData['newTags'] is None:
         newTags = []
     else:
@@ -32,13 +33,17 @@ def create():
 
     new_post = Post(title=title, body=body, user_id=user_id)
 
-    for tag in tags:
-        curr_tag = db.session.query(Tag).filter_by(name=tag).first()
-        new_post.tags.append(curr_tag)
+    new_post.tags = []
 
     for newTag in newTags:
         new_tag = Tag(name=newTag)
         db.session.add(new_tag)
+    
+    db.session.commit()
+
+    for tag in tags:
+        curr_tag = db.session.query(Tag).filter_by(name=tag).first()
+        new_post.tags.append(curr_tag)
 
     db.session.add(new_post)
     db.session.commit()
@@ -80,9 +85,18 @@ def indiv_post(post_id):
         tags.append({'name': tag.name})
 
     for comment in comments:
-        comm.append({'text': comment.text, 'commentor': comment.user.name, 'comment_id': comment.id, 'comment_level': comment.level(), 'time': comment.timestamp})
-    
-    json_post = {'id': post[0].id, 'user_email': post[0].user.email, 'title': post[0].title, 'body': post[0].body, 'tags': tags, 'comments': comm}
+        comm.append({'text': comment.text, 'commentor': comment.user.name, 'user_email': comment.user.email, 'comment_id': comment.id, 'comment_level': comment.level(), 'time': comment.timestamp})
+
+    json_post = {'id': post[0].id, 
+        'user_id': post[0].user.id, 
+        'username': post[0].user.name,
+        'time': post[0].timestamp.strftime('%x %H:%M'), 
+        'user_email': post[0].user.email, 
+        'title': post[0].title, 
+        'body': post[0].body, 
+        'tags': tags, 
+        'comments': comm
+        }
 
     return jsonify({'json_post': json_post})
 
@@ -111,7 +125,7 @@ def update(post_id):
         response = []
         return jsonify({'response': response}), 204
 
-    return jsonify({'json_post': json_post})
+    return jsonify({'json_post': json_post}), 206
 
 @bp.route('/posts/<int:post_id>/delete', methods=['OPTIONS'])
 @cross_origin()
@@ -136,6 +150,7 @@ def comment_options():
     return jsonify({'response': response}), 205
 
 @bp.route('/posts/<int:post_id>/comment', methods=['POST'])
+@cross_origin()
 def comment(post_id):
     comment = request.get_json(force=True)
     text = comment['text']
@@ -145,6 +160,44 @@ def comment(post_id):
     new_comment.save()
 
     return redirect(url_for('blog.indiv_post', post_id=post_id))
+
+@bp.route('/posts/<int:post_id>/<int:comment_id>/reply', methods=['OPTIONS'])
+@cross_origin()
+def reply_options(): 
+    response = {'hello'}
+    return jsonify({'response': response}), 205
+
+@bp.route('/posts/<int:post_id>/<int:comment_id>/reply', methods=['POST'])
+@cross_origin()
+def reply(post_id, comment_id): 
+    reply = request.get_json(force=True)
+    text=reply['text']
+    user_id = User.query.filter_by(email=reply['user_email']).first().id
+    post_id = reply['post_id']
+    parent_id = reply['parent_id']
+    parent = Comment.query.get(parent_id)
+    new_comment = Comment(text=text, user_id=user_id, post_id=post_id, parent=parent)
+    new_comment.save()
+
+    response = []
+    return jsonify({'response': response}), 204
+
+@bp.route('/posts/<int:post_id>/<int:comment_id>/delete', methods=['OPTIONS'])
+@cross_origin()
+def delete_comment_options(post_id, comment_id):
+    response = {'hello'}
+    return jsonify({'response': response}), 205
+
+@bp.route('/posts/<int:post_id>/<int:comment_id>/delete', methods=['POST'])
+@cross_origin()
+def delete_comment(post_id, comment_id):
+    comment = db.session.query(Comment).get(comment_id)
+    comment.user_id = 46
+    comment.text = "This comment has been deleted."
+    db.session.commit()
+
+    response = []
+    return jsonify({'response': response}), 204
 
 @bp.route('/posts/<int:post_id>/category/<module>', methods=['GET'])
 @login_required

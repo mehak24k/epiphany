@@ -4,6 +4,11 @@ from datetime import datetime
 
 db = SQLAlchemy()
 
+followers = db.Table('followers',
+    db.Column('follower_id', db.Integer, db.ForeignKey('users2.id')),
+    db.Column('followed_id', db.Integer, db.ForeignKey('users2.id'))
+)
+
 class User(UserMixin, db.Model):
     __tablename__="users2"
     id = db.Column(db.Integer, primary_key=True) # primary keys are required by SQLAlchemy
@@ -16,12 +21,35 @@ class User(UserMixin, db.Model):
     email_confirmed_on = db.Column(db.DateTime, nullable=True)
     points = db.Column(db.Integer, default=0)
     comments = db.relationship("Comment", backref="user", lazy=True)
+    followed = db.relationship('User',
+        secondary=followers,
+        primaryjoin=(followers.c.follower_id == id),
+        secondaryjoin=(followers.c.followed_id == id),
+        backref=db.backref('followers', lazy = 'dynamic'),
+        lazy='dynamic')
+
+    def is_following(self, user):
+        return self.followed.filter(followers.c.followed_id == user.id).count() > 0
+    
+    def follow(self, user):
+        if not self.is_following(user):
+            self.followed.append(user)
+
+    def unfollow(self, user):
+        if self.is_following(user):
+            self.followed.remove(user)
+    
+    def get_followed_posts(self):
+        return Post.query.join(
+            followers, (followers.c.followed_id == Post.user_id)).filter(
+                followers.c.follower_id == self.id).order_by(
+                    Post.timestamp.desc())
 
 class Post(db.Model):
     __tablename__="posts"
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users2.id'), nullable=False)
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.now)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     title = db.Column(db.String, nullable=False)
     body = db.Column(db.String, nullable=False)
     category_id = db.Column(db.Integer(), db.ForeignKey('categories.id'))
@@ -55,7 +83,7 @@ class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users2.id"), nullable=False)
     post_id = db.Column(db.Integer, db.ForeignKey("posts.id"), nullable=False)
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow())
     text = db.Column(db.String, nullable=False)
     # for threaded comments
     path = db.Column(db.Text, index=True)

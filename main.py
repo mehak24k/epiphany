@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, jsonify, make_response, flash
-from app import db
-from models import User, Post, Tag
+from . import db
+from .models import User, Post, Tag
 from flask_login import login_required, current_user
 from sqlalchemy import func, or_
 import sys
@@ -50,3 +50,39 @@ def search():
     body_query = func.lower(Post.body).contains(request.args.get('query').lower(), autoescape=True)
     posts=db.session.query(Post).filter(or_(title_query, body_query))
     return render_template('index.html', posts=posts)
+
+@main.route('/follow/<user_id>', methods=['OPTIONS'])
+@cross_origin()
+def follow_options(user_id):
+    response = {'hello'}
+    return jsonify({'response': response}), 205
+
+@main.route('/follow/<user_id>', methods=['POST'])
+def follow(user_id):
+    stuff = request.get_json(force=True)
+    user = db.session.query(User).get(user_id)
+    c_user = db.session.query(User).filter_by(email=stuff['user_email']).first()
+
+    c_user.follow(user)
+    db.session.commit()
+
+    response = []
+    return jsonify({'response': response}), 204
+
+@main.route('/unfollow/<user_id>', methods=['OPTIONS'])
+@cross_origin()
+def unfollow_options(user_id):
+    response = {'hello'}
+    return jsonify({'response': response}), 205
+
+@main.route('/unfollow/<user_id>', methods=['POST'])
+def unfollow(user_id):
+    stuff = request.get_json(force=True)
+    user = db.session.query(User).get(user_id)
+    c_user = db.session.query(User).filter_by(email=stuff['user_email']).first()
+
+    c_user.unfollow(user)
+    db.session.commit()
+
+    response = []
+    return jsonify({'response': response}), 204
