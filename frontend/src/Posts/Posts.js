@@ -12,11 +12,9 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import {TextField} from '@material-ui/core/';
 import {Autocomplete} from '@material-ui/lab/';
 import Card from 'react-bootstrap/Card'
-import CardDeck from 'react-bootstrap/CardDeck'
 import Container from 'react-bootstrap/Container'
 import Alert from 'react-bootstrap/Alert'
 import Carousel from 'react-bootstrap/Carousel'
-import ResponsiveEmbed from 'react-bootstrap/ResponsiveEmbed'
 import welcome from '../Files/welcome.png'
 import topuser from '../Files/topuser.png'
 import usercount from '../Files/usercount.png'

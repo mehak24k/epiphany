@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import React, {Component, useState} from 'react';
 import axios from 'axios';
 import Tabs from 'react-bootstrap/Tabs'
 import Tab from 'react-bootstrap/Tab'
@@ -38,7 +37,6 @@ class UserProfile extends Component {
 
   async refreshProfile() {
     const { match: { params } } = this.props;
-    let userData = {"id": params.userId}
     let userData = {"id": params.userId, "current_user_email": localStorage.getItem('userEmail')}
     console.log(userData);
     axios.post(`http://localhost:5000/users/${params.userId}`, userData)
@@ -69,7 +67,6 @@ class UserProfile extends Component {
   async followUser() {
     const { match: { params } } = this.props;
     let postData = {"user_email": localStorage.getItem('userEmail')};
-    axios.post(`https://epiphany-test-three.herokuapp.com/follow/${params.userId}`, postData)
     axios.post(`http://localhost:5000/follow/${params.userId}`, postData)
     .then((response) => {
       console.log(response);
@@ -85,7 +82,6 @@ class UserProfile extends Component {
   async unfollowUser() {
     const { match: { params } } = this.props;
     let postData = {"user_email": localStorage.getItem('userEmail')};
-    axios.post(`https://epiphany-test-three.herokuapp.com/unfollow/${params.userId}`, postData)
     axios.post(`http://localhost:5000/unfollow/${params.userId}`, postData)
     .then((response) => {
       console.log(response);
