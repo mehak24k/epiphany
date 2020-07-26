@@ -9,6 +9,8 @@ import Badge from 'react-bootstrap/Badge'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Spinner from 'react-bootstrap/Spinner'
+import joined_badge from '../Files/joined_badge.png'
+import ResponsiveEmbed from 'react-bootstrap/ResponsiveEmbed'
 
 class UserProfile extends Component {
 
@@ -69,6 +71,21 @@ class UserProfile extends Component {
               <div className="jumbotron col-12">
                 <h1 className="display-3">{this.state.userName}</h1>
                 <h2 className="display-3">Points: {this.state.userPoints}</h2>
+                <h3 className="display-3">Badges:</h3>
+                <Row>
+                <Col>
+                <ResponsiveEmbed aspectRatio="1by1">
+                  <embed type="image/png" src={joined_badge} />
+                </ResponsiveEmbed>
+                </Col>
+                {this.state.userPoints >= 10 &&
+                  <Col>
+                  <ResponsiveEmbed aspectRatio="1by1">
+                    <embed type="image/png" src={joined_badge} />
+                  </ResponsiveEmbed>
+                  </Col>
+                }
+                </Row>
               </div>
             </div>
           </Tab>

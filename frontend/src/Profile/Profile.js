@@ -8,6 +8,8 @@ import Truncate from 'react-truncate';
 import Badge from 'react-bootstrap/Badge'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import joined_badge from '../Files/joined_badge.png'
+import ResponsiveEmbed from 'react-bootstrap/ResponsiveEmbed'
 
 class Profile extends Component {
 
@@ -16,6 +18,8 @@ class Profile extends Component {
 
     this.state = {
       posts: null,
+      likedPosts: null,
+      points: 0,
     };
   }
 
@@ -24,15 +28,27 @@ class Profile extends Component {
     console.log(userData);
     axios.post('http://localhost:5000/profile', userData)
     .then((response) => {
-      console.log(response.data.posts);
-      const posts = response.data.posts;
+      console.log(response.data.data[2]);
+
+      const posts = response.data.data[0];
       let arr = [];
       for (var i in posts) {
         arr.push(posts[i])
       }
       this.setState({
         posts: arr,
+        points: response.data.data[2].points
       });
+
+      const likedPosts = response.data.data[1];
+      let arr2 = [];
+      for (var i in likedPosts) {
+        arr2.push(likedPosts[i])
+      }
+      this.setState({
+        likedPosts: arr2,
+      });
+
     }, (error) => {
       console.log('Looks like there was a problem: \n', error);
     });
@@ -58,13 +74,51 @@ class Profile extends Component {
             <div className="row">
               <div className="jumbotron col-12">
                 <h1 className="display-3">{localStorage.getItem('userName')}</h1>
-                <h2 className="display-3">Points: {localStorage.getItem('userPoints')}</h2>
+                <h2 className="display-3">Points: {this.state.points}</h2>
+                <h3 className="display-3">Badges:</h3>
+                <ResponsiveEmbed aspectRatio="1by1">
+                  <embed type="image/png" src={joined_badge} />
+                </ResponsiveEmbed>
+                {this.state.points >= 10 &&
+                  <ResponsiveEmbed aspectRatio="1by1">
+                    <embed type="image/png" src={joined_badge} />
+                  </ResponsiveEmbed>
+                }
               </div>
             </div>
           </Tab>
           <Tab eventKey="posts" title="Posts">
             <div className="row">
             {this.state.posts && this.state.posts.map(post => (
+                <div key={post.id} className="col-sm-12 col-md-4 col-lg-3">
+                  <Link to={`/post/${post.id}`}>
+                    <div className="card mb-3" style={{backgroundColor: this.getColor(), color: "#161717", height: '250px'}}>
+                    <div className="card-body">
+                      <h4 className="card-title">{post.title}</h4>
+                      <Row>
+                      {post.tags && post.tags.map(tag => (
+                        <Col style={{ paddingLeft: 2, paddingRight: 2 }} md="auto">
+                          <Badge variant="info">{tag.name}</Badge>
+                        </Col>
+                        ))
+                      }
+                      </Row>
+                      <p className="card-text" style={{maxLength: "100"}}>
+                      <Truncate lines={2}>
+                          {post.body}
+                      </Truncate>
+                      </p>
+                    </div>
+                    </div>
+                  </Link>
+                </div>
+              ))
+            }
+            </div>
+          </Tab>
+          <Tab eventKey="liked-posts" title="Liked Posts">
+            <div className="row">
+            {this.state.likedPosts && this.state.likedPosts.map(post => (
                 <div key={post.id} className="col-sm-12 col-md-4 col-lg-3">
                   <Link to={`/post/${post.id}`}>
                     <div className="card mb-3" style={{backgroundColor: this.getColor(), color: "#161717", height: '250px'}}>

@@ -17,6 +17,9 @@ import Container from 'react-bootstrap/Container'
 import Alert from 'react-bootstrap/Alert'
 import Carousel from 'react-bootstrap/Carousel'
 import ResponsiveEmbed from 'react-bootstrap/ResponsiveEmbed'
+import welcome from '../Files/welcome.png'
+import topuser from '../Files/topuser.png'
+import usercount from '../Files/usercount.png'
 
 
 class Posts extends Component {
@@ -170,6 +173,27 @@ class Posts extends Component {
     }
     return (
       <Container className="justify-content-md-center">
+      <Carousel>
+        <Carousel.Item>
+        <img
+          className="d-block w-100"
+          src={welcome}
+        />
+        </Carousel.Item>
+        <Carousel.Item>
+          <img
+            className="d-block w-100"
+            src={topuser}
+          />
+        </Carousel.Item>
+        <Carousel.Item>
+          <img
+            className="d-block w-100"
+            src={usercount}
+          />
+        </Carousel.Item>
+      </Carousel>
+      {this.state.filteredPosts &&
         <div className="row">
         <Col>
           <Form>
@@ -182,6 +206,7 @@ class Posts extends Component {
           </Form>
           </Col>
         </div>
+      }
 
         <Row className="justify-content-md-center">
         { this.state.errorMessage &&
@@ -213,46 +238,6 @@ class Posts extends Component {
         </div>
 
         {this.state.posts === null && <div> <Spinner animation="border" variant="primary" /> <p>Loading posts...</p></div>}
-
-        <Carousel>
-          <Carousel.Item>
-          <img
-            className="d-block w-100"
-            src="./static/carousel1.png"
-            alt="First slide"
-          />
-            <Carousel.Caption>
-              <h3>First slide label</h3>
-              <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-            </Carousel.Caption>
-          </Carousel.Item>
-          <Carousel.Item>
-            <img
-              className="d-block w-100"
-              src="holder.js/800x400?text=Second slide&bg=282c34"
-              alt="Third slide"
-            />
-
-            <Carousel.Caption>
-              <h3>Second slide label</h3>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            </Carousel.Caption>
-          </Carousel.Item>
-          <Carousel.Item>
-            <img
-              className="d-block w-100"
-              src="holder.js/800x400?text=Third slide&bg=20232a"
-              alt="Third slide"
-            />
-
-            <Carousel.Caption>
-              <h3>Third slide label</h3>
-              <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
-            </Carousel.Caption>
-          </Carousel.Item>
-        </Carousel>
-
-
 
         {this.state.filteredPosts && this.state.filteredPosts.map(post => (
           <Row className="justify-content-md-center">
