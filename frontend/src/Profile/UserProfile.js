@@ -157,8 +157,14 @@ class UserProfile extends Component {
           <Tab eventKey="profile" title="Profile">
             <div className="row">
               <div className="jumbotron col-12">
+              <Col>
                 <h1 className="display-3">{this.state.userName}</h1>
+                </Col>
+                <Col md={{ offset: "10" }}>
+                <this.check />
+                </Col>
                 <h2 className="display-3">Points: {this.state.userPoints}</h2>
+
                 <h3 className="display-3">Badges:</h3>
                 <Row>
                 <Col>
