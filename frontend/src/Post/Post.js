@@ -256,8 +256,7 @@ class Post extends Component {
           { this.state.errorMessage &&
             <Alert variant='danger'> { this.state.errorMessage } </Alert> }
             <h1 className="display-3">{post.title}</h1>
-
-            <Row>
+            <Row className="ml-1">
             {post.tags && post.tags.map(tag => (
               <Col style={{ paddingLeft: 2, paddingRight: 2 }} md="auto">
                 <h4>

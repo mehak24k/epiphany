@@ -4,7 +4,6 @@ from .models import *
 from flask_login import LoginManager
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
-from sassutils.wsgi import SassMiddleware
 from flask_cors import CORS
 
 # Configure app
@@ -14,10 +13,6 @@ CORS(app)
 @app.after_request
 def after_request(response):
   return response
-
-app.wsgi_app = SassMiddleware(app.wsgi_app, {
-    'epiphany': ('static/sass', 'static/css', '/static/css')
-})
 
 # Configure database
 app.config['SECRET_KEY'] = '9OLWxND4o83j4K4iuopO'

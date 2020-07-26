@@ -271,11 +271,11 @@ class Posts extends Component {
               }
                 </Card.Body>
                 </Link>
-                <Link key={myKey()} to={`/users/${post.user_id}`}>
-                <Card.Footer className="text-muted" style={{color: "#161717", textAlign: "center"}}>
-                Posted by {post.user} at {post.time}
-                </Card.Footer>
-                </Link>
+                <Card.Text className="mb-3">
+                  <Link key={myKey()} to={`/users/${post.user_id}`}>
+                    <small style={{color: "#323336"}}>Posted by {post.user} at {post.time}</small>
+                  </Link>
+                </Card.Text>
             </Card>
             </Row>
           ))
