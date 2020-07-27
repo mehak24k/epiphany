@@ -195,14 +195,7 @@ class Posts extends Component {
       {this.state.filteredPosts &&
         <div className="row">
         <Col>
-          <Form>
-            <Form.Group controlId="formSearch">
-            <Form.Control onKeyPress={(e) => { e.key === 'Enter' && e.preventDefault(); }} label="freeSolo" type="text" placeholder="Search posts!" onChange={this.filterPosts}/>
-              <Form.Text className="text-muted">
-                Here, you can search with text that matches the title or body of the posts.
-              </Form.Text>
-            </Form.Group>
-          </Form>
+            <TextField onKeyPress={(e) => { e.key === 'Enter' && e.preventDefault(); }} id="outlined-full-width" fullWidth label="Search posts!" margin="normal" variant="outlined" onKeyUp={this.filterPosts}/>
           </Col>
         </div>
       }
@@ -229,7 +222,7 @@ class Posts extends Component {
           freeSolo
           options={top100Films.map((option) => option.name)}
           renderInput={(params) => (
-            <TextField {...params}  onKeyPress={(e) => { e.key === 'Enter' && e.preventDefault(); }} id="standard-full-width" label="Search with tags! Press enter to add a tag." margin="normal" variant="outlined" onKeyUp={this.filterTags}/>
+            <TextField {...params}  onKeyPress={(e) => { e.key === 'Enter' && e.preventDefault(); }} id="standard-full-width" label="Search with tags! Press Enter to add a tag." margin="normal" variant="outlined" onKeyUp={this.filterTags}/>
           )}
         />
         </div>
@@ -263,7 +256,7 @@ class Posts extends Component {
                 {post.is_file === true &&
                   <div>
                     <video id="samp" width="540" height="380" controls>
-                        <source src={`./static/${post.body}`} type="video/mp4">
+                        <source src={`http://127.0.0.1:5000/static/${post.body}`} type="video/mp4">
                         </source>
                         Your browser does not support this video format.
                     </video>

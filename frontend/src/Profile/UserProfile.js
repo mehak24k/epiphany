@@ -168,14 +168,14 @@ class UserProfile extends Component {
                 <h3 className="display-3">Badges:</h3>
                 <Row>
                 <Col>
-                <ResponsiveEmbed aspectRatio="1by1">
+                <ResponsiveEmbed aspectRatio="1by1" style={{maxWidth: 500}}>
                   <embed type="image/png" src={joined_badge} />
                 </ResponsiveEmbed>
                 </Col>
                 {this.state.userPoints >= 10 &&
                   <Col>
-                  <ResponsiveEmbed aspectRatio="1by1">
-                    <embed type="image/png" src={joined_badge} />
+                  <ResponsiveEmbed aspectRatio="1by1" style={{maxWidth: 500}}>
+                    <embed type="image/png" src="http://127.0.0.1:5000/static/first-upvote.png" />
                   </ResponsiveEmbed>
                   </Col>
                 }
