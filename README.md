@@ -2,7 +2,7 @@
 
 Check out our deployed app [here](https://whispering-oasis-25381.herokuapp.com/)!
 
-**Level of Achievement: Apollo 11**
+_**Level of Achievement: Apollo 11**_
 
 **Table of Contents**
   - [Project Scope](#project-scope)
