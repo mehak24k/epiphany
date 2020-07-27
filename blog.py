@@ -12,7 +12,7 @@ bp = Blueprint('blog', __name__)
 
 CORS(bp)
 
-UPLOAD_FOLDER = '/Users/Mehak/Desktop/epiphany/static'
+UPLOAD_FOLDER = '/static'
 ALLOWED_EXTENSIONS = {'mp4'}
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
