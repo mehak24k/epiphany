@@ -3,8 +3,8 @@ from flask_login import login_required, current_user
 from sqlalchemy import and_
 from werkzeug.exceptions import abort
 from flask_cors import cross_origin, CORS
-from .models import User, Post, Comment, Tag, LikedPost, DislikedPost, LikedComment, DislikedComment
-from . import db, app
+from models import User, Post, Comment, Tag, LikedPost, DislikedPost, LikedComment, DislikedComment
+from app import db, app
 import os
 from werkzeug.utils import secure_filename
 

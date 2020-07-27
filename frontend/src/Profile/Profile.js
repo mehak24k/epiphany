@@ -31,7 +31,7 @@ class Profile extends Component {
   async componentDidMount() {
     let userData = {"email": localStorage.getItem('userEmail')}
     console.log(userData);
-    axios.post('http://localhost:5000/profile', userData)
+    axios.post('https://whispering-oasis-25381.herokuapp.com/profile', userData)
     .then((response) => {
       const posts = response.data.user_info[0].posts;
       let arr = [];
@@ -197,7 +197,7 @@ class Profile extends Component {
                 {this.state.points >= 10 &&
                   <Col>
                   <ResponsiveEmbed aspectRatio="1by1" style={{maxWidth: 500}}>
-                    <embed type="image/png" src="http://127.0.0.1:5000/static/first-upvote.png" />
+                    <embed type="image/png" src="https://epiphany-test-three.herokuapp.com/static/first-upvote.png" />
                   </ResponsiveEmbed>
                   </Col>
                 }

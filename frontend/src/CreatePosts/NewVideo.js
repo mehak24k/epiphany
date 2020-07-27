@@ -36,7 +36,7 @@ class NewVideo extends Component {
   }
 
   async componentDidMount() {
-      const data = (await axios.get('http://localhost:5000/main')).data;
+      const data = (await axios.get('https://whispering-oasis-25381.herokuapp.com/main')).data;
       console.log(data.data[0]);
       const tags = data.data[1];
       let tagArr = [];
@@ -152,7 +152,7 @@ handleSubmit(event) {
       if (this.state.newTags !== null) {
         this.state.newTags.forEach(tag => data.append('newTags[]', tag));
       }
-      axios.post('http://localhost:5000/upload', data)
+      axios.post('https://whispering-oasis-25381.herokuapp.com/upload', data)
       .then((response) => {
         console.log(response);
         this.setState({

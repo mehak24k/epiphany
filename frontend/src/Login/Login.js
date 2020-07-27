@@ -33,7 +33,7 @@ class Login extends Component {
       })
     } else {
       let loginData = {"email": this.state.email, "password": this.state.password}
-      axios.post('http://localhost:5000/login', loginData)
+      axios.post('https://whispering-oasis-25381.herokuapp.com/login', loginData)
       .then((response) => {
         console.log(response);
         if (response.status === 200) {

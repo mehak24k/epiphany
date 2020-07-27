@@ -31,7 +31,7 @@ class NewPost extends Component {
   }
 
   async componentDidMount() {
-      const data = (await axios.get('http://localhost:5000/main')).data;
+      const data = (await axios.get('https://whispering-oasis-25381.herokuapp.com/main')).data;
       console.log(data.data[0]);
       const tags = data.data[1];
       let tagArr = [];
@@ -138,7 +138,7 @@ class NewPost extends Component {
         errorMessage: "Please fill in all fields."
       })
     } else {
-      axios.post('http://localhost:5000/create', postData)
+      axios.post('https://whispering-oasis-25381.herokuapp.com/create', postData)
       .then((response) => {
         console.log(response);
         this.setState({

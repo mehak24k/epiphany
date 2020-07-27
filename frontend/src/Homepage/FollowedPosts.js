@@ -25,7 +25,7 @@ class Posts extends Component {
     async componentDidMount() {
         let loginData = {"email": localStorage.getItem("userEmail")}
         console.log(loginData)
-        axios.post('http://localhost:5000/fav', loginData)
+        axios.post('https://whispering-oasis-25381.herokuapp.com/fav', loginData)
         .then((response) => {
             const lists = response.data.info[0];
             let arr = [];
