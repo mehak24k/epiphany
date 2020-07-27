@@ -492,7 +492,7 @@ class Post extends Component {
               <div>
               <Row>
                 <Col md={{ offset: "5" }}>
-                    {this.state.downvoted &&
+                    {(this.state.downvoted === true) &&
                       <ButtonGroup>
                         <Button variant="light" disabled>
                           <IoIosArrowDropup style={{width: 30, height: 30}}/>
@@ -502,7 +502,7 @@ class Post extends Component {
                         </Button>
                       </ButtonGroup>
                     }
-                    {this.state.upvoted &&
+                    {(this.state.upvoted === true) &&
                       <ButtonGroup>
                         <Button variant="light" onClick={this.upvote}>
                           <IoIosArrowDropupCircle style={{width: 30, height: 30}}/>
@@ -512,7 +512,7 @@ class Post extends Component {
                         </Button>
                       </ButtonGroup>
                     }
-                    {!this.state.downvoted && !this.state.upvoted && 
+                    {(this.state.downvoted === false && this.state.upvoted === false) && 
                       <ButtonGroup>
                         <Button variant="light" onClick={this.upvote}>
                           <IoIosArrowDropup style={{width: 30, height: 30}}/>

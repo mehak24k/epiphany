@@ -235,7 +235,7 @@ class Posts extends Component {
                     </video>
                   </div>
               }
-              <h6>{post.votes} likes</h6>
+              <h6 style={{textAlign: "center"}}>{post.votes} likes</h6>
                 </Card.Body>
                 <Card.Text className="mb-3">
                   {localStorage.getItem('userName') === post.user ? 

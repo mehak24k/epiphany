@@ -98,7 +98,7 @@ def indiv_post(post_id):
         disliked = False
         if liked_post is not None and liked_post in user.liked_posts:
             liked = True
-        if disliked_post is not None and liked_post in user.disliked_posts:
+        if disliked_post is not None and disliked_post in user.disliked_posts:
             disliked = True
 
         data = []
