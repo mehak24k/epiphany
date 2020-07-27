@@ -56,19 +56,19 @@ class Post extends Component {
   async componentDidMount() {
     this.refreshPost();
   }
+
   async refreshPost() {
     const { match: { params } } = this.props;
     if (localStorage.getItem("loggedIn") === "true") {
       // only if user is logged in -- for getting the state of liked the post / liked the comments
       let loginData = {"email": localStorage.getItem("userEmail")}
-      axios.post(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}`, loginData)
+      axios.post(`http://localhost:5000/posts/${params.postId}`, loginData)
       .then((response) => {
-        console.log(response.data[0].json_post);
-        
         console.log(response.data);
+        console.log("gdfg" + response.data[0].json_post);
         this.setState({
-          upvoted: response.data[1].data[0].liked,
-          downvoted: response.data[1].data[0].disliked,
+          upvoted: response.data[1].checks[0].liked2,
+          downvoted: response.data[1].checks[0].disliked2,
           post: response.data[0].json_post,
           postId: params.postId,
           deleted: false,
@@ -79,8 +79,9 @@ class Post extends Component {
           c_deleted: false,
           commented: false,
         });
-        
-        
+        console.log("here:" + this.state.downvoted);
+        console.log("dislike check:" + response.data[1].checks[0].disliked2);
+        console.log("like check:" + response.data[1].checks[0].liked2);
       }, (error) => {
         console.log('Looks like there was a problem: \n', error);
       });
@@ -159,7 +160,7 @@ class Post extends Component {
     axios.post(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}/upvote`, postData)
     .then((response) => {
       console.log(response);
-      if (this.state.upvoted) {
+      if (this.state.upvoted === true) {
         this.setState({
           upvoted: false,
         })
@@ -168,12 +169,37 @@ class Post extends Component {
           upvoted: true,
         })
       }
-        this.refreshPost();
+      this.refreshPost();
     }, (error) => {
       console.log('Looks like there was a problem: \n', error);
     });
     event.preventDefault();
   }
+
+  async downvote(event) {
+    const { match: { params } } = this.props;
+    let postData = {"user_email": localStorage.getItem('userEmail'), "post_id": params.postId}
+    console.log(postData);
+    axios.post(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}/downvote`, postData)
+    .then((response) => {
+      console.log(response);
+      if (this.state.downvoted === true) {
+        this.setState({
+          downvoted: false,
+        })
+      } else {
+        this.setState({
+          downvoted: true,
+        })
+      }
+      this.refreshPost();
+    }, (error) => {
+      console.log('Looks like there was a problem: \n', error);
+    });
+    event.preventDefault();
+  }
+
+
 
   async replyTo(event, id) {
       const { match: { params } } = this.props;
@@ -188,29 +214,6 @@ class Post extends Component {
       });
       event.preventDefault();
     }
-
-  async downvote(event) {
-    const { match: { params } } = this.props;
-    let postData = {"user_email": localStorage.getItem('userEmail'), "post_id": params.postId}
-    console.log(postData);
-    axios.post(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}/downvote`, postData)
-    .then((response) => {
-      console.log(response);
-      if (this.state.downvoted) {
-        this.setState({
-          downvoted: false,
-        })
-      } else {
-        this.setState({
-          downvoted: true,
-        })
-      }
-        this.refreshPost();
-      }, (error) => {
-      console.log('Looks like there was a problem: \n', error);
-    });
-    event.preventDefault();
-  }
 
   Reply = (props) => {
     const [open, setOpen] = useState(false);

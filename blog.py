@@ -95,14 +95,14 @@ def indiv_post(post_id):
         liked_post = LikedPost.query.filter_by(post_id=post.id).first()
         disliked_post = DislikedPost.query.filter_by(post_id=post.id).first()
         liked = False
-        disliked = False
+        disliked = True
         if liked_post is not None and liked_post in user.liked_posts:
             liked = True
-        if disliked_post is not None and liked_post in user.disliked_posts:
+        if disliked_post is not None and disliked_post in user.disliked_posts:
             disliked = True
 
-        data = []
-        data.append({'liked': liked, 'disliked': disliked})
+        checks = []
+        checks.append({'liked2': liked, 'disliked2': disliked})
 
         post = get_post(post_id, False)
         comments = get_comments(post_id)
@@ -146,7 +146,7 @@ def indiv_post(post_id):
             'is_file': post[0].is_file,
             }
 
-        return jsonify({'json_post': json_post}, {'data': data})
+        return jsonify({'json_post': json_post}, {'checks': checks})
 
     post = get_post(post_id, False)
     comments = get_comments(post_id)
