@@ -151,10 +151,11 @@ A follow system for registered users to subscribe to other users. Users would th
 **Trello Board**
 
 We used this [trello board](https://trello.com/b/05FMrXER/agile-sprint-board) to categorise our workflow.
-The tags indicate information about each part of our project along with which phase of development they belong to (milestones 1/2/3)
-We have categorized our features based on ‘must-have’ and ‘good-to-have’
-The descriptions for each card can be viewed  by clicking on the card
-Note: click on the coloured tags to view their names.
+The tags indicate information about each part of our project along with which phase of development they belong to (milestones 1/2/3).
+We have categorized our features based on ‘must-have’ and ‘good-to-have’.
+The descriptions for each card can be viewed by clicking on the card.
+
+_Note: click on the coloured tags to view their names._
 
 **Features completed by June**
 
