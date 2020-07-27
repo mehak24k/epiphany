@@ -322,7 +322,7 @@ class Post extends Component {
   }
 
   Upvote = (props) => {
-    if (props.currEmail !== null && props.currEmail === props.commentEmail) {
+    if (localStorage.getItem("loggedIn") === null || (props.currEmail !== null && props.currEmail === props.commentEmail)) {
       return  (
         <Button
           variant="link"
@@ -371,7 +371,7 @@ class Post extends Component {
   }
 
   Downvote = (props) => {
-    if (props.currEmail !== null && props.currEmail === props.commentEmail) {
+    if (localStorage.getItem("loggedIn") === null || (props.currEmail !== null && props.currEmail === props.commentEmail)) {
       return  (
         <Button
           variant="link"
