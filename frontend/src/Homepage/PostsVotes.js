@@ -33,7 +33,7 @@ class Posts extends Component {
   }
 
   async componentDidMount() {
-      const data = (await axios.get('https://epiphany-test-three.herokuapp.com/main')).data;
+      const data = (await axios.get('https://epiphany-test-three.herokuapp.com/mainvotes')).data;
       const posts = data.data[0];
       const tags = data.data[1];
       let arr = [];
@@ -223,7 +223,7 @@ class Posts extends Component {
                   <Truncate lines={2}>
                       {post.body}
                   </Truncate>
-                 
+                  
                   </Card.Text>
                 }
                 {post.is_file === true &&

@@ -22,7 +22,8 @@ class NavBar extends Component {
               <NavDropdown title="Posts" id="collasible-nav-dropdown">
                 {localStorage.getItem('loggedIn') === "true" && <NavDropdown.Item href="/create">Make a Post</NavDropdown.Item>}
                 {localStorage.getItem('loggedIn') === "true" && <NavDropdown.Item href="/fav">Followed Posts</NavDropdown.Item>}
-                <NavDropdown.Item href="/all">All Posts</NavDropdown.Item>
+                <NavDropdown.Item href="/all-time">All Posts by Time</NavDropdown.Item>
+                <NavDropdown.Item href="/all-votes">All Posts by Votes</NavDropdown.Item>
               </NavDropdown>
             </Nav>
             <Nav>
