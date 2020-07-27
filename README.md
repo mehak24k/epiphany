@@ -1,8 +1,9 @@
 # Epiphany
 Check out our deployed app [here](https://whispering-oasis-25381.herokuapp.com/)!
+
 **Level of Achievement: Apollo 11**
 
-- [Epiphany](#epiphany) <!-- omit in toc -->
+**Table of Contents**
   - [Project Scope](#project-scope)
   - [Problem Motivation](#problem-motivation)
   - [User Stories](#user-stories)
