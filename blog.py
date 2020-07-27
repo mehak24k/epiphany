@@ -82,7 +82,7 @@ def get_post(post_id, check_author=True):
     return post,string
 
 def get_comments(post_id):
-    comments = db.session.query(Comment).filter_by(post_id=post_id).order_by(Comment.path.asc(), Comment.timestamp.desc()).all()
+    comments = db.session.query(Comment).filter_by(post_id=post_id).order_by(Comment.timestamp.desc(), Comment.path.asc()).all()
     return comments
 
 @bp.route('/posts/<int:post_id>', methods=['GET', 'POST'])
