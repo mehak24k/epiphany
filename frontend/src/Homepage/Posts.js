@@ -236,10 +236,15 @@ class Posts extends Component {
               }
                 </Card.Body>
                 <Card.Text className="mb-3">
-                  
-                  <Link key={myKey()} to={`/users/${post.user_id}`}>
-                    <small style={{color: "#323336"}}>Posted by {post.user} at {post.time}</small>
-                  </Link>
+                  {localStorage.getItem('userName') === post.user ? 
+                    <Link key={myKey()} to={`/profile`}>
+                      <small style={{color: "#323336"}}>Posted by {post.user} at {post.time}</small>
+                    </Link>
+                    :
+                    <Link key={myKey()} to={`/users/${post.user_id}`}>
+                      <small style={{color: "#323336"}}>Posted by {post.user} at {post.time}</small>
+                    </Link>
+                  }
                 </Card.Text>
             </Card>
             </Row>

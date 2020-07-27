@@ -458,7 +458,10 @@ class Post extends Component {
             }
             </Row>
             <Row className="ml-1">
-              Posted by&nbsp;<Link to={`/users/${post.user_id}`}>{ post.username }</Link>&nbsp;at { post.time }
+              Posted by&nbsp;{localStorage.getItem('userName') === post.username
+                ? <Link to={`/profile`}>{ post.username }</Link>
+                : <Link to={`/users/${post.user_id}`}>{ post.username }</Link>
+            }&nbsp;at { post.time }
             </Row>
             <hr className="my-4" />
             {!post.is_file &&
