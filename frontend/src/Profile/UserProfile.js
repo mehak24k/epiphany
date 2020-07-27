@@ -221,17 +221,17 @@ class UserProfile extends Component {
             </div>
           </Tab>
           <Tab eventKey="posts" title="Posts">
-            <ListGroup variant="flush">
+            <ListGroup variant="flush" className="mt-3">
               <this.userPosts />
             </ListGroup>
           </Tab>
           <Tab eventKey="followers" title="Followers">
-            <ListGroup variant="flush">
+            <ListGroup variant="flush" className="mt-3">
               <this.followedBy />
             </ListGroup>
           </Tab>
           <Tab eventKey="following" title="Following">
-            <ListGroup variant="flush">
+            <ListGroup variant="flush" className="mt-3">
               <this.following />
             </ListGroup>
           </Tab>
