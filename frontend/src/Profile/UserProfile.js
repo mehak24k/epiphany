@@ -40,7 +40,7 @@ class UserProfile extends Component {
     const { match: { params } } = this.props;
     let userData = {"id": params.userId, "current_user_email": localStorage.getItem('userEmail')}
     console.log(userData);
-    axios.post(`http://localhost:5000/users/${params.userId}`, userData)
+    axios.post(`https://epiphany-test-three.herokuapp.com/users/${params.userId}`, userData)
     .then((response) => {
       const posts = response.data.user_info[2].posts;
       let arr = [];
@@ -66,7 +66,7 @@ class UserProfile extends Component {
   async followUser() {
     const { match: { params } } = this.props;
     let postData = {"user_email": localStorage.getItem('userEmail')};
-    axios.post(`http://localhost:5000/follow/${params.userId}`, postData)
+    axios.post(`https://epiphany-test-three.herokuapp.com/follow/${params.userId}`, postData)
     .then((response) => {
       console.log(response);
       console.log('followed');
@@ -81,7 +81,7 @@ class UserProfile extends Component {
   async unfollowUser() {
     const { match: { params } } = this.props;
     let postData = {"user_email": localStorage.getItem('userEmail')};
-    axios.post(`http://localhost:5000/unfollow/${params.userId}`, postData)
+    axios.post(`https://epiphany-test-three.herokuapp.com/unfollow/${params.userId}`, postData)
     .then((response) => {
       console.log(response);
       console.log('unfollowed');
@@ -210,7 +210,7 @@ class UserProfile extends Component {
                       {this.state.userPoints >= 10 &&
                         <Col>
                           <ResponsiveEmbed aspectRatio="1by1" style={{maxWidth: 500}}>
-                            <embed type="image/png" src="http://127.0.0.1:5000/static/first-upvote.png" />
+                            <embed type="image/png" src="https://epiphany-test-three.herokuapp.com/static/first-upvote.png" />
                           </ResponsiveEmbed>
                         </Col>
                       }
