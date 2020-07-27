@@ -10,6 +10,8 @@ import Col from 'react-bootstrap/Col'
 import ListGroup from 'react-bootstrap/ListGroup'
 import joined_badge from '../Files/joined_badge.png'
 import ResponsiveEmbed from 'react-bootstrap/ResponsiveEmbed'
+import Spinner from 'react-bootstrap/Spinner'
+import Card from 'react-bootstrap/Card'
 
 class Profile extends Component {
 
@@ -22,6 +24,7 @@ class Profile extends Component {
       user_is_followed_by: null,
       likedPosts: null,
       points: 0,
+      loaded: false, 
     };
   }
 
@@ -31,7 +34,6 @@ class Profile extends Component {
     axios.post('http://localhost:5000/profile', userData)
     .then((response) => {
       const posts = response.data.user_info[0].posts;
-
       let arr = [];
       for (var i in posts) {
         arr.push(posts[i])
@@ -42,13 +44,14 @@ class Profile extends Component {
         user_is_followed_by: response.data.user_info[4].user_is_followed_by,
         points: response.data.user_info[2].points,
       });
-      const likedPosts = response.data.user_info[1];
+      const likedPosts = response.data.user_info[1].liked_posts;
       let arr2 = [];
       for (var i in likedPosts) {
         arr2.push(likedPosts[i])
       }
       this.setState({
         likedPosts: arr2,
+        loaded: true,
       });
 
     }, (error) => {
@@ -68,6 +71,82 @@ class Profile extends Component {
     return color;
   }
 
+  userPosts = () => {
+    if (this.state.posts && this.state.posts.length) {
+    return (
+        <div className="row">
+          {this.state.posts && this.state.posts.map(post => (
+            <div key={post.id} className="col-sm-12 col-md-4 col-lg-3 mb-3">
+              <Link to={`/post/${post.id}`}>
+                <Card style={{backgroundColor: this.getColor(), color: "#161717", height: '250px'}}>
+                  <Card.Body>
+                    <Card.Title>{post.title}</Card.Title>
+                    <Row>
+                      {post.tags && post.tags.map(tag => (
+                        <Col style={{ paddingLeft: 2, paddingRight: 2 }} md="auto">
+                          <Badge variant="info">{tag.name}</Badge>
+                        </Col>
+                        ))
+                      }
+                    </Row>
+                    <Card.Text style={{maxLength: "100"}}>
+                      <Truncate lines={1}>
+                        {post.body}
+                      </Truncate>
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
+              </Link>
+            </div>
+            ))
+          }
+        </div>
+      );
+    } else {
+      return (
+        <ListGroup.Item>No posts here! :D </ListGroup.Item>
+      );
+    }
+  }
+
+  userLikedPosts = () => {
+    if (this.state.likedPosts && this.state.likedPosts.length) {
+      return (
+          <div className="row">
+            {this.state.likedPosts && this.state.likedPosts.map(post => (
+              <div key={post.id} className="col-sm-12 col-md-4 col-lg-3 mb-3">
+                <Link to={`/post/${post.id}`}>
+                  <Card style={{backgroundColor: this.getColor(), color: "#161717", height: '250px'}}>
+                    <Card.Body>
+                      <Card.Title>{post.title}</Card.Title>
+                      <Row className="justify-content-x-center align-items-center">
+                        {post.tags && post.tags.map(tag => (
+                        <Col style={{ paddingLeft: 2, paddingRight: 2 }} md="auto">
+                          <Badge variant="info">{tag.name}</Badge>
+                        </Col>
+                        ))
+                        }
+                      </Row>
+                      <Card.Text style={{maxLength: "100"}}>
+                        <Truncate lines={1}>
+                          {post.body}
+                        </Truncate>
+                      </Card.Text>
+                    </Card.Body>
+                  </Card>
+                </Link>
+              </div>
+            ))
+          }
+          </div>
+        )
+    } else {
+      return (
+        <ListGroup.Item>No liked posts here! :D</ListGroup.Item>
+      );
+    }
+  }
+
   following = () => {
     if (this.state.user_is_following && this.state.user_is_following.length) {
       return (
@@ -75,10 +154,11 @@ class Profile extends Component {
           <Link to={ `/users/${f.user_id}` }><ListGroup.Item action variant="success">{ f.name }</ListGroup.Item></Link>
         )
       );
+    } else {
+      return (
+        <ListGroup.Item>No followed users here! :D</ListGroup.Item>
+      );
     }
-    return (
-      <ListGroup.Item>No followed users here! :D</ListGroup.Item>
-    );
   }
 
   followedBy = () => {
@@ -90,14 +170,16 @@ class Profile extends Component {
       );
     } else {
       return (
-        <ListGroup.Item>No followers here! :D</ListGroup.Item>
-      );
+            <ListGroup.Item>No followers here! :D</ListGroup.Item>
+        );
     }
   }
 
   render() {
     return (
       <div className="container">
+        {!this.state.loaded && <Row className="mt-3"> <Spinner animation="border" variant="primary" /> <p>&nbsp;Loading posts...</p></Row>}
+        {this.state.loaded &&
         <Tabs defaultActiveKey="profile" id="uncontrolled-tab-example">
           <Tab eventKey="profile" title="Profile">
             <div className="row">
@@ -117,74 +199,27 @@ class Profile extends Component {
             </div>
           </Tab>
           <Tab eventKey="posts" title="Posts">
-            <div className="row">
-            {this.state.posts && this.state.posts.map(post => (
-                <div key={post.id} className="col-sm-12 col-md-4 col-lg-3">
-                  <Link to={`/post/${post.id}`}>
-                    <div className="card mb-3" style={{backgroundColor: this.getColor(), color: "#161717", height: '250px'}}>
-                    <div className="card-body">
-                      <h4 className="card-title">{post.title}</h4>
-                      <Row>
-                      {post.tags && post.tags.map(tag => (
-                        <Col style={{ paddingLeft: 2, paddingRight: 2 }} md="auto">
-                          <Badge variant="info">{tag.name}</Badge>
-                        </Col>
-                        ))
-                      }
-                      </Row>
-                      <p className="card-text" style={{maxLength: "100"}}>
-                      <Truncate lines={2}>
-                          {post.body}
-                      </Truncate>
-                      </p>
-                    </div>
-                    </div>
-                  </Link>
-                </div>
-              ))
-            }
-            </div>
+            <ListGroup variant="flush" className="mt-3">
+              <this.userPosts />
+            </ListGroup>
           </Tab>
           <Tab eventKey="liked-posts" title="Liked Posts">
-            <div className="row">
-            {this.state.likedPosts && this.state.likedPosts.map(post => (
-                <div key={post.id} className="col-sm-12 col-md-4 col-lg-3">
-                  <Link to={`/post/${post.id}`}>
-                    <div className="card mb-3" style={{backgroundColor: this.getColor(), color: "#161717", height: '250px'}}>
-                    <div className="card-body">
-                      <h4 className="card-title">{post.title}</h4>
-                      <Row>
-                      {post.tags && post.tags.map(tag => (
-                        <Col style={{ paddingLeft: 2, paddingRight: 2 }} md="auto">
-                          <Badge variant="info">{tag.name}</Badge>
-                        </Col>
-                        ))
-                      }
-                      </Row>
-                      <p className="card-text" style={{maxLength: "100"}}>
-                      <Truncate lines={2}>
-                          {post.body}
-                      </Truncate>
-                      </p>
-                    </div>
-                    </div>
-                  </Link>
-                </div>
-              ))
-            }
-            </div>
+            <ListGroup variant="flush" className="mt-3">
+              <this.userLikedPosts/>
+            </ListGroup>
           </Tab>
           <Tab eventKey="followers" title="Followers">
-            <ListGroup variant="flush">
+            <ListGroup variant="flush" className="mt-3">
               <this.followedBy />
             </ListGroup>
           </Tab>
           <Tab eventKey="following" title="Following">
-            <ListGroup variant="flush">
+            <ListGroup variant="flush" className="mt-3">
               <this.following />
             </ListGroup>
           </Tab>
         </Tabs>
+        }
       </div>
     );
   }

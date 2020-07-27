@@ -3,7 +3,8 @@ import axios from 'axios';
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Col from 'react-bootstrap/Col'
-import { Redirect } from "react-router-dom";
+import Row from 'react-bootstrap/Row'
+import { Redirect, Link } from "react-router-dom";
 import Alert from 'react-bootstrap/Alert'
 
 class Signup extends Component {
@@ -78,9 +79,11 @@ class Signup extends Component {
               <Form.Label>Password</Form.Label>
               <Form.Control type="password" name="password" placeholder="Password" password={this.state.password} onChange={this.handleChange}/>
           </Form.Group>
-          <Button variant="success" type="submit">Signup</Button>
+          <div>
+            <Button variant="success" type="submit">Signup</Button>
+            <Link to={`/login`}><span className="float-right mt-2">I already have an account.</span></Link>
+          </div>
         </Form>
-
       </Col>
     );
   }

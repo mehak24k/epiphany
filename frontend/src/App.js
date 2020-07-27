@@ -2,7 +2,7 @@ import React, { Component} from 'react';
 import {Route} from 'react-router-dom';
 import NavBar from './NavBar/NavBar';
 import Post from './Post/Post';
-import Posts from './Posts/Posts';
+import Posts from './Homepage/Posts';
 import Login from './Login/Login';
 import Profile from './Profile/Profile';
 import NewPost from './CreatePosts/NewPost';
@@ -14,6 +14,9 @@ import UserProfile from './Profile/UserProfile';
 import { Redirect } from "react-router-dom";
 import NewVideo from './CreatePosts/NewVideo';
 import Create from './CreatePosts/Create';
+import Frontpage from './Homepage/Frontpage';
+import FollowedPosts from './Homepage/FollowedPosts';
+
 
 class App extends Component {
 
@@ -33,19 +36,18 @@ class App extends Component {
   logout() {
     localStorage.clear();
     this.setState({login: false});
-    return (
-      <Redirect to="/" />
-    );
+    return <Redirect to="/" />
   }
 
   render() {
     const token = localStorage.getItem('loggedIn');
     console.log(token);
-
     return (
       <div>
         <NavBar callback={this.logout}/>
-        <Route exact path='/' component={Posts}/>
+        <Route exact path='/' component={Frontpage}/>
+        <Route exact path='/all' component={Posts}/>
+        <Route exact path='/fav' component={FollowedPosts}/>
         <Route exact path='/post/:postId' component={Post}/>
         <Route exact path='/users/:userId' component={UserProfile}/>
         <Route exact path='/signup' component={Signup}/>

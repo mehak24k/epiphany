@@ -1,9 +1,9 @@
-import React, {Component, useState, render} from 'react';
+import React, {Component} from 'react';
 import axios from 'axios';
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Col from 'react-bootstrap/Col'
-import { Redirect } from "react-router-dom";
+import { Redirect, Link } from "react-router-dom";
 import Alert from 'react-bootstrap/Alert'
 
 class Login extends Component {
@@ -83,7 +83,10 @@ class Login extends Component {
               <Form.Label>Password</Form.Label>
               <Form.Control type="password" name="password" placeholder="Password" password={this.state.password} onChange={this.handleChange}/>
           </Form.Group>
-          <Button variant="success" type="submit">Submit</Button>
+          <div>
+            <Button variant="success" type="submit">Submit</Button>
+            <Link to={`/signup`}><span className="float-right mt-2">I don't have an account.</span></Link>
+          </div>
         </Form>
 
       </Col>

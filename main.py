@@ -43,6 +43,36 @@ def main_index():
 
     return jsonify({'data': data}), {'Access-Control-Allow-Origin': '*'}
 
+@main.route('/fav', methods=['OPTIONS'])
+@cross_origin()
+def main_fav_options():
+    response = {'hello'}
+    return jsonify({'response': response}), 204
+
+@main.route('/fav', methods=['GET', 'POST'])
+@cross_origin()
+def main_fav():
+    req = request.get_json(force=True)
+    user_email = req['email']
+    user = User.query.filter_by(email=user_email).first()
+
+    follow_list = user.followed.all()
+    follow_list_posts = []
+
+    for person in follow_list:
+        person_post_list = []
+        posts = Post.query.filter_by(user_id=person.id).all()
+
+        for post in posts: 
+            person_post_list.append({'id': post.id, 'user_id': post.user_id, 'is_file': post.is_file, 'title': post.title, 'body': post.body, 'time': post.timestamp.strftime('%x %H:%M')})
+
+        follow_list_posts.append({'post_list': person_post_list, 'username': person.name})
+
+    info = []
+    info.append(follow_list_posts)
+
+    return jsonify({'info': info}), 206
+
 
 @main.route('/search')
 def search():

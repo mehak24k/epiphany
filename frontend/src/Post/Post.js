@@ -6,16 +6,21 @@ import Badge from 'react-bootstrap/Badge'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Button from 'react-bootstrap/Button'
+import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Media from 'react-bootstrap/Media'
 import Form from 'react-bootstrap/Form'
 import Collapse from 'react-bootstrap/Collapse'
 import Alert from 'react-bootstrap/Alert'
 import photo from '../Files/photo.jpg'
-import thumbsup from '../Files/thumbsup.png'
-import thumbsdown from '../Files/thumbsdown.png'
 import heart from '../Files/heart.png'
 import ResponsiveEmbed from 'react-bootstrap/ResponsiveEmbed'
 import bubblesort from "../Files/bubblesort.mp4"
+import { IoIosArrowDropup } from "react-icons/io";
+import { IoIosArrowDropupCircle } from "react-icons/io";
+import { IoIosArrowDropdown } from "react-icons/io";
+import { IoIosArrowDropdownCircle } from "react-icons/io";
+import Spinner from 'react-bootstrap/Spinner'
+
 
 
 class Post extends Component {
@@ -138,7 +143,7 @@ class Post extends Component {
     axios.post(`http://localhost:5000/posts/${params.postId}/upvote`, postData)
     .then((response) => {
       console.log(response);
-      if (this.state.upvoted === true) {
+      if (this.state.upvoted) {
         this.setState({
           upvoted: false,
         })
@@ -175,7 +180,7 @@ class Post extends Component {
     axios.post(`http://localhost:5000/posts/${params.postId}/downvote`, postData)
     .then((response) => {
       console.log(response);
-      if (this.state.downvoted === true) {
+      if (this.state.downvoted) {
         this.setState({
           downvoted: false,
         })
@@ -229,7 +234,28 @@ class Post extends Component {
       </Button>
     );
   }
-
+  
+  commentBox = () => {
+    if (localStorage.getItem('loggedIn') === "true") {
+      return (
+        <Form onSubmit={this.submit}>
+          <Form.Group controlId="text">
+              <Form.Control as="textarea" name="text" placeholder="Any comments?" text={this.state.text} onChange={this.updateComment} />
+          </Form.Group>
+          <Button variant="success" type="submit">Comment</Button>
+        </Form>
+      );
+    } else {
+      return (
+        <Form onSubmit={this.submit}>
+          <Form.Group controlId="text">
+              <Form.Control as="textarea" name="text" placeholder="Login to begin commenting!" text={this.state.text} onChange={this.updateComment} />
+          </Form.Group>
+          <Button variant="success" disabled>Comment</Button>
+        </Form>
+      );
+    }
+  }
 
   render() {
     // checking for deleted post
@@ -246,7 +272,9 @@ class Post extends Component {
       this.refreshPost();
     }
     const {post} = this.state;
-    if (post === null) return <p>Loading ...</p>;
+    if (post === null) {
+      return (<Col><Spinner animation="border" variant="primary" /> <p>Loading ...</p></Col>);
+    } 
     var text = post.body
     return (
       <div className="container">
@@ -297,30 +325,38 @@ class Post extends Component {
               {(localStorage.getItem('loggedIn') === "true" && localStorage.getItem('userEmail') !== post.user_email) &&
               <div>
               <Row>
-              <Col md={{ offset: "5" }}>
-              {this.state.downvoted &&
-                <Button disabled>
-                  <img src={thumbsup} style={{height: 30, width: 30}}></img>
-                </Button>
-              }
-              {!this.state.downvoted &&
-                <Button onClick={this.upvote}>
-                  <img src={thumbsup} style={{height: 30, width: 30}}></img>
-                </Button>
-              }
-              </Col>
-              <Col>
-              {this.state.upvoted &&
-                <Button disabled>
-                  <img src={thumbsdown} style={{height: 30, width: 30}}></img>
-                </Button>
-              }
-              {!this.state.upvoted &&
-                <Button onClick={this.downvote}>
-                  <img src={thumbsdown} style={{height: 30, width: 30}}></img>
-                </Button>
-              }
-              </Col>
+                <Col md={{ offset: "5" }}>
+                    {this.state.downvoted &&
+                      <ButtonGroup>
+                        <Button variant="light" disabled>
+                          <IoIosArrowDropup style={{width: 30, height: 30}}/>
+                        </Button>
+                        <Button variant="light" onClick={this.downvote}>
+                          <IoIosArrowDropdownCircle style={{width: 30, height: 30}}/>
+                        </Button>
+                      </ButtonGroup>
+                    }
+                    {this.state.upvoted &&
+                      <ButtonGroup>
+                        <Button variant="light" onClick={this.upvote}>
+                          <IoIosArrowDropupCircle style={{width: 30, height: 30}}/>
+                        </Button>
+                        <Button variant="light" disabled>
+                          <IoIosArrowDropdown style={{width: 30, height: 30}}/>
+                        </Button>
+                      </ButtonGroup>
+                    }
+                    {!this.state.downvoted && !this.state.upvoted && 
+                      <ButtonGroup>
+                        <Button variant="light" onClick={this.upvote}>
+                          <IoIosArrowDropup style={{width: 30, height: 30}}/>
+                        </Button>
+                        <Button variant="light" onClick={this.downvote}>
+                          <IoIosArrowDropdown style={{width: 30, height: 30}}/>
+                        </Button>
+                      </ButtonGroup>
+                    }
+                </Col>
               </Row>
               </div>
             }
@@ -335,13 +371,7 @@ class Post extends Component {
             }
               </Row>
             <hr className="my-4" />
-            <Form onSubmit={this.submit}>
-              <Form.Group controlId="text">
-                  <Form.Control as="textarea" name="text" placeholder="Any comments?" text={this.state.text} onChange={this.updateComment} />
-              </Form.Group>
-              <Button variant="success" type="submit">Comment</Button>
-            </Form>
-
+              <this.commentBox />
             <hr className="my-4" />
                 {
                   post.comments.map(comment => (

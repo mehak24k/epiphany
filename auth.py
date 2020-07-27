@@ -158,7 +158,6 @@ def profile():
     posts = []
     liked_posts_list = user.liked_posts
     liked_posts = []
-    data = []
     #posts.append(posts_list)
 
     who_user_is_following = user.followed.all()
@@ -174,12 +173,13 @@ def profile():
 
     for post in liked_posts_list:
         my_post = Post.query.filter_by(id=post.post_id).first()
-        tags_list = my_post.tags
-        tags = []
+        if my_post is not None:
+            tags_list = my_post.tags
+            tags = []
 
-        for tag in tags_list:
-            tags.append({'name': tag.name})
-        liked_posts.append({'id': my_post.id, 'title': my_post.title, 'body': my_post.body, 'tags': tags})
+            for tag in tags_list:
+                tags.append({'name': tag.name})
+            liked_posts.append({'id': my_post.id, 'title': my_post.title, 'body': my_post.body, 'tags': tags})
 
     for post in posts_list:
         tags_list = post.tags
@@ -190,8 +190,8 @@ def profile():
         posts.append({'id': post.id, 'title': post.title, 'body': post.body, 'tags': tags})
 
     user_info = []
-    user_info.append(posts)
-    user_info.append(liked_posts)
+    user_info.append({'posts': posts})
+    user_info.append({'liked_posts': liked_posts})
     user_info.append({'points': user.points})
     user_info.append({'user_is_following': user_is_following})
     user_info.append({'user_is_followed_by': user_is_followed_by})

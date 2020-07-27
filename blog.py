@@ -131,7 +131,8 @@ def indiv_post(post_id):
         'title': post[0].title,
         'body': post[0].body,
         'tags': tags,
-        'comments': comm
+        'comments': comm,
+        'upvotes': post[0].net_upvotes
         }
 
     return jsonify({'json_post': json_post})
@@ -378,6 +379,7 @@ def downvote(post_id):
     user = User.query.filter_by(email=upvote_data['user_email']).first()
     post = Post.query.filter_by(id=upvote_data['post_id']).first()
     curr_user = db.session.query(User).get(user.id)
+    post_user = db.session.query(User).get(post.user_id)
     if DislikedPost.query.filter_by(post_id=post.id).first() is None:
         disliked_post = DislikedPost(post_id=post.id)
         db.session.add(disliked_post)
