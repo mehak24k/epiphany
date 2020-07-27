@@ -95,30 +95,38 @@ Each individual feature is tested when we finish them to check if it is working 
 * Users cannot login without email confirmation
 * Users cannot create tags that already exist
 * Users cannot edit posts that are not their own 
-**Error messages/Precautions taken**
+
+Error messages/Precautions taken
+---
 
 1.1 Posting - for registered users
 * Users cannot create tags that already exist
 * Users cannot edit posts that are not their own
 * Users must be logged in to like/dislike posts
+  
 1.2 Searching - for all website users
 * Users cannot search with a tag that does not exist
+
 1.3 Q&A - for registered users
 * Users must be logged in to comment on posts, but all users can view comments
+
 1.4 Upvoting - for registered users
 * Users must be logged in to like/dislike posts
+
 1.5 Subscription system - for registered users
 * Users cannot follow themselves
+
 1.6 Loading system - for all website users
 * Website will show loading symbol when the page has not finished loading to prevent most errors
 
-**User Testing**
+User Testing
+---
 
-We sent out surveys to NUS students to test out our deployed website. 
-We implemented some improvements suggested by testers such as:
+We sent out surveys to NUS students to test out our deployed website and from their feedback, implemented some improvements suggested by testers such as:
 * making the search bars uniform
 * Section for ‘posted by user’ in the homepage can be a darker gray
 * comment box should only be visible to logged-in users
+
 Testers did not find any unexpected errors in our website and felt that the features presented were very effective overall.
 
 Most testers felt that there was a need for such a website, as their options for educational websites were limited to LumiNUS, youtube and Stack (from survey responses). 
