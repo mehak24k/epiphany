@@ -52,15 +52,12 @@ class Posts extends Component {
       this.colors.splice(randomNum, 1);
       return color;
     }
-
-    followedUsers = () => {
-
-    }
   
     render() {
       return (
         <Container className="justify-content-md-center">
           {this.state.list === null && <Row className="mt-3"> <Spinner animation="border" variant="primary" /> <p>Loading posts...</p></Row>}
+          {this.state.list && this.state.list.length === 0 && <h6 style={{textAlign:'center'}}>No posts here! :D</h6>}
           <Tab.Container id="left-tabs-example" defaultActiveKey="first">
             <Row>
               <Col sm={3}>
