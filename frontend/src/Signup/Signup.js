@@ -36,7 +36,7 @@ class Signup extends Component {
     } else {
       let signupData = {"name": this.state.username, "email": this.state.email, "password": this.state.password}
       console.log(signupData)
-      axios.post('https://whispering-oasis-25381.herokuapp.com/signup', signupData)
+      axios.post('https://epiphany-test-three.herokuapp.com/signup', signupData)
       .then((response) => {
         console.log(response);
         if (response.status === 200) {

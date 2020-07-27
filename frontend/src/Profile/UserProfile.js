@@ -40,7 +40,7 @@ class UserProfile extends Component {
     const { match: { params } } = this.props;
     let userData = {"id": params.userId, "current_user_email": localStorage.getItem('userEmail')}
     console.log(userData);
-    axios.post(`https://whispering-oasis-25381.herokuapp.com/users/${params.userId}`, userData)
+    axios.post(`https://epiphany-test-three.herokuapp.com/users/${params.userId}`, userData)
     .then((response) => {
       const posts = response.data.user_info[2].posts;
       let arr = [];
@@ -66,7 +66,7 @@ class UserProfile extends Component {
   async followUser() {
     const { match: { params } } = this.props;
     let postData = {"user_email": localStorage.getItem('userEmail')};
-    axios.post(`https://whispering-oasis-25381.herokuapp.com/follow/${params.userId}`, postData)
+    axios.post(`https://epiphany-test-three.herokuapp.com/follow/${params.userId}`, postData)
     .then((response) => {
       console.log(response);
       console.log('followed');
@@ -81,7 +81,7 @@ class UserProfile extends Component {
   async unfollowUser() {
     const { match: { params } } = this.props;
     let postData = {"user_email": localStorage.getItem('userEmail')};
-    axios.post(`https://whispering-oasis-25381.herokuapp.com/unfollow/${params.userId}`, postData)
+    axios.post(`https://epiphany-test-three.herokuapp.com/unfollow/${params.userId}`, postData)
     .then((response) => {
       console.log(response);
       console.log('unfollowed');

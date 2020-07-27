@@ -31,7 +31,7 @@ class Profile extends Component {
   async componentDidMount() {
     let userData = {"email": localStorage.getItem('userEmail')}
     console.log(userData);
-    axios.post('https://whispering-oasis-25381.herokuapp.com/profile', userData)
+    axios.post('https://epiphany-test-three.herokuapp.com/profile', userData)
     .then((response) => {
       const posts = response.data.user_info[0].posts;
       let arr = [];

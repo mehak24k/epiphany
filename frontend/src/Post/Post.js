@@ -61,7 +61,7 @@ class Post extends Component {
     if (localStorage.getItem("loggedIn") === "true") {
       // only if user is logged in -- for getting the state of liked the post / liked the comments
       let loginData = {"email": localStorage.getItem("userEmail")}
-      axios.post(`https://whispering-oasis-25381.herokuapp.com/posts/${params.postId}`, loginData)
+      axios.post(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}`, loginData)
       .then((response) => {
         console.log(response.data[0].json_post);
         
@@ -85,7 +85,7 @@ class Post extends Component {
         console.log('Looks like there was a problem: \n', error);
       });
     } else {
-      const post = (await axios.get(`https://whispering-oasis-25381.herokuapp.com/posts/${params.postId}`)).data;
+      const post = (await axios.get(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}`)).data;
       this.setState({
         post: post.json_post,
         postId: params.postId,
@@ -111,7 +111,7 @@ class Post extends Component {
     const { match: { params } } = this.props;
     let postData = {"text": this.state.text, "user_email": localStorage.getItem('userEmail'), "post_id": params.postId};
     console.log(postData);
-    axios.post(`https://whispering-oasis-25381.herokuapp.com/posts/${params.postId}/comment`, postData)
+    axios.post(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}/comment`, postData)
     .then((response) => {
       this.setState({
         commented: true,
@@ -128,7 +128,7 @@ class Post extends Component {
     const { match: { params } } = this.props;
     let postData = {"text": this.state.text, "user_email": localStorage.getItem('userEmail'), "post_id": params.postId}
     console.log(postData);
-    axios.post(`https://whispering-oasis-25381.herokuapp.com/posts/${params.postId}/delete`, postData)
+    axios.post(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}/delete`, postData)
     .then((response) => {
       this.setState({
         deleted: true,
@@ -141,7 +141,7 @@ class Post extends Component {
 
   async deleteComment(event, id) {
     const { match: { params } } = this.props;
-    axios.post(`https://whispering-oasis-25381.herokuapp.com/posts/${params.postId}/${id}/delete`)
+    axios.post(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}/${id}/delete`)
     .then((response) => {
       console.log(response);
       this.setState({
@@ -156,7 +156,7 @@ class Post extends Component {
     const { match: { params } } = this.props;
     let postData = {"user_email": localStorage.getItem('userEmail'), "post_id": params.postId}
     console.log(postData);
-    axios.post(`https://whispering-oasis-25381.herokuapp.com/posts/${params.postId}/upvote`, postData)
+    axios.post(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}/upvote`, postData)
     .then((response) => {
       console.log(response);
       if (this.state.upvoted) {
@@ -178,7 +178,7 @@ class Post extends Component {
   async replyTo(event, id) {
       const { match: { params } } = this.props;
       let postData = {"text": this.state.reply, "user_email": localStorage.getItem('userEmail'), "post_id": params.postId, "parent_id": id}
-      axios.post(`https://whispering-oasis-25381.herokuapp.com/posts/${params.postId}/${id}/reply`, postData)
+      axios.post(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}/${id}/reply`, postData)
       .then((response) => {
         this.setState({
           replied: true,
@@ -193,7 +193,7 @@ class Post extends Component {
     const { match: { params } } = this.props;
     let postData = {"user_email": localStorage.getItem('userEmail'), "post_id": params.postId}
     console.log(postData);
-    axios.post(`https://whispering-oasis-25381.herokuapp.com/posts/${params.postId}/downvote`, postData)
+    axios.post(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}/downvote`, postData)
     .then((response) => {
       console.log(response);
       if (this.state.downvoted) {
@@ -276,7 +276,7 @@ class Post extends Component {
   async upvoteComment(event, id) {
       const { match: { params } } = this.props;
       let postData = {"user_email": localStorage.getItem('userEmail'), "comment_id": id}
-      axios.post(`https://whispering-oasis-25381.herokuapp.com/posts/${params.postId}/${id}/upvote`, postData)
+      axios.post(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}/${id}/upvote`, postData)
       .then((response) => {
         console.log(response);
         if (this.state.c_upvoted === true) {
@@ -300,7 +300,7 @@ class Post extends Component {
   async downvoteComment(event, id) {
       const { match: { params } } = this.props;
       let postData = {"user_email": localStorage.getItem('userEmail'), "comment_id": id}
-      axios.post(`https://whispering-oasis-25381.herokuapp.com/posts/${params.postId}/${id}/downvote`, postData)
+      axios.post(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}/${id}/downvote`, postData)
       .then((response) => {
         console.log(response);
         if (this.state.c_downvoted === true) {
@@ -353,7 +353,7 @@ class Post extends Component {
             onClick={(e) => this.upvoteComment(e, props.id)}
             disabled
           >
-          <img src="https://epiphany-test-three.herokuapp.comstatic/chevron-up-circle-outline.svg" style={{height: 20, width: 20}}></img>
+          <img src="https://epiphany-test-three.herokuapp.com/static/chevron-up-circle-outline.svg" style={{height: 20, width: 20}}></img>
           </Button>
         );
       } else {

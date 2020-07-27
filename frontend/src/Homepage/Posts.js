@@ -33,7 +33,7 @@ class Posts extends Component {
   }
 
   async componentDidMount() {
-      const data = (await axios.get('https://whispering-oasis-25381.herokuapp.com/main')).data;
+      const data = (await axios.get('https://epiphany-test-three.herokuapp.com/main')).data;
       const posts = data.data[0];
       const tags = data.data[1];
       let arr = [];
@@ -228,7 +228,7 @@ class Posts extends Component {
                 {post.is_file === true &&
                   <div>
                     <video id="samp" width="540" height="380" controls>
-                        <source src={`http://127.0.0.1:5000/static/${post.body}`} type="video/mp4">
+                        <source src={`https://epiphany-test-three.herokuapp.com/static/${post.body}`} type="video/mp4">
                         </source>
                         Your browser does not support this video format.
                     </video>
@@ -236,6 +236,7 @@ class Posts extends Component {
               }
                 </Card.Body>
                 <Card.Text className="mb-3">
+                  
                   <Link key={myKey()} to={`/users/${post.user_id}`}>
                     <small style={{color: "#323336"}}>Posted by {post.user} at {post.time}</small>
                   </Link>

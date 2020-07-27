@@ -36,7 +36,7 @@ class NewVideo extends Component {
   }
 
   async componentDidMount() {
-      const data = (await axios.get('https://whispering-oasis-25381.herokuapp.com/main')).data;
+      const data = (await axios.get('https://epiphany-test-three.herokuapp.com/main')).data;
       console.log(data.data[0]);
       const tags = data.data[1];
       let tagArr = [];
@@ -152,7 +152,7 @@ handleSubmit(event) {
       if (this.state.newTags !== null) {
         this.state.newTags.forEach(tag => data.append('newTags[]', tag));
       }
-      axios.post('https://whispering-oasis-25381.herokuapp.com/upload', data)
+      axios.post('https://epiphany-test-three.herokuapp.com/upload', data)
       .then((response) => {
         console.log(response);
         this.setState({
@@ -184,16 +184,6 @@ handleSubmit(event) {
       {this.state.tagsList === null && <div> <Spinner animation="border" variant="primary" /> <p>Loading...</p></div>}
       { this.state.errorMessage &&
         <Alert variant='danger'> { this.state.errorMessage } </Alert> }
-
-        <div id="theVideo">
-        <ResponsiveEmbed aspectRatio="16by9">
-            <video id="samp" width="640" height="480" controls>
-                <source src="./static/bubblesort.mp4" type="video/mp4">
-                </source>
-                Your browser does not support this video format.
-            </video>
-        </ResponsiveEmbed>
-        </div>
 
       {this.state.tagsList &&
         <Form onSubmit={this.handleSubmit}>
