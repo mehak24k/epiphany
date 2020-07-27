@@ -38,7 +38,7 @@ Microlearning has many benefits such as improving learners’ information retent
 
 ## Program Flow
 
-![Image](https://drive.google.com/file/d/1B4XD-LdYVMmQGxtAQA9XOSMK87vXoB98)
+![Image](https://drive.google.com/uc?export=view&id=1B4XD-LdYVMmQGxtAQA9XOSMK87vXoB98)
 ![image](https://drive.google.com/uc?export=view&id=1913oZeBZPBNiUuk8gu3ZSbLBA2l_VQtG)
 
 ## Core Features 
