@@ -37,9 +37,7 @@ Microlearning has many benefits such as improving learners’ information retent
 * As a TA or lecturer, I want to encourage students to help one another since this encourages collaborative learning.
 
 ## Program Flow
-
 ![Image](https://drive.google.com/uc?export=view&id=1B4XD-LdYVMmQGxtAQA9XOSMK87vXoB98)
-![image](https://drive.google.com/uc?export=view&id=1913oZeBZPBNiUuk8gu3ZSbLBA2l_VQtG)
 
 ## Core Features 
 Features
@@ -53,19 +51,24 @@ Features
 * Users can search for the tag they want to add.
 * Users can create their own tags if the tag they want to use does not already exist in the database.
 * Users can edit and delete their posts.
+  
 **1.2 Searching - for all website users**
 * Users can search through the posts through words that match in the title or body of the posts.
 * Filtration system where users can add tags to filter the posts. Only posts with all the indicated tags will appear on the homepage.
 * The posts will be displayed only with their titles on the homepage. Users can click on the post to view the full content of the post.
 * Users can click on other users who have posted to be brought to their profile page, where they can view all the posts by that user.
+
 **1.3 Q&A - for registered users**
 * Each video or article will have a Q & A section for registered users to post questions that anyone can help address.
 * Registered users can reply to comments
+
 **1.4 Upvoting - for registered users**
 * Registered users can like or dislike posts for an indication of credibility and helpfulness of the post.
 * Registered users can like or dislike comments for an indication of importance or helpfulness of the comment.
+
 **1.5 Subscription system - for registered users**
 * Registered users can subscribe to other users to follow their content. 
+
 **1.6 Subscription system - for registered users**
 * Registered users are able to check their profile for points and badges earned.
 * Registered users are able to see their own posts and previously liked posts, as well as keep track of their followers and followed users. 
@@ -75,15 +78,15 @@ System Testing
 ---
 **Portability Testing**
 
-Our website is responsive to shrinking windows on a laptop/desktop.
+* Our website is responsive to shrinking windows on a laptop/desktop.
 
 **Network Security**
 
-Passwords are hashed via a salt to guard against rainbow-table attacks
+* Passwords are hashed via a salt to guard against rainbow-table attacks
 
 **Unit Testing**
 
-Each individual feature is tested when we finish them to check if it is working as intended
+* Each individual feature is tested when we finish them to check if it is working as intended
 
 **Acceptance Testing**
 
