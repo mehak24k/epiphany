@@ -25,7 +25,7 @@ class Posts extends Component {
     async componentDidMount() {
         let loginData = {"email": localStorage.getItem("userEmail")}
         console.log(loginData)
-        axios.post('http://localhost:5000/fav', loginData)
+        axios.post('https://epiphany-test-three.herokuapp.com/fav', loginData)
         .then((response) => {
             const lists = response.data.info[0];
             let arr = [];
@@ -36,6 +36,7 @@ class Posts extends Component {
             this.setState({
               list: arr,
             });
+            console.log(this.state.list.length);
         }, (error) => {
             console.log('Looks like there was a problem: \n', error);
         });
@@ -57,7 +58,7 @@ class Posts extends Component {
       return (
         <Container className="justify-content-md-center">
           {this.state.list === null && <Row className="mt-3"> <Spinner animation="border" variant="primary" /> <p>Loading posts...</p></Row>}
-          {this.state.list && this.state.list.length === 0 && <h6 style={{textAlign:'center'}}>No posts here! :D</h6>}
+          {this.state.list && this.state.list.length === 0 && <h4 style={{textAlign: "center"}}> No followed posts. </h4>}
           <Tab.Container id="left-tabs-example" defaultActiveKey="first">
             <Row>
               <Col sm={3}>
