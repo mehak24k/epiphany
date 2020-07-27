@@ -43,7 +43,7 @@ class User(UserMixin, db.Model):
         return Post.query.join(
             followers, (followers.c.followed_id == Post.user_id)).filter(
                 followers.c.follower_id == self.id).order_by(
-                    Post.timestamp.desc())
+                    Post.user_id)
 
 class Post(db.Model):
     __tablename__="posts"
@@ -87,7 +87,7 @@ class LikedPost(db.Model):
     __tablename__="likedposts"
     id = db.Column(db.Integer, primary_key=True)
     post_id = db.Column(db.Integer)
-    users2 = db.relationship('User', secondary=user_likedposts, backref='liked_posts')
+    users = db.relationship('User', secondary=user_likedposts, backref='liked_posts')
 
 user_dislikedposts = db.Table('user_dislikedposts',
     db.Column('post_id', db.Integer, db.ForeignKey('dislikedposts.id')),
@@ -98,7 +98,30 @@ class DislikedPost(db.Model):
     __tablename__="dislikedposts"
     id = db.Column(db.Integer, primary_key=True)
     post_id = db.Column(db.Integer, unique=True, nullable=False)
-    users2 = db.relationship('User', secondary=user_dislikedposts, backref='disliked_posts')
+    users = db.relationship('User', secondary=user_dislikedposts, backref='disliked_posts')
+
+user_likedcomments = db.Table('user_likedcomments',
+    db.Column('comment_id', db.Integer, db.ForeignKey('likedcomments.id')),
+    db.Column('user_id', db.Integer, db.ForeignKey('users2.id'))
+)
+
+class LikedComment(db.Model):
+    __tablename__="likedcomments"
+    id = db.Column(db.Integer, primary_key=True)
+    comment_id = db.Column(db.Integer, unique=True, nullable=False)
+    users = db.relationship('User', secondary=user_likedcomments, backref='liked_comments')
+
+user_dislikedcomments = db.Table('user_dislikedcomments',
+    db.Column('comment_id', db.Integer, db.ForeignKey('dislikedcomments.id')),
+    db.Column('user_id', db.Integer, db.ForeignKey('users2.id'))
+)
+
+class DislikedComment(db.Model):
+    __tablename__="dislikedcomments"
+    id = db.Column(db.Integer, primary_key=True)
+    comment_id = db.Column(db.Integer, unique=True, nullable=False)
+    users = db.relationship('User', secondary=user_dislikedcomments, backref='disliked_comments')
+
 
 class Comment(db.Model):
     _N = 6
@@ -112,6 +135,7 @@ class Comment(db.Model):
     path = db.Column(db.Text, index=True)
     parent_id = db.Column(db.Integer, db.ForeignKey("comments.id"))
     replies = db.relationship("Comment", backref=db.backref('parent', remote_side=[id]), lazy="dynamic")
+    net_upvotes = db.Column(db.Integer, default=0)
 
     def save(self):
         db.session.add(self)

@@ -12,6 +12,7 @@ import Button from 'react-bootstrap/Button'
 import ListGroup from 'react-bootstrap/ListGroup'
 import joined_badge from '../Files/joined_badge.png'
 import ResponsiveEmbed from 'react-bootstrap/ResponsiveEmbed'
+import Card from 'react-bootstrap/Card'
 
 class UserProfile extends Component {
 
@@ -41,8 +42,6 @@ class UserProfile extends Component {
     console.log(userData);
     axios.post(`http://localhost:5000/users/${params.userId}`, userData)
     .then((response) => {
-      console.log(response.data.user_info[0]);
-      console.log(response.data.user_info[6]);
       const posts = response.data.user_info[2].posts;
       let arr = [];
       for (var i in posts) {
@@ -145,6 +144,46 @@ class UserProfile extends Component {
     }
   }
 
+  userPosts = () => {
+    if (this.state.posts && this.state.posts.length) {
+      return (
+        <div className="row">
+          {this.state.posts && this.state.posts.map(post => (
+            <div key={post.id} className="col-sm-12 col-md-4 col-lg-3 mb-3">
+              <Link to={`/post/${post.id}`}>
+                <Card style={{backgroundColor: this.getColor(), color: "#161717", height: '250px'}}>
+                  <Card.Body>
+                    <Card.Title>{post.title}</Card.Title>
+                      <Row>
+                      {post.tags && post.tags.map(tag => (
+                        <Col style={{ paddingLeft: 2, paddingRight: 2 }} md="auto">
+                          <Badge variant="info">{tag.name}</Badge>
+                        </Col>
+                        ))
+                      }
+                      </Row>
+                      <Card.Text>
+                      <p className="card-text" style={{maxLength: "100"}}>
+                        <Truncate lines={1}>
+                          {post.body}
+                        </Truncate>
+                      </p>
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
+              </Link>
+            </div>
+            ))
+          }
+        </div>
+      );
+    } else {
+      return (
+        <ListGroup.Item>No posts here!</ListGroup.Item>
+      );
+    }
+  }
+
   render() {
     if (this.state.clicked) {
       this.refreshProfile();
@@ -157,68 +196,42 @@ class UserProfile extends Component {
           <Tab eventKey="profile" title="Profile">
             <div className="row">
               <div className="jumbotron col-12">
-              <Col>
-                <h1 className="display-3">{this.state.userName}</h1>
-                </Col>
-                <Col md={{ offset: "10" }}>
-                <this.check />
-                </Col>
-                <h2 className="display-3">Points: {this.state.userPoints}</h2>
-
-                <h3 className="display-3">Badges:</h3>
                 <Row>
-                <Col>
-                <ResponsiveEmbed aspectRatio="1by1">
-                  <embed type="image/png" src={joined_badge} />
-                </ResponsiveEmbed>
-                </Col>
-                {this.state.userPoints >= 10 &&
                   <Col>
-                  <ResponsiveEmbed aspectRatio="1by1">
-                    <embed type="image/png" src={joined_badge} />
-                  </ResponsiveEmbed>
+                    <h1 className="display-3">{this.state.userName} <this.check/> </h1>
+                    <h2 className="display-7">Points: {this.state.userPoints}</h2>
+                    <h3 className="display-7">Badges:</h3>
+                    <Row>
+                      <Col>
+                        <ResponsiveEmbed aspectRatio="1by1" style={{maxWidth: 500}}>
+                          <embed type="image/png" src={joined_badge} />
+                        </ResponsiveEmbed>
+                      </Col>
+                      {this.state.userPoints >= 10 &&
+                        <Col>
+                          <ResponsiveEmbed aspectRatio="1by1" style={{maxWidth: 500}}>
+                            <embed type="image/png" src="http://127.0.0.1:5000/static/first-upvote.png" />
+                          </ResponsiveEmbed>
+                        </Col>
+                      }
+                    </Row>
                   </Col>
-                }
                 </Row>
               </div>
             </div>
           </Tab>
           <Tab eventKey="posts" title="Posts">
-            <div className="row">
-            {this.state.posts && this.state.posts.map(post => (
-                <div key={post.id} className="col-sm-12 col-md-4 col-lg-3">
-                  <Link to={`/post/${post.id}`}>
-                    <div className="card mb-3" style={{backgroundColor: this.getColor(), color: "#161717", height: '250px'}}>
-                    <div className="card-body">
-                      <h4 className="card-title">{post.title}</h4>
-                      <Row>
-                      {post.tags && post.tags.map(tag => (
-                        <Col style={{ paddingLeft: 2, paddingRight: 2 }} md="auto">
-                          <Badge variant="info">{tag.name}</Badge>
-                        </Col>
-                        ))
-                      }
-                      </Row>
-                      <p className="card-text" style={{maxLength: "100"}}>
-                      <Truncate lines={2}>
-                          {post.body}
-                      </Truncate>
-                      </p>
-                    </div>
-                    </div>
-                  </Link>
-                </div>
-              ))
-            }
-            </div>
+            <ListGroup variant="flush" className="mt-3">
+              <this.userPosts />
+            </ListGroup>
           </Tab>
           <Tab eventKey="followers" title="Followers">
-            <ListGroup variant="flush">
+            <ListGroup variant="flush" className="mt-3">
               <this.followedBy />
             </ListGroup>
           </Tab>
           <Tab eventKey="following" title="Following">
-            <ListGroup variant="flush">
+            <ListGroup variant="flush" className="mt-3">
               <this.following />
             </ListGroup>
           </Tab>

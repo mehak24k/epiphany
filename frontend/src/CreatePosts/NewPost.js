@@ -188,7 +188,7 @@ class NewPost extends Component {
             freeSolo
             options={top100Films.map((option) => option.name)}
             renderInput={(params) => (
-              <TextField {...params}  onKeyPress={(e) => { e.key === 'Enter' && e.preventDefault(); }} id="standard-full-width" label="Add tags!" margin="normal" variant="outlined" onKeyUp={this.addTag}/>
+              <TextField {...params}  onKeyPress={(e) => { e.key === 'Enter' && e.preventDefault(); }} id="standard-full-width" label="Add tags! Press Enter to add a tag." margin="normal" variant="outlined" onKeyUp={this.addTag}/>
             )}
           />
           </div>
@@ -196,7 +196,7 @@ class NewPost extends Component {
           </div>
             <Form.Group controlId="formGroupPassword">
               <Form.Label>Body</Form.Label>
-              <Form.Control as="textarea" rows="15" name="body" placeholder="Body" body={this.state.body} onChange={this.handleChange}/>
+              <Form.Control as="textarea" rows="15" name="body" placeholder="Body" body={this.state.body} maxLength={10000} onChange={this.handleChange}/>
           </Form.Group>
           <Button variant="success" type="submit">Submit</Button>
         </Form>

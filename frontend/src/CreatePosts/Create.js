@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Button from 'react-bootstrap/Button'
+import Container from 'react-bootstrap/Container'
 import Col from 'react-bootstrap/Col'
 import { Redirect } from "react-router-dom";
 import Row from 'react-bootstrap/Row'
@@ -45,24 +46,30 @@ class Create extends Component {
       );
     }
     return (
-      <Row className="justify-content-md-center">
-       <Col md={{ span: "4", offset: "1" }} className="justify-content-md-center">
-         <h2 style={{textAlign: "center"}}> Write an article! </h2>
-           <h4 style={{textAlign: "center"}}>
-           Explain a concept with an article.
-           Articles can have a maximum length of 10000 characters.
-           </h4>
-         <Button variant="success" onClick={this.handleArticle}>Post Article</Button>
-       </Col>
-       <Col md={{ span: "4", offset: "1" }} className="justify-content-md-center">
-         <h2 style={{textAlign: "center"}}> Upload a video </h2>
-           <h4 style={{textAlign: "center"}}>
-           Explain a concept with a video.
-           Videos can have a maximum length of 10 minutes.
-           </h4>
-         <Button variant="success" onClick={this.handleVideo}>Post Video</Button>
-       </Col>
-     </Row>
+      <Container fluid style={{height:'70vh'}}>
+        <Row className="h-100 justify-content-center align-items-center">
+          <Col className="justify-content-x-center">
+            <h2 style={{textAlign: "center"}}> Write an article! </h2>
+              <h4 style={{textAlign: "center"}}>
+              Explain a concept with an article.
+              <br />Articles can have a maximum length of 10000 characters.
+              </h4>
+              <div class="text-center">
+                <Button style={{textAlign: "center"}} variant="success" onClick={this.handleArticle}>Post Article</Button>
+              </div>
+          </Col>
+          <Col className="justify-content-x-center">
+            <h2 style={{textAlign: "center"}}> Upload a video </h2>
+              <h4 style={{textAlign: "center"}}>
+              Explain a concept with a video.
+              <br />Videos can have a maximum length of 10 minutes.
+              </h4>
+                <div class="text-center">
+                  <Button style={{textAlign: "center"}} variant="success" onClick={this.handleVideo}>Post Video</Button>
+                </div>
+          </Col>
+        </Row>
+      </Container>
     );
   }
 }
