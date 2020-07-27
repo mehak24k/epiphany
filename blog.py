@@ -105,8 +105,7 @@ def indiv_post(post_id):
         data.append({'liked': liked, 'disliked': disliked})
 
         post = get_post(post_id, False)
-        #comments = get_comments(post_id)
-        comments = Comment.query.filter_by(post_id=post_id).all()
+        comments = get_comments(post_id)
 
         tags_list = post[0].tags
         tags = []
