@@ -1,48 +1,37 @@
 # Epiphany
-Check out our deployed app here!
-[Link] (https://whispering-oasis-25381.herokuapp.com/)
+Check out our deployed app [here](https://whispering-oasis-25381.herokuapp.com/)!
 ## Level of Achievement: Apollo 11
 
-Contents:
-Main README
-Project Scope
-Problem Motivation
-User Stories
-Program Flow
-Core Features
-Testing and Security Features
-Software Engineering Related
-Extensions
-How is our application different?
-Problems Encountered/Bugs Squashed
-FAQ
-Appendix
+---
 
-Project Scope
+## Project Scope
+---
 This is a web application to facilitate the exchange of bite-sized information about concepts in various modules across NUS students, lecturers and TAs (also known as microlearning).
 
 Users can share information with their peers (or students, in the case of lecturers or TAs) in the form of articles or videos and tag their uploads with relevant tags (e.g. Module codes, names of concepts). Students can also ask questions to clarify anything in the uploaded resource in the Q&A section under the resource. Peers, lectures or TAs can respond to the questions.
 
-Problem Motivation
+## Problem Motivation
+---
 NUS students lack a platform where they can access relevant resources to aid them in learning content specific to their modules. Often, students turn to the Internet to source for resources to help clarify concepts. However, searching for answers to certain questions online does not promote a deep understanding of the subject matter. This is especially because bits and pieces of somewhat-relevant information do not form a solid understanding of concepts.
 
 We want to make a website application that facilitates microlearning where NUS students can help one another with learning module-specific content in bite-sized pieces. After all, it is common to find that we understand our peers’ explanations better than the lecturers’! Also, an overload of content often leaves students confused. Being able to internalize information in smaller, bite-sized pieces in the form of short articles and videos explaining concepts in simple terms will encourage interest and a good understanding of concepts.
 
 Microlearning has many benefits such as improving learners’ information retention and requiring less time commitment with targeted information.
 
-User Stories
+## User Stories
+---
 As a student who is unclear on concepts taught in a module, I want to be able to access past resources to help me understand specific concepts in a simple and bite-sized way.
 As a student, TA or lecturer, I want to upload short articles or videos explaining specific concepts so that students can understand concepts more easily. 
 As a student, I want to make an account to login and ask questions and receive answers to my questions.
 As a TA or lecturer, I would like to have a permanent database of information such that my past uploaded materials are available to provide help to future students.
 As a TA or lecturer, I want to encourage students to help one another since this encourages collaborative learning.
 
-Program Flow
+## Program Flow
+---
+![Image](https://imgur.com/a/Y38PmQI)
 
-Core Features 
-Is the user role (e.g. public, member, admin) well specified?
-Is the desired outcome (user goal) clear?
-(Optional) Is the benefit clear?
+## Core Features 
+---
 Features
 1.1 Posting - for registered users
 Registered users can post an article or upload videos explaining concepts
@@ -70,7 +59,8 @@ Registered users can subscribe to other users to follow their content.
 Registered users are able to check their profile for points and badges earned.
 Registered users are able to see their own posts and previously liked posts, as well as keep track of their followers and followed users. 
 
-Testing and Security Features
+## Testing and Security Features
+---
 System Testing:
 Portability Testing: 
 Our website is responsive to shrinking windows on a laptop/desktop.
@@ -111,11 +101,13 @@ comment box should only be visible to logged-in users
 Testers did not find any unexpected errors in our website and felt that the features presented were very effective overall.
 Most testers felt that there was a need for such a website, as their options for educational websites were limited to LumiNUS, youtube and Stack (from survey responses). 
 
-Extensions
+## Extensions
+---
 A gamification system where users can achieve points/awards/badges by contributing or having their contributions liked.
 Follow system for student users to subscribe to other users.
 
-Software Engineering Related
+## Software Engineering Related
+---
 Trello Board:
 We used this trello board to categorise our workflow.
 The tags indicate information about each part of our project along with which phase of development they belong to (milestones 1/2/3)
@@ -150,7 +142,8 @@ PSQL is an object-relational database which would support inheritance etc. and t
 
 We have chosen to incorporate ReactJS into our frontend for an enhanced design, as well as to reduce the load on our backend, such that the Flask app does not have to take care of both front and backends. We are also making use of Bootstrap in conjunction with ReactJS for interactive elements in our webpage, which is particularly useful for our forum-like site, where potential users would want to see immediate change in the website when they explore features.
 
-How is our application different?
+## How is our application different?
+---
 Piazza
 Piazza focuses on questions and answers, whereas our app is about strengthening students’ understanding of concepts through actual revision content.
 
@@ -166,7 +159,8 @@ Stack
 Stack forums are primarily used for asking questions while users on our website would be posting information about concepts, with an added bonus of a Q&A section. 
 Stack forums discourage questions about school work, however, the Q&A section in our app would be free for users to discuss about the post content as well as school-related work. 
 
-Problems encountered/Bugs squashed
+## Problems encountered/Bugs squashed
+---
 We had problems figuring out the relationships between posts and Q&A sections but after referring to examples and drawing the relationship map out, it became much clearer and it was then easy to implement. 
 Similarly, we had problems figuring out the relationship between users and followers as it was a self-referential relationship. We ended up googling around for answers and found an example in a blog tutorial. 
 We tried using ReactJS for the frontend but found that incorporating it with Flask was challenging at this point. Since we were more familiar with HTML/CSS/Javascript, we switched to those instead to focus more on developing the features of the app with the skills we were more comfortable with instead of spending too much time grappling with unfamiliar technologies.
@@ -178,8 +172,8 @@ We were unable to implement all the extensions we had planned. We decided to foc
 However, we did manage to implement the more important extensions.
 
 
-FAQ
-
+## FAQ
+---
 Q1: How will you perform quality-control and ensure that the material posted is accurate?
 
 A: Users from the community can suggest changes to the post if they find some inaccurate information and the uploader can rectify it accordingly through the update feature of posts.
@@ -203,11 +197,8 @@ A: Firstly, the usage of such a learning platform would enable students to help 
 Secondly from point 5, profs would have more time to conduct one-on-one time with individual students. Since the information uploaded is available for future cohorts as well, even more time would be saved for these consults. Furthermore, by uploading resources on this platform, they can have a wide reach to help students and thus more efficiently use their time while helping more students. 
 
 
-Appendix
+## Appendix
+---
+[Benefits of Microlearning](https://digitalmarketinginstitute.com/blog/7-reasons-to-use-microlearning-in-higher-education)
 
-Benefits of Microlearning
-Source: https://digitalmarketinginstitute.com/blog/7-reasons-to-use-microlearning-in-higher-education
-
-How teaching others can help one learn better
-Source:
-https://journals.sagepub.com/doi/abs/10.3102/00028312019002237
+[How teaching others can help one learn better](https://journals.sagepub.com/doi/abs/10.3102/00028312019002237)
