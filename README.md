@@ -142,9 +142,9 @@ Most testers felt that there was a need for such a website, as their options for
 
 ## Extensions
 
-A gamification system where users can achieve points/awards/badges by contributing or having their contributions liked.
+A gamification system where users can achieve points/awards/badges by contributing or having their contributions liked. This would ideally, encourage users to contribute more quality content to the website.
 
-Follow system for student users to subscribe to other users.
+A follow system for registered users to subscribe to other users. Users would then be able to see their followed posts and catch up on any new posts made.
 
 ## Software Engineering Related
 
