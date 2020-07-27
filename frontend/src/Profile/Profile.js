@@ -24,7 +24,7 @@ class Profile extends Component {
       user_is_followed_by: null,
       likedPosts: null,
       points: 0,
-      loaded: false, 
+      loaded: false,
     };
   }
 
@@ -43,6 +43,7 @@ class Profile extends Component {
         user_is_following: response.data.user_info[3].user_is_following,
         user_is_followed_by: response.data.user_info[4].user_is_followed_by,
         points: response.data.user_info[2].points,
+        loaded: true,
       });
       const likedPosts = response.data.user_info[1].liked_posts;
       let arr2 = [];
@@ -187,14 +188,20 @@ class Profile extends Component {
                 <h1 className="display-3">{localStorage.getItem('userName')}</h1>
                 <h3 className="display-7">Points: {this.state.points}</h3>
                 <h3 className="display-7">Badges:</h3>
-                <ResponsiveEmbed aspectRatio="1by1">
-                  <embed type="image/png" src={joined_badge} />
+                <Row>
+                <Col>
+                <ResponsiveEmbed aspectRatio="1by1" style={{maxWidth: 500}}>
+                  <embed type="image/png"  src={joined_badge} />
                 </ResponsiveEmbed>
+                </Col>
                 {this.state.points >= 10 &&
-                  <ResponsiveEmbed aspectRatio="1by1">
-                    <embed type="image/png" src={joined_badge} />
+                  <Col>
+                  <ResponsiveEmbed aspectRatio="1by1" style={{maxWidth: 500}}>
+                    <embed type="image/png" src="http://127.0.0.1:5000/static/first-upvote.png" />
                   </ResponsiveEmbed>
+                  </Col>
                 }
+                </Row>
               </div>
             </div>
           </Tab>

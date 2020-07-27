@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from sqlalchemy import and_
 from werkzeug.exceptions import abort
 from flask_cors import cross_origin, CORS
-from .models import User, Post, Comment, Tag, LikedPost, DislikedPost
+from .models import User, Post, Comment, Tag, LikedPost, DislikedPost, LikedComment, DislikedComment
 from . import db, app
 import os
 from werkzeug.utils import secure_filename
@@ -12,7 +12,7 @@ bp = Blueprint('blog', __name__)
 
 CORS(bp)
 
-UPLOAD_FOLDER = '/Users/Mehak/Desktop/epiphany/frontend/src/Files'
+UPLOAD_FOLDER = '/Users/Mehak/Desktop/epiphany/static'
 ALLOWED_EXTENSIONS = {'mp4'}
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -104,7 +104,50 @@ def indiv_post(post_id):
         data = []
         data.append({'liked': liked, 'disliked': disliked})
 
-        return jsonify({'data': data})
+        post = get_post(post_id, False)
+        #comments = get_comments(post_id)
+        comments = Comment.query.filter_by(post_id=post_id).all()
+
+        tags_list = post[0].tags
+        tags = []
+        comm = []
+
+        for tag in tags_list:
+            tags.append({'name': tag.name})
+
+        for comment in comments:
+            liked_comment = LikedComment.query.filter_by(comment_id=comment.id).first()
+            disliked_comment = DislikedComment.query.filter_by(comment_id=comment.id).first()
+            if liked_comment is not None and liked_comment in user.liked_comments:
+                comm.append({'text': comment.text, 'commentor': comment.user.name,
+                'user_email': comment.user.email, 'comment_id': comment.id,
+                'comment_level': comment.level(), 'time': comment.timestamp,
+                'comment_upvotes': comment.net_upvotes, 'liked': True, 'disliked': False})
+            elif disliked_comment is not None and disliked_comment in user.disliked_comments:
+                comm.append({'text': comment.text, 'commentor': comment.user.name,
+                'user_email': comment.user.email, 'comment_id': comment.id,
+                'comment_level': comment.level(), 'time': comment.timestamp,
+                'comment_upvotes': comment.net_upvotes, 'liked': False, 'disliked': True})
+            else:
+                comm.append({'text': comment.text, 'commentor': comment.user.name,
+                'user_email': comment.user.email, 'comment_id': comment.id,
+                'comment_level': comment.level(), 'time': comment.timestamp,
+                'comment_upvotes': comment.net_upvotes, 'liked': False, 'disliked': False})
+
+        json_post = {'id': post[0].id,
+            'user_id': post[0].user.id,
+            'username': post[0].user.name,
+            'time': post[0].timestamp.strftime('%x %H:%M'),
+            'user_email': post[0].user.email,
+            'title': post[0].title,
+            'body': post[0].body,
+            'tags': tags,
+            'comments': comm,
+            'upvotes': post[0].net_upvotes,
+            'is_file': post[0].is_file,
+            }
+
+        return jsonify({'json_post': json_post}, {'data': data})
 
     post = get_post(post_id, False)
     comments = get_comments(post_id)
@@ -121,7 +164,10 @@ def indiv_post(post_id):
         tags.append({'name': tag.name})
 
     for comment in comments:
-        comm.append({'text': comment.text, 'commentor': comment.user.name, 'user_email': comment.user.email, 'comment_id': comment.id, 'comment_level': comment.level(), 'time': comment.timestamp})
+        comm.append({'text': comment.text, 'commentor': comment.user.name,
+        'user_email': comment.user.email, 'comment_id': comment.id,
+        'comment_level': comment.level(), 'time': comment.timestamp,
+        'comment_upvotes': comment.net_upvotes})
 
     json_post = {'id': post[0].id,
         'user_id': post[0].user.id,
@@ -132,7 +178,8 @@ def indiv_post(post_id):
         'body': post[0].body,
         'tags': tags,
         'comments': comm,
-        'upvotes': post[0].net_upvotes
+        'upvotes': post[0].net_upvotes,
+        'is_file': post[0].is_file,
         }
 
     return jsonify({'json_post': json_post})
@@ -236,37 +283,113 @@ def delete_comment(post_id, comment_id):
     response = []
     return jsonify({'response': response}), 204
 
-@bp.route('/posts/<int:post_id>/category/<module>', methods=['GET'])
-@login_required
-def category(module, post_id):
-    post = db.session.query(Post).get(post_id)
-    post.module = db.session.query(Module).filter_by(code=module).first()
-    db.session.commit()
+@bp.route('/posts/<int:post_id>/<int:comment_id>/upvote', methods=['OPTIONS'])
+@cross_origin()
+def upvote_comment_options():
+    response = {'hello'}
+    return jsonify({'response': response}), 205
 
-    flash("Your post is now under module " + module)
-    return redirect(url_for('main.main_index'))
+@bp.route('/posts/<int:post_id>/<int:comment_id>/upvote', methods=['POST'])
+@cross_origin()
+def upvote_comment(post_id, comment_id):
+    upvote_data = request.get_json(force=True)
+    # gets the user casting the upvote
+    user = User.query.filter_by(email=upvote_data['user_email']).first()
+    # gets the comment
+    comment = Comment.query.filter_by(id=comment_id).first()
+    # gets the user casting the upvote
+    curr_user = db.session.query(User).get(user.id)
+    # gets the user who commented the comment to be upvoted
+    comment_user = db.session.query(User).get(user.id)
 
-@bp.route('/add_module', methods=['POST'])
-def add_module():
-    module_data = request.get_json()
+    if LikedComment.query.filter_by(comment_id=comment.id).first() is None:
+        liked_comment = LikedComment(comment_id=comment.id)
+        db.session.add(liked_comment)
+        curr_user.liked_comments.append(liked_comment)
+        curr_comment = db.session.query(Comment).get(comment_id)
+        curr_comment.net_upvotes = curr_comment.net_upvotes + 1
+        comment_user.points = comment_user.points + 10
+        db.session.commit()
 
-    new_module = Module(name=module_data['name'], code=module_data['code'])
+        response = []
+        return jsonify({'response': response}), 200
+    else:
+        liked_comment = LikedComment.query.filter_by(comment_id=comment.id).first()
 
-    db.session.add(new_module)
-    db.session.commit()
+    if liked_comment in user.liked_comments:
+        liked_comment = db.session.query(LikedComment).get(liked_comment.id)
+        curr_user.liked_comments.remove(liked_comment)
+        curr_comment = db.session.query(Comment).get(comment_id)
+        curr_comment.net_upvotes = curr_comment.net_upvotes - 1
+        comment_user.points = comment_user.points - 10
+        db.session.commit()
+        response = []
+        return jsonify({'response': response}), 204
+    else:
+        liked_comment = db.session.query(LikedComment).get(liked_comment.id)
+        curr_user.liked_comments.append(liked_comment)
+        curr_comment = db.session.query(Comment).get(comment_id)
+        curr_comment.net_upvotes = curr_comment.net_upvotes + 1
+        comment_user.points = comment_user.points + 10
+        db.session.commit()
 
-    return 'Done', 201
+        response = []
+        return jsonify({'response': response}), 200
 
-@bp.route('/modules')
-def modules():
-    modules_list = Module.query.all()
-    modules = []
+@bp.route('/posts/<int:post_id>/<int:comment_id>/downvote', methods=['OPTIONS'])
+@cross_origin()
+def downvote_comment_options():
+    response = {'hello'}
+    return jsonify({'response': response}), 205
 
-    for module in modules_list:
-        modules.append({'name': module.name, 'code': module.code})
+@bp.route('/posts/<int:post_id>/<int:comment_id>/downvote', methods=['POST'])
+@cross_origin()
+def downvote_comment(post_id, comment_id):
+    upvote_data = request.get_json(force=True)
+    # gets the user casting the downvote
+    user = User.query.filter_by(email=upvote_data['user_email']).first()
+    # gets the comment
+    comment = Comment.query.filter_by(id=comment_id).first()
+    # gets the user casting the downvote
+    curr_user = db.session.query(User).get(user.id)
+    # gets the user who commented the comment to be downvoted
+    comment_user = db.session.query(User).get(user.id)
 
-    return jsonify({'modules' : modules})
+    if DislikedComment.query.filter_by(comment_id=comment.id).first() is None:
+        disliked_comment = DislikedComment(comment_id=comment.id)
+        db.session.add(disliked_comment)
+        curr_user.disliked_comments.append(disliked_comment)
+        curr_comment = db.session.query(Comment).get(comment_id)
+        curr_comment.net_upvotes = curr_comment.net_upvotes - 1
+        comment_user.points = comment_user.points + 10
+        db.session.commit()
 
+        response = []
+
+        return jsonify({'response': response}), 200
+    else:
+        disliked_comment = DislikedComment.query.filter_by(comment_id=comment.id).first()
+
+    if disliked_comment in user.disliked_comments:
+        disliked_comment = db.session.query(DislikedComment).get(disliked_comment.id)
+        curr_user.disliked_comments.remove(disliked_comment)
+        curr_comment = db.session.query(Comment).get(comment_id)
+        curr_comment.net_upvotes = curr_comment.net_upvotes + 1
+        comment_user.points = comment_user.points + 10
+        db.session.commit()
+        response = []
+        return jsonify({'response': response}), 204
+    else:
+        disliked_comment = db.session.query(DislikedComment).get(disliked_comment.id)
+        curr_user.disliked_comments.append(disliked_comment)
+        curr_comment = db.session.query(Comment).get(comment_id)
+        curr_comment.net_upvotes = curr_comment.net_upvotes - 1
+        comment_user.points = comment_user.points + 10
+        db.session.commit()
+
+        response = []
+
+        return jsonify({'response': response}), 200
 
 @bp.route('/upload', methods=['OPTIONS'])
 @cross_origin()

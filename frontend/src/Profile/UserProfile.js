@@ -108,7 +108,7 @@ class UserProfile extends Component {
   following = () => {
     if (this.state.user_is_following && this.state.user_is_following.length) {
       return (
-        this.state.user_is_following.map(f => 
+        this.state.user_is_following.map(f =>
           <Link to={ `/users/${f.user_id}` }><ListGroup.Item action variant="success">{ f.name }</ListGroup.Item></Link>
         )
       );
@@ -203,14 +203,14 @@ class UserProfile extends Component {
                     <h3 className="display-7">Badges:</h3>
                     <Row>
                       <Col>
-                        <ResponsiveEmbed aspectRatio="1by1">
+                        <ResponsiveEmbed aspectRatio="1by1" style={{maxWidth: 500}}>
                           <embed type="image/png" src={joined_badge} />
                         </ResponsiveEmbed>
                       </Col>
                       {this.state.userPoints >= 10 &&
                         <Col>
-                          <ResponsiveEmbed aspectRatio="1by1">
-                            <embed type="image/png" src={joined_badge} />
+                          <ResponsiveEmbed aspectRatio="1by1" style={{maxWidth: 500}}>
+                            <embed type="image/png" src="http://127.0.0.1:5000/static/first-upvote.png" />
                           </ResponsiveEmbed>
                         </Col>
                       }

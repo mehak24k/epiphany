@@ -11,17 +11,12 @@ import Media from 'react-bootstrap/Media'
 import Form from 'react-bootstrap/Form'
 import Collapse from 'react-bootstrap/Collapse'
 import Alert from 'react-bootstrap/Alert'
-import photo from '../Files/photo.jpg'
-import heart from '../Files/heart.png'
 import ResponsiveEmbed from 'react-bootstrap/ResponsiveEmbed'
-import bubblesort from "../Files/bubblesort.mp4"
 import { IoIosArrowDropup } from "react-icons/io";
 import { IoIosArrowDropupCircle } from "react-icons/io";
 import { IoIosArrowDropdown } from "react-icons/io";
 import { IoIosArrowDropdownCircle } from "react-icons/io";
 import Spinner from 'react-bootstrap/Spinner'
-
-
 
 class Post extends Component {
   constructor(props) {
@@ -35,6 +30,8 @@ class Post extends Component {
       reply: '',
       replied: false,
       c_deleted: false,
+      c_upvoted: false,
+      c_downvoted: false,
       text:'',
       postId: 0,
       deleted: false,
@@ -42,6 +39,8 @@ class Post extends Component {
       upvoted: false,
       downvoted: false,
       errorMessage: '',
+      upvoteButton: "http://127.0.0.1:5000/static/chevron-up-circle-outline.svg",
+      downvoteButton: "http://127.0.0.1:5000/static/chevron-down-circle-outline.svg"
     };
     this.submit = this.submit.bind(this);
     this.updateComment = this.updateComment.bind(this);
@@ -50,39 +49,56 @@ class Post extends Component {
     this.Reply = this.Reply.bind(this);
     this.upvote = this.upvote.bind(this);
     this.downvote = this.downvote.bind(this);
+    this.upvoteComment = this.upvoteComment.bind(this);
+    this.downvoteComment = this.downvoteComment.bind(this);
   }
 
   async componentDidMount() {
-    const { match: { params } } = this.props;
-    if (localStorage.getItem("loggedIn") === "true") {
-      let loginData = {"email": localStorage.getItem("userEmail")}
-      axios.post(`http://localhost:5000/posts/${params.postId}`, loginData)
-      .then((response) => {
-        console.log(response.data.data[0].liked);
-        this.setState({
-          upvoted: response.data.data[0].liked,
-          downvoted: response.data.data[0].disliked,
-        });
-      }, (error) => {
-        console.log('Looks like there was a problem: \n', error);
-      });
-    }
-    this.refreshPost()
+    this.refreshPost();
   }
   async refreshPost() {
     const { match: { params } } = this.props;
-    const post = (await axios.get(`http://localhost:5000/posts/${params.postId}`)).data;
-    this.setState({
-      post: post.json_post,
-      postId: params.postId,
-      deleted: false,
-      commented: false,
-      text: '',
-      reply: '',
-      replied: false,
-      c_deleted: false,
-      commented: false,
-    });
+    if (localStorage.getItem("loggedIn") === "true") {
+      // only if user is logged in -- for getting the state of liked the post / liked the comments
+      let loginData = {"email": localStorage.getItem("userEmail")}
+      axios.post(`http://localhost:5000/posts/${params.postId}`, loginData)
+      .then((response) => {
+        console.log(response.data[0].json_post);
+        
+        console.log(response.data);
+        this.setState({
+          upvoted: response.data[1].data[0].liked,
+          downvoted: response.data[1].data[0].disliked,
+          post: response.data[0].json_post,
+          postId: params.postId,
+          deleted: false,
+          commented: false,
+          text: '',
+          reply: '',
+          replied: false,
+          c_deleted: false,
+          commented: false,
+        });
+        
+        
+      }, (error) => {
+        console.log('Looks like there was a problem: \n', error);
+      });
+    } else {
+      const post = (await axios.get(`http://localhost:5000/posts/${params.postId}`)).data;
+      this.setState({
+        post: post.json_post,
+        postId: params.postId,
+        deleted: false,
+        commented: false,
+        text: '',
+        reply: '',
+        replied: false,
+        c_deleted: false,
+        commented: false,
+      });
+    }
+    
   }
 
   updateComment(event) {
@@ -257,6 +273,153 @@ class Post extends Component {
     }
   }
 
+  async upvoteComment(event, id) {
+      const { match: { params } } = this.props;
+      let postData = {"user_email": localStorage.getItem('userEmail'), "comment_id": id}
+      axios.post(`http://localhost:5000/posts/${params.postId}/${id}/upvote`, postData)
+      .then((response) => {
+        console.log(response);
+        if (this.state.c_upvoted === true) {
+          this.setState({
+            c_upvoted: false,
+            upvoteButton: "http://127.0.0.1:5000/static/chevron-up-circle-outline.svg",
+          })
+        } else {
+          this.setState({
+            c_upvoted: true,
+            upvoteButton: "http://127.0.0.1:5000/static/chevron-up-circle.svg",
+          })
+        }
+        this.refreshPost();
+      }, (error) => {
+      console.log('Looks like there was a problem: \n', error);
+    });
+    event.preventDefault();
+  }
+
+  async downvoteComment(event, id) {
+      const { match: { params } } = this.props;
+      let postData = {"user_email": localStorage.getItem('userEmail'), "comment_id": id}
+      axios.post(`http://localhost:5000/posts/${params.postId}/${id}/downvote`, postData)
+      .then((response) => {
+        console.log(response);
+        if (this.state.c_downvoted === true) {
+          this.setState({
+            c_downvoted: false,
+            downvoteButton: "http://127.0.0.1:5000/static/chevron-down-circle-outline.svg",
+          })
+        } else {
+          this.setState({
+            c_downvoted: true,
+            downvoteButton: "http://127.0.0.1:5000/static/chevron-down-circle.svg",
+          })
+        }
+        this.refreshPost();
+      }, (error) => {
+      console.log('Looks like there was a problem: \n', error);
+    });
+    event.preventDefault();
+  }
+
+  Upvote = (props) => {
+    if (props.currEmail !== null && props.currEmail === props.commentEmail) {
+      return  (
+        <Button
+          variant="link"
+          size="sm"
+          onClick={(e) => this.upvoteComment(e, props.id)}
+          disabled
+        >
+        <img src="http://127.0.0.1:5000/static/chevron-up-circle-outline.svg" style={{height: 20, width: 20}}></img>
+        </Button>
+      );
+    }
+    if (props.liked) {
+      return  (
+        <Button
+          variant="link"
+          size="sm"
+          onClick={(e) => this.upvoteComment(e, props.id)}
+        >
+        <img src="http://127.0.0.1:5000/static/chevron-up-circle.svg" style={{height: 20, width: 20}}></img>
+        </Button>
+      );
+    } else {
+      if (props.disliked) {
+        return  (
+          <Button
+            variant="link"
+            size="sm"
+            onClick={(e) => this.upvoteComment(e, props.id)}
+            disabled
+          >
+          <img src="http://127.0.0.1:5000/static/chevron-up-circle-outline.svg" style={{height: 20, width: 20}}></img>
+          </Button>
+        );
+      } else {
+        return  (
+          <Button
+            variant="link"
+            size="sm"
+            onClick={(e) => this.upvoteComment(e, props.id)}
+          >
+          <img src="http://127.0.0.1:5000/static/chevron-up-circle-outline.svg" style={{height: 20, width: 20}}></img>
+          </Button>
+        );
+      }
+    }
+  }
+
+  Downvote = (props) => {
+    if (props.currEmail !== null && props.currEmail === props.commentEmail) {
+      return  (
+        <Button
+          variant="link"
+          size="sm"
+          onClick={(e) => this.downvoteComment(e, props.id)}
+          disabled
+        >
+        <img src="http://127.0.0.1:5000/static/chevron-down-circle-outline.svg" style={{height: 20, width: 20}}></img>
+        </Button>
+      );
+    }
+    if (props.disliked) {
+      return  (
+        <Button
+          variant="link"
+          size="sm"
+          onClick={(e) => this.downvoteComment(e, props.id)}
+        >
+        <img src="http://127.0.0.1:5000/static/chevron-down-circle.svg" style={{height: 20, width: 20}}></img>
+        </Button>
+      );
+    } else {
+      if (props.liked) {
+        return  (
+          <Button
+            variant="link"
+            size="sm"
+            onClick={(e) => this.downvoteComment(e, props.id)}
+            disabled
+          >
+          <img src="http://127.0.0.1:5000/static/chevron-down-circle-outline.svg" style={{height: 20, width: 20}}></img>
+          </Button>
+        );
+      } else {
+        return  (
+          <Button
+            variant="link"
+            size="sm"
+            onClick={(e) => this.downvoteComment(e, props.id)}
+          >
+          <img src="http://127.0.0.1:5000/static/chevron-down-circle-outline.svg" style={{height: 20, width: 20}}></img>
+          </Button>
+        );
+      }
+    }
+  }
+
+
   render() {
     // checking for deleted post
     const deleted = this.state.deleted;
@@ -309,7 +472,7 @@ class Post extends Component {
               <div id="theVideo">
               <ResponsiveEmbed aspectRatio="16by9">
                   <video id="samp" width="640" height="480" controls>
-                      <source src={bubblesort} type="video/mp4">
+                      <source src={`http://127.0.0.1:5000/static/${post.body}`} type="video/mp4">
                       </source>
                       Your browser does not support this video format.
                   </video>
@@ -318,7 +481,7 @@ class Post extends Component {
             }
               <Row>
               <Col>
-              <h2> {post.upvotes} <img src={heart} style={{height: 30, width: 30}}></img> </h2>
+              <h6> {post.upvotes} likes </h6>
               </Col>
               <Col md={{ offset: "7" }}>
 
@@ -363,12 +526,14 @@ class Post extends Component {
               </Col>
               </Row>
               <Row>
-              {(localStorage.getItem('loggedIn') === "true" && localStorage.getItem('userEmail') === post.user_email) &&
               <Col>
-              <Link to={`${post.id}/update`}><Button variant="outline-success">Update</Button></Link>
+              {(localStorage.getItem('loggedIn') === "true" && localStorage.getItem('userEmail') === post.user_email) && !post.is_file &&
+              <Link to={`${post.id}/update`}><Button variant="outline-success" style={{marginRight: 5}}>Update</Button></Link>
+              }
+              {(localStorage.getItem('loggedIn') === "true" && localStorage.getItem('userEmail') === post.user_email) &&
               <Button variant="outline-danger" onClick={() => {this.deletePost()}}>Delete</Button>
-              </Col>
             }
+            </Col>
               </Row>
             <hr className="my-4" />
               <this.commentBox />
@@ -386,9 +551,19 @@ class Post extends Component {
                                 <p><small>
                                   { comment.commentor !== "deleted" && comment.time }
                                   {
+                                    (comment.commentor !== "deleted")
+                                    && <this.Upvote id={ comment.comment_id } liked={comment.liked} disliked={comment.disliked} currEmail={localStorage.getItem('userEmail')} commentEmail={comment.user_email}/>
+                                  }
+                                  { comment.commentor !== "deleted" && comment.comment_upvotes }
+                                  {
+                                    (comment.commentor !== "deleted")
+                                    && <this.Downvote id={ comment.comment_id } liked={comment.liked} disliked={comment.disliked} currEmail={localStorage.getItem('userEmail')} commentEmail={comment.user_email}/>
+                                  }
+                                  {
                                     (localStorage.getItem('loggedIn') === "true" && localStorage.getItem('userEmail') === comment.user_email)
                                     && <this.Delete id={ comment.comment_id }/>
                                   }
+                                  
                                   { comment.commentor !== "deleted" && <this.Reply id={ comment.comment_id }/> }
                                 </small></p>
                                     </div>;
@@ -405,10 +580,20 @@ class Post extends Component {
                                     return <div key={key}>
                                       {i}
                                       <p><small>{ comment.commentor !== "deleted" && comment.time }
+                                      {
+                                            (comment.commentor !== "deleted")
+                                            && <this.Upvote id={ comment.comment_id } liked={comment.liked} disliked={comment.disliked} currEmail={localStorage.getItem('userEmail')} commentEmail={comment.user_email}/>
+                                          }
+                                          { comment.commentor !== "deleted" && comment.comment_upvotes }
+                                          {
+                                            (comment.commentor !== "deleted")
+                                            && <this.Downvote id={ comment.comment_id } liked={comment.liked} disliked={comment.disliked} currEmail={localStorage.getItem('userEmail')} commentEmail={comment.user_email}/>
+                                          }
                                         {
                                           (localStorage.getItem('loggedIn') === "true" && localStorage.getItem('userEmail') === comment.user_email)
                                           && <this.Delete id={ comment.comment_id }/>
                                         }
+                                        
                                         { comment.commentor !== "deleted" && <this.Reply id={ comment.comment_id }/> }
                                       </small></p>
                                     </div>;
@@ -427,9 +612,20 @@ class Post extends Component {
                                         <p><small>
                                           { comment.commentor !== "deleted" && comment.time }
                                           {
+                                            (comment.commentor !== "deleted")
+                                            && <this.Upvote id={ comment.comment_id } liked={comment.liked} disliked={comment.disliked} currEmail={localStorage.getItem('userEmail')} commentEmail={comment.user_email}/>
+                                          }
+                                          { comment.commentor !== "deleted" && comment.comment_upvotes }
+                                          {
+                                            (comment.commentor !== "deleted")
+                                            && <this.Downvote id={ comment.comment_id } liked={comment.liked} disliked={comment.disliked} currEmail={localStorage.getItem('userEmail')} commentEmail={comment.user_email}/>
+                                          }
+                                          
+                                          {
                                             (localStorage.getItem('loggedIn') === "true" && localStorage.getItem('userEmail') === comment.user_email)
                                             && <this.Delete id={ comment.comment_id }/>
                                           }
+                                          
                                           { comment.commentor !== "deleted" && <this.Reply id={ comment.comment_id }/> }
                                         </small></p>
                                       </div>;

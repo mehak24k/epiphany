@@ -26,6 +26,7 @@ class App extends Component {
     this.login = this.login.bind(this);
     this.state = {
       login: false,
+      loggedOut: false,
     };
   }
 
@@ -35,13 +36,24 @@ class App extends Component {
 
   logout() {
     localStorage.clear();
-    this.setState({login: false});
-    return <Redirect to="/" />
+    this.setState({
+      login: false,
+      loggedOut: true,
+    });
   }
 
   render() {
     const token = localStorage.getItem('loggedIn');
     console.log(token);
+    const redirectTo = this.state.loggedOut;
+    if (redirectTo) {
+        return (
+          <div>
+          <NavBar callback={this.logout}/>
+          <h1 style={{textAlign: "center"}}>Logged out!</h1>
+          </div>
+        );
+    }
     return (
       <div>
         <NavBar callback={this.logout}/>
