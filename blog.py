@@ -82,7 +82,7 @@ def get_post(post_id, check_author=True):
     return post,string
 
 def get_comments(post_id):
-    comments = db.session.query(Comment).filter_by(post_id=post_id).order_by(Comment.timestamp.desc(), Comment.path.asc()).all()
+    comments = db.session.query(Comment).filter_by(post_id=post_id).order_by(Comment.path.asc(), Comment.timestamp.desc()).all()
     return comments
 
 @bp.route('/posts/<int:post_id>', methods=['GET', 'POST'])
@@ -105,8 +105,7 @@ def indiv_post(post_id):
         data.append({'liked': liked, 'disliked': disliked})
 
         post = get_post(post_id, False)
-        #comments = get_comments(post_id)
-        comments = Comment.query.filter_by(post_id=post_id).all()
+        comments = get_comments(post_id)
 
         tags_list = post[0].tags
         tags = []
