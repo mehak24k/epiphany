@@ -131,7 +131,7 @@ Error messages/Precautions taken
 User Testing
 ---
 
-We sent out surveys to NUS students to test out our deployed website and from their feedback, implemented some improvements suggested by testers such as:
+We sent out surveys to NUS students to test out our deployed website and from their [feedback](https://docs.google.com/forms/d/12V9a5F86t_9ZEv33_mKtgaHIejP0FFQmT7wNxD3Kjco/edit?usp=sharing), implemented some improvements suggested by testers such as:
 * making the search bars uniform
 * Section for ‘posted by user’ in the homepage can be a darker gray
 * comment box should only be visible to logged-in users
