@@ -12,7 +12,7 @@ _**Level of Achievement: Apollo 11**_
   - [Core Features](#core-features)
   - [Testing and Security Features](#testing-and-security-features)
   - [Extensions](#extensions)
-  - [Future Plans] (#future-plans)
+  - [Future Plans](#future-plans)
   - [Software Engineering Related](#software-engineering-related)
   - [How is our application different?](#how-is-our-application-different)
   - [Problems encountered/Bugs squashed](#problems-encounteredbugs-squashed)
