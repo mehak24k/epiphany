@@ -45,8 +45,7 @@ Microlearning has many benefits such as improving learners’ information retent
 ![Image](https://drive.google.com/uc?export=view&id=1B4XD-LdYVMmQGxtAQA9XOSMK87vXoB98)
 
 ## Core Features 
-#### Features
----
+### Features
 **1.1 Posting - for registered users**
 * Registered users can post an article or upload videos explaining concepts
 * Short videos (5 - 10 minutes) targeted at certain concepts
@@ -80,8 +79,8 @@ Microlearning has many benefits such as improving learners’ information retent
 
 ## Testing and Security Features
 
-#### System Testing
----
+### System Testing
+
 **Portability Testing**
 
 * Our website is responsive to shrinking windows on a laptop/desktop.
@@ -105,8 +104,7 @@ Microlearning has many benefits such as improving learners’ information retent
 * Users cannot create tags that already exist
 * Users cannot edit posts that are not their own 
 
-#### Error messages/Precautions taken
----
+### Error messages/Precautions taken
 
 1.1 Posting - for registered users
 * Users cannot create tags that already exist
@@ -128,8 +126,7 @@ Microlearning has many benefits such as improving learners’ information retent
 1.6 Loading system - for all website users
 * Website will show loading symbol when the page has not finished loading to prevent most errors
 
-#### User Testing
----
+### User Testing
 
 We sent out surveys to NUS students to test out our deployed website and from their [feedback](https://docs.google.com/forms/d/12V9a5F86t_9ZEv33_mKtgaHIejP0FFQmT7wNxD3Kjco/edit?usp=sharing), implemented some improvements suggested by testers such as:
 * making the search bars uniform
@@ -145,6 +142,35 @@ Most testers felt that there was a need for such a website, as their options for
 A gamification system where users can achieve points/awards/badges by contributing or having their contributions liked. This would ideally, encourage users to contribute more quality content to the website.
 
 A follow system for registered users to subscribe to other users. Users would then be able to see their followed posts and catch up on any new posts made.
+
+## Future Plans
+
+**Admin Roles**
+* We will support different organisations’ accounts so different educational institutions
+* We will have different account types for lecturers/TAs to highlight their credibility when they post an article/video or comment.
+
+**Expansion of following system** 
+* We plan for users to receive notifications when the users they follow post a new article or update their post. 
+* We also plan for users to follow specific posts, where they will similarly receive notifications when the post updates, or when a new comment is added to the Q&A * section.
+* Users should also be able to follow tags, where any new post posted under the following tags will show up in the user’s dashboard. 
+
+**Expansion of gamification system**
+* There will be a more extensive gamification system for users to collect points and badges when they post or ask questions.
+* Points/badges will also be awarded to those posting quality content (measured by the number of upvotes).
+
+**UX/UI**
+* We will improve the user interface to make it more seamless, aesthetically pleasing and user-friendly.
+
+**Security**
+* We need to incorporate more security practices to secure our database since it is a crucial part of our web app.
+
+**Testing**
+* We need to test our web app more rigorously to ensure it is working as it should
+* Types of testing to cover:
+  - Unit testing our React components with Jest
+  - System testing
+  - More extensive user testing with potential users of our app
+
 
 ## Software Engineering Related
 
