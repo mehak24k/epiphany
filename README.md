@@ -45,7 +45,7 @@ Microlearning has many benefits such as improving learners’ information retent
 ![Image](https://drive.google.com/uc?export=view&id=1B4XD-LdYVMmQGxtAQA9XOSMK87vXoB98)
 
 ## Core Features 
-###### Features
+#### Features
 ---
 **1.1 Posting - for registered users**
 * Registered users can post an article or upload videos explaining concepts
@@ -80,7 +80,7 @@ Microlearning has many benefits such as improving learners’ information retent
 
 ## Testing and Security Features
 
-###### System Testing
+#### System Testing
 ---
 **Portability Testing**
 
@@ -105,7 +105,7 @@ Microlearning has many benefits such as improving learners’ information retent
 * Users cannot create tags that already exist
 * Users cannot edit posts that are not their own 
 
-###### Error messages/Precautions taken
+#### Error messages/Precautions taken
 ---
 
 1.1 Posting - for registered users
@@ -128,7 +128,7 @@ Microlearning has many benefits such as improving learners’ information retent
 1.6 Loading system - for all website users
 * Website will show loading symbol when the page has not finished loading to prevent most errors
 
-###### User Testing
+#### User Testing
 ---
 
 We sent out surveys to NUS students to test out our deployed website and from their [feedback](https://docs.google.com/forms/d/12V9a5F86t_9ZEv33_mKtgaHIejP0FFQmT7wNxD3Kjco/edit?usp=sharing), implemented some improvements suggested by testers such as:
