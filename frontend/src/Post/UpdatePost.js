@@ -20,7 +20,6 @@ class UpdatePost extends Component {
 
   async componentDidMount() {
     const { match: { params } } = this.props;
-    console.log(post.json_post.body);
     const post = (await axios.get(`https://epiphany-test-three.herokuapp.com/posts/${params.postId}/update`)).data;
     this.setState({
       title: post.json_post.title,

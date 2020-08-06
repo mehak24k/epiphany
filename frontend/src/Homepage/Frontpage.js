@@ -47,7 +47,7 @@ class Frontpage extends Component {
                                 src={member}
                             />
                             <Carousel.Caption>
-                                <Link to={`/all`}><h4>Check out everyone's posts here!</h4></Link>
+                                <Link to={`/all-time`}><h4>Check out everyone's posts here!</h4></Link>
                                 <Link to={`/fav`}><h4>Or, look at your followed users' posts!</h4></Link>
                             </Carousel.Caption>
                         </Carousel.Item>
