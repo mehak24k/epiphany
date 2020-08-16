@@ -12,6 +12,13 @@ import joined_badge from '../Files/joined_badge.png'
 import ResponsiveEmbed from 'react-bootstrap/ResponsiveEmbed'
 import Spinner from 'react-bootstrap/Spinner'
 import Card from 'react-bootstrap/Card'
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import Tooltip from 'react-bootstrap/Tooltip'
+import Button from 'react-bootstrap/Button'
+import TabContainer from 'react-bootstrap/TabContainer'
+import TabContent from 'react-bootstrap/TabContent'
+import TabPane from 'react-bootstrap/TabPane'
+import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
 
 class Profile extends Component {
 
@@ -25,13 +32,15 @@ class Profile extends Component {
       likedPosts: null,
       points: 0,
       loaded: false,
+      isStudent: false,
+      isStaff: false,
     };
   }
 
   async componentDidMount() {
     let userData = {"email": localStorage.getItem('userEmail')}
     console.log(userData);
-    axios.post('https://epiphany-test-three.herokuapp.com/profile', userData)
+    axios.post('http://localhost:5000/profile', userData)
     .then((response) => {
       const posts = response.data.user_info[0].posts;
       let arr = [];
@@ -40,9 +49,11 @@ class Profile extends Component {
       }
       this.setState({
         posts: arr,
-        user_is_following: response.data.user_info[3].user_is_following,
-        user_is_followed_by: response.data.user_info[4].user_is_followed_by,
+        user_is_following: response.data.user_info[5].user_is_following,
+        user_is_followed_by: response.data.user_info[6].user_is_followed_by,
         points: response.data.user_info[2].points,
+        isStudent: response.data.user_info[3].isStudent,
+        isStaff: response.data.user_info[4].isStaff,
         loaded: true,
       });
       const likedPosts = response.data.user_info[1].liked_posts;
@@ -177,6 +188,23 @@ class Profile extends Component {
   }
 
   render() {
+    const renderTooltip = (props) => (
+      <Tooltip id="button-tooltip" {...props}>
+        10 points are awarded for each upvote on a post or comment.
+        <Row style={{marginLeft: 5}}>
+          10 points: First Upvote Badge
+        </Row>
+        <Row style={{marginLeft: 5}}>
+          100 points: Novice
+        </Row>
+        <Row style={{marginLeft: 5}}>
+          500 points: Star Member
+        </Row>
+        <Row style={{marginLeft: 5}}>
+          1000 points: Expert Contributor
+        </Row>
+      </Tooltip>
+    );
     return (
       <div className="container">
         {!this.state.loaded && <Row className="mt-3"> <Spinner animation="border" variant="primary" /> <p>&nbsp;Loading posts...</p></Row>}
@@ -186,9 +214,37 @@ class Profile extends Component {
             <div className="row">
               <div className="jumbotron col-12">
                 <h1 className="display-3">{localStorage.getItem('userName')}</h1>
+                {this.state.isStudent === true &&
+                <h4><Badge variant="success">Student</Badge>{' '}</h4>
+                }
+                {this.state.isStaff === true &&
+                <h4><Badge variant="success">Teaching Team</Badge>{' '}</h4>
+                }
                 <h3 className="display-7">Points: {this.state.points}</h3>
                 <h3 className="display-7">Badges:</h3>
-                <Row>
+                <OverlayTrigger
+                  placement="right"
+                  delay={{ show: 250, hide: 400 }}
+                  overlay={renderTooltip}
+                >
+                  <Button variant="outline-info">How do points and badges work?</Button>
+                </OverlayTrigger>
+                <Tab.Container id="left-tabs-example" defaultActiveKey="first">
+  <Row>
+    <Col sm={3}>
+      <Nav variant="pills" className="flex-column" style={{marginTop: 50}}>
+              <Nav.Item>
+                <Nav.Link eventKey="first">Awarded Badges</Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link eventKey="second">Locked Badges</Nav.Link>
+              </Nav.Item>
+            </Nav>
+          </Col>
+          <Col sm={9}>
+            <Tab.Content>
+              <Tab.Pane eventKey="first">
+              <Row md={2}>
                 <Col>
                 <ResponsiveEmbed aspectRatio="1by1" style={{maxWidth: 500}}>
                   <embed type="image/png"  src={joined_badge} />
@@ -197,11 +253,94 @@ class Profile extends Component {
                 {this.state.points >= 10 &&
                   <Col>
                   <ResponsiveEmbed aspectRatio="1by1" style={{maxWidth: 500}}>
-                    <embed type="image/png" src="https://epiphany-test-three.herokuapp.com/static/first-upvote.png" />
+                    <embed type="image/png" src="http://localhost:5000/static/first-upvote.png" />
+                  </ResponsiveEmbed>
+                  </Col>
+                }
+                {this.state.points >= 100 &&
+                  <Col>
+                  <ResponsiveEmbed aspectRatio="1by1" style={{maxWidth: 500}}>
+                    <embed type="image/png" src="http://localhost:5000/static/novice2.png" />
+                  </ResponsiveEmbed>
+                  </Col>
+                }
+                {this.state.points >= 500 &&
+                  <Col>
+                  <ResponsiveEmbed aspectRatio="1by1" style={{maxWidth: 500}}>
+                    <embed type="image/png" src="http://localhost:5000/static/star_member.png" />
+                  </ResponsiveEmbed>
+                  </Col>
+                }
+                {this.state.points >= 1000 &&
+                  <Col>
+                  <ResponsiveEmbed aspectRatio="1by1" style={{maxWidth: 500}}>
+                    <embed type="image/png" src="http://localhost:5000/static/expert_contributor.png" />
                   </ResponsiveEmbed>
                   </Col>
                 }
                 </Row>
+              </Tab.Pane>
+              <Tab.Pane eventKey="second">
+              <Row md={2}>
+                {this.state.points < 10 &&
+                  <Col>
+                  <ResponsiveEmbed aspectRatio="1by1" style={{maxWidth: 500}}>
+                  <Button disabled variant="outline-light">
+                    
+                  <ResponsiveEmbed aspectRatio="1by1" style={{maxWidth: 500}}>
+                    <embed type="image/png" disabled src="http://localhost:5000/static/first-upvote.png" />
+                  </ResponsiveEmbed>
+                  First upvote!
+                  </Button>
+                  </ResponsiveEmbed>
+                  </Col>
+                }
+                {this.state.points < 100 &&
+                  <Col>
+                  <ResponsiveEmbed aspectRatio="1by1" style={{maxWidth: 500}}>
+                  <Button disabled variant="outline-light">
+                    
+                  <ResponsiveEmbed aspectRatio="1by1" style={{maxWidth: 500}}>
+                    <embed type="image/png" disabled src="http://localhost:5000/static/novice2.png" />
+                  </ResponsiveEmbed>
+                  First upvote!
+                  </Button>
+                  </ResponsiveEmbed>
+                  </Col>
+                }
+                {this.state.points < 500 &&
+                  <Col>
+                  <ResponsiveEmbed aspectRatio="1by1" style={{maxWidth: 500}}>
+                  <Button disabled variant="outline-light">
+                    
+                  <ResponsiveEmbed aspectRatio="1by1" style={{maxWidth: 500}}>
+                    <embed type="image/png" disabled src="http://localhost:5000/static/star_member.png" />
+                  </ResponsiveEmbed>
+                  First upvote!
+                  </Button>
+                  </ResponsiveEmbed>
+                  </Col>
+                }
+                {this.state.points < 1000 &&
+                  <Col>
+                  <ResponsiveEmbed aspectRatio="1by1" style={{maxWidth: 500}}>
+                  <Button disabled variant="outline-light">
+                    
+                  <ResponsiveEmbed aspectRatio="1by1" style={{maxWidth: 500}}>
+                    <embed type="image/png" disabled src="http://localhost:5000/static/expert_contributor.png" />
+                  </ResponsiveEmbed>
+                  First upvote!
+                  </Button>
+                  </ResponsiveEmbed>
+                  </Col>
+                }
+                </Row>
+              </Tab.Pane>
+            </Tab.Content>
+          </Col>
+        </Row>
+      </Tab.Container>
+
               </div>
             </div>
           </Tab>

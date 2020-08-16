@@ -18,15 +18,11 @@ class NavBar extends Component {
             <Nav className="mr-auto">
               {localStorage.getItem('loggedIn') !== "true" && <Nav.Link href="/login">Login</Nav.Link>}
               {localStorage.getItem('loggedIn') !== "true" && <Nav.Link href="/signup">Signup</Nav.Link>}
-              {localStorage.getItem('loggedIn') === "true" && <Nav.Link href="/profile">Profile</Nav.Link>}
-              <NavDropdown title="Posts" id="collasible-nav-dropdown">
-                {localStorage.getItem('loggedIn') === "true" && <NavDropdown.Item href="/create">Make a Post</NavDropdown.Item>}
-                {localStorage.getItem('loggedIn') === "true" && <NavDropdown.Item href="/fav">Followed Posts</NavDropdown.Item>}
-                <NavDropdown.Item href="/all-time">All Posts by Time</NavDropdown.Item>
-                <NavDropdown.Item href="/all-votes">All Posts by Votes</NavDropdown.Item>
-              </NavDropdown>
+              <Nav.Link href="/all-time">Posts</Nav.Link>
+              {localStorage.getItem('loggedIn') === "true" && <Nav.Link href="/create">Create</Nav.Link>}
             </Nav>
             <Nav>
+              {localStorage.getItem('loggedIn') === "true" && <Nav.Link href="/profile">Profile</Nav.Link>}
               {localStorage.getItem('loggedIn') === "true" && <Nav.Link onClick={this.props.callback}>Logout</Nav.Link>}
             </Nav>
           </Navbar.Collapse>

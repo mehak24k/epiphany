@@ -14,6 +14,8 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True) # primary keys are required by SQLAlchemy
     name = db.Column(db.String(1000))
     email = db.Column(db.String(100), unique=True, nullable=False)
+    is_student = db.Column(db.Boolean, nullable=True, default=False)
+    is_staff = db.Column(db.Boolean, nullable=True, default=False)
     password = db.Column(db.String(100), nullable=False)
     posts = db.relationship("Post", backref="user", lazy=True)
     email_confirmation_sent_on = db.Column(db.DateTime, nullable=True)
