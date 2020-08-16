@@ -39,7 +39,7 @@ class Post extends Component {
       upvoted: false,
       downvoted: false,
       errorMessage: '',
-      upvoteButton: "fake link"
+      upvoteButton: "https://epiphany-test-three.herokuapp.com/static/chevron-up-circle-outline.svg",
       downvoteButton: "https://epiphany-test-three.herokuapp.com/static/chevron-down-circle-outline.svg"
     };
     this.submit = this.submit.bind(this);
@@ -189,7 +189,7 @@ class Post extends Component {
       event.preventDefault();
     }
 
-
+    
   async downvote(event) {
     const { match: { params } } = this.props;
     let postData = {"user_email": localStorage.getItem('userEmail'), "post_id": params.postId}
