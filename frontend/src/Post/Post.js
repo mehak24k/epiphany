@@ -189,7 +189,7 @@ class Post extends Component {
       event.preventDefault();
     }
 
-    
+
   async downvote(event) {
     const { match: { params } } = this.props;
     let postData = {"user_email": localStorage.getItem('userEmail'), "post_id": params.postId}
