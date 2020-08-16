@@ -80,7 +80,7 @@ class Signup extends Component {
     } else {
       let signupData = {"name": this.state.username, "email": this.state.email, "password": this.state.password, "isStudent": isStudent, "isStaff": isStaff}
       console.log(signupData)
-      axios.post('http://localhost:5000/signup', signupData)
+      axios.post('https://epiphany-test-three.herokuapp.com/signup', signupData)
       .then((response) => {
         console.log(response);
         if (response.status === 200) {

@@ -35,7 +35,7 @@ class Posts extends Component {
   }
 
   async componentDidMount() {
-      const data = (await axios.get('http://localhost:5000/mainvotes')).data;
+      const data = (await axios.get('https://epiphany-test-three.herokuapp.com/mainvotes')).data;
       const posts = data.data[0];
       const tags = data.data[1];
       let arr = [];
@@ -240,7 +240,7 @@ class Posts extends Component {
                 {post.is_file === true &&
                   <div>
                     <video id="samp" width="540" height="380" controls>
-                        <source src={`http://localhost:5000/static/${post.body}`} type="video/mp4">
+                        <source src={`https://epiphany-test-three.herokuapp.com/static/${post.body}`} type="video/mp4">
                         </source>
                         Your browser does not support this video format.
                     </video>
