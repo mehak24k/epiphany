@@ -36,7 +36,7 @@ class NewVideo extends Component {
   }
 
   async componentDidMount() {
-      const data = (await axios.get('https://epiphany-test-three.herokuapp.com/main')).data;
+      const data = (await axios.get('http://localhost:5000/main')).data;
       console.log(data.data[0]);
       const tags = data.data[1];
       let tagArr = [];
@@ -152,7 +152,7 @@ handleSubmit(event) {
       if (this.state.newTags !== null) {
         this.state.newTags.forEach(tag => data.append('newTags[]', tag));
       }
-      axios.post('https://epiphany-test-three.herokuapp.com/upload', data)
+      axios.post('http://localhost:5000/upload', data)
       .then((response) => {
         console.log(response);
         this.setState({

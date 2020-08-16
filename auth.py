@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash, jsonify, current_app
 from werkzeug.security import generate_password_hash, check_password_hash
-from models import User, Post
-from app import db, s, mail, app
+from .models import User, Post
+from . import db, s, mail, app
 from flask_login import login_user, logout_user, login_required, current_user
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 from flask_mail import Mail, Message
@@ -41,9 +41,9 @@ def login_post():
         return jsonify({'obj': obj}), 204
 
     # check if user has confirmed their email before login
-    if not user.email_confirmed:
-        obj = {'test': 206}
-        return jsonify({'obj': obj}), 206
+    #if not user.email_confirmed:
+        #obj = {'test': 206}
+        #return jsonify({'obj': obj}), 206
 
     # if the above check passes, then we know the user has the right credentials
     login_user(user, remember=remember)
@@ -84,6 +84,8 @@ def signup_post():
     name = signupData['name']
     email = signupData['email']
     password = signupData['password']
+    is_student = signupData['isStudent']
+    is_staff = signupData['isStaff']
 
     user = User.query.filter_by(email=email).first() # if this returns a user, then the email already exists in database
 
@@ -92,7 +94,7 @@ def signup_post():
         return jsonify({'response': response}), 206
 
     # create new user with the form data. Hash the password so plaintext version isn't saved.
-    new_user = User(email=email, name=name, password=generate_password_hash(password, method='sha256'))
+    new_user = User(email=email, name=name, password=generate_password_hash(password, method='sha256'), is_student=is_student, is_staff=is_staff)
 
     # add the new user to the database
     db.session.add(new_user)
@@ -193,6 +195,8 @@ def profile():
     user_info.append({'posts': posts})
     user_info.append({'liked_posts': liked_posts})
     user_info.append({'points': user.points})
+    user_info.append({'isStudent': user.is_student})
+    user_info.append({'isStaff': user.is_staff})
     user_info.append({'user_is_following': user_is_following})
     user_info.append({'user_is_followed_by': user_is_followed_by})
 
@@ -238,6 +242,8 @@ def user(user_id):
     user_info = []
     user_info.append({'name': user.name})
     user_info.append({'points': user.points})
+    user_info.append({'isStudent': user.is_student})
+    user_info.append({'isStaff': user.is_staff})
     user_info.append({'posts': posts})
     user_info.append({'email': user.email})
     user_info.append({'id': user_id})

@@ -29,14 +29,58 @@ class Signup extends Component {
   }
 
   async handleSubmit(event) {
+    
+    var password = this.state.password;
+    var i=0;
+    var character='';
+    var containsNumber = false;
+    var containsCapital = false;
+    while (i <= password.length){
+        character = password.charAt(i);
+        if (!isNaN(character * 1)){
+            containsNumber = true;
+        }else{
+            if (character == character.toUpperCase()) {
+                containsCapital = true;
+            }
+        }
+        i++;
+    }
+
+    var acceptList = [ "student.institute.edu" , "staff.institute.edu" ];
+    var isStudent = false;
+    var isStaff = false;
+    var emailValue = this.state.email;
+    var splitArray = emailValue.split('@'); // To Get Array
+
+    
+    if (acceptList.indexOf(splitArray[1]) == 0) {
+      // Means it has the accepted domains
+      isStudent = true;
+      alert("is a student!");
+    }
+    if (acceptList.indexOf(splitArray[1]) == 1) {
+      alert("is a staff!");
+      isStaff = true;
+    }
+
     if (this.state.username === '' || this.state.email === '' || this.state.password === '') {
       this.setState({
         errorMessage: "Please fill in all fields."
       })
+      
+    } else if (!containsNumber || !containsCapital || this.state.password.length < 8) {
+      this.setState({
+        errorMessage: "Password must be at least 8 characters long, contain a capital letter and a number."
+      }) 
+    } else if (!isStudent && !isStaff) {
+      this.setState({
+        errorMessage: "Please signup with your institute email address."
+      })
     } else {
-      let signupData = {"name": this.state.username, "email": this.state.email, "password": this.state.password}
+      let signupData = {"name": this.state.username, "email": this.state.email, "password": this.state.password, "isStudent": isStudent, "isStaff": isStaff}
       console.log(signupData)
-      axios.post('https://epiphany-test-three.herokuapp.com/signup', signupData)
+      axios.post('http://localhost:5000/signup', signupData)
       .then((response) => {
         console.log(response);
         if (response.status === 200) {

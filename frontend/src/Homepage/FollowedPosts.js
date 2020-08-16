@@ -9,6 +9,7 @@ import Spinner from 'react-bootstrap/Spinner'
 import Card from 'react-bootstrap/Card'
 import Container from 'react-bootstrap/Container'
 import Tab from 'react-bootstrap/Tab'
+import NavDropdown from 'react-bootstrap/NavDropdown'
 import Nav from 'react-bootstrap/Nav'
 
 
@@ -25,7 +26,7 @@ class Posts extends Component {
     async componentDidMount() {
         let loginData = {"email": localStorage.getItem("userEmail")}
         console.log(loginData)
-        axios.post('https://epiphany-test-three.herokuapp.com/fav', loginData)
+        axios.post('http://localhost:5000/fav', loginData)
         .then((response) => {
             const lists = response.data.info[0];
             let arr = [];
@@ -59,6 +60,15 @@ class Posts extends Component {
         <Container className="justify-content-md-center">
           {this.state.list === null && <Row className="mt-3"> <Spinner animation="border" variant="primary" /> <p>Loading posts...</p></Row>}
           {this.state.list && this.state.list.length === 0 && <h4 style={{textAlign: "center"}}> No followed posts. </h4>}
+          {this.state.list &&
+          <Nav className="justify-content-end">
+        <NavDropdown title="Sort By" id="nav-dropdown">
+        <NavDropdown.Item eventKey="4.1" href="/all-time">Time</NavDropdown.Item>
+        <NavDropdown.Item eventKey="4.2" href="/all-votes">Votes</NavDropdown.Item>
+        <NavDropdown.Item eventKey="4.3" href="/fav">Followed Posts</NavDropdown.Item>
+      </NavDropdown>
+      </Nav>
+    }
           <Tab.Container id="left-tabs-example" defaultActiveKey="first">
             <Row>
               <Col sm={3}>

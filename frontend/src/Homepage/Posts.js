@@ -14,6 +14,8 @@ import {Autocomplete} from '@material-ui/lab/';
 import Card from 'react-bootstrap/Card'
 import Container from 'react-bootstrap/Container'
 import Alert from 'react-bootstrap/Alert'
+import NavDropdown from 'react-bootstrap/NavDropdown'
+import Nav from 'react-bootstrap/Nav'
 
 class Posts extends Component {
 
@@ -33,7 +35,7 @@ class Posts extends Component {
   }
 
   async componentDidMount() {
-      const data = (await axios.get('https://epiphany-test-three.herokuapp.com/main')).data;
+      const data = (await axios.get('http://localhost:5000/main')).data;
       const posts = data.data[0];
       const tags = data.data[1];
       let arr = [];
@@ -201,6 +203,15 @@ class Posts extends Component {
         </div>
       }
         </div>
+        {this.state.filteredPosts &&
+        <Nav className="justify-content-end">
+        <NavDropdown title="Sort By" id="nav-dropdown">
+        <NavDropdown.Item eventKey="4.1" href="/all-time">Time</NavDropdown.Item>
+        <NavDropdown.Item eventKey="4.2" href="/all-votes">Votes</NavDropdown.Item>
+        <NavDropdown.Item eventKey="4.3" href="/fav">Followed Posts</NavDropdown.Item>
+      </NavDropdown>
+      </Nav>
+  }
 
         {this.state.posts === null && <div> <Spinner animation="border" variant="primary" /> <p>Loading posts...</p></div>}
 
@@ -229,7 +240,7 @@ class Posts extends Component {
                 {post.is_file === true &&
                   <div>
                     <video id="samp" width="540" height="380" controls>
-                        <source src={`https://epiphany-test-three.herokuapp.com/static/${post.body}`} type="video/mp4">
+                        <source src={`http://localhost:5000/static/${post.body}`} type="video/mp4">
                         </source>
                         Your browser does not support this video format.
                     </video>
