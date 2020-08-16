@@ -109,7 +109,7 @@ class UserProfile extends Component {
     if (this.state.user_is_following && this.state.user_is_following.length) {
       return (
         this.state.user_is_following.map(f =>
-          <Link to={ `/users/${f.user_id}` }><ListGroup.Item action variant="success">{ f.name }</ListGroup.Item></Link>
+          <Link to={ `/users/${f.user_id}` } onClick={() => window.location.reload()}><ListGroup.Item action variant="success">{ f.name }</ListGroup.Item></Link>
         )
       );
     }
@@ -122,7 +122,7 @@ class UserProfile extends Component {
     if (this.state.user_is_followed_by && this.state.user_is_followed_by.length) {
       return (
         this.state.user_is_followed_by.map(f =>
-          <Link to={ `/users/${f.user_id}` }><ListGroup.Item action variant="success">{ f.name }</ListGroup.Item></Link>
+          <Link to={ `/users/${f.user_id}` } onClick={() => window.location.reload()}><ListGroup.Item action variant="success">{ f.name }</ListGroup.Item></Link>
         )
       );
     } else {
